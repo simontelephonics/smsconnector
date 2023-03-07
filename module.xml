@@ -1,0 +1,50 @@
+<module>
+	<rawname>smsconnector</rawname>
+	<repo>unsupported</repo>
+	<name>SMS Connector</name>
+	<version>16.0.0alpha</version>
+	<category>Connectivity</category>
+	<Publisher>Simon Telephonics LLC</Publisher>
+	<info>http://wiki.freepbx.org/</info>
+	<license>GPLv2</license>
+	<licenselink>http://www.gnu.org/licenses/gpl-2.0.txt</licenselink>
+	<menuitems>
+		<smsconnector>SMS Connector</smsconnector>
+	</menuitems>
+	<depends>
+		<version>16</version>
+	</depends>
+	<supported>16.0</supported>
+	<requirements>
+		<module>sms</module>
+	</requirements>
+	<description>Implements a generic SMS connector</description>
+	<hooks>  
+		<sms namespace="FreePBX\modules" class="Sms">
+			<method namespace="FreePBX\Modules" class="Smsconnector" callingMethod="loadAdaptor">smsAdaptor</method>
+        </sms>
+		<userman class="Userman" namespace="FreePBX\modules">
+			<method callingMethod="myShowPage" class="Smsconnector" namespace="FreePBX\modules">usermanShowPage</method>
+			<method callingMethod="delUser" class="Smsconnector" namespace="FreePBX\modules">usermanDelUser</method>
+			<method callingMethod="addUser" class="Smsconnector" namespace="FreePBX\modules">usermanAddUser</method>
+			<method callingMethod="updateUser" class="Smsconnector" namespace="FreePBX\modules">usermanUpdateUser</method>
+		</userman>
+
+	</hooks>
+	<database>
+		<table name="smsconnector_providers">
+			<field name="id" type="integer" primaryKey="true" autoincrement="true"/>
+			<field name="name" type="string" length="20" notnull="true"/>
+			<field name="api_key" type="string" length="100" notnull="false"/>
+			<field name="api_secret" type="string" length="100" notnull="false"/>
+		</table>
+		<table name="smsconnector_relations">
+			<field name="id" type="integer" primaryKey="true" autoincrement="true"/>
+			<field name="didid" type="integer" notnull="true"/>
+			<field name="providerid" type="integer" notnull="true"/>
+		</table>
+	</database>
+	<changelog>
+		*16.0.0.0* Initial Release
+	</changelog>
+</module>
