@@ -98,6 +98,8 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
             case 'flowroute':
                 break;
         }
+
+        return $retval;
     }
 
     public function getMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null) {
