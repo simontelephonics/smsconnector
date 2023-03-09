@@ -66,6 +66,7 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
                 break;
         }
         
+        return $retval;
     }
 
     public function sendMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null,$chatId='') {
