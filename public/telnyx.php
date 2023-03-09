@@ -15,12 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $text = $sms->data->payload->text;
             $emid = $sms->data->id;
     
+            // load FreePBX
+            $bootstrap_settings['freepbx_auth'] = false;
             require '/etc/freepbx.conf';
-            include $amp_conf['AMPWEBROOT'] . '/admin/modules/sms/Sms.class.php';
-            include $amp_conf['AMPWEBROOT'] . '/admin/modules/sms/includes/AdaptorBase.class.php';
-            include $amp_conf['AMPWEBROOT'] . '/admin/modules/smsconnector/adaptor/Smsconnector.class.php';
+            $freepbx = \FreePBX::Create();
+            $connector = $freepbx->Sms->loadAdaptor('Smsconnector');
     
-            $connector = new \FreePBX\modules\Sms\Adaptor\Smsconnector();
             try {
                 $msgid = $connector->getMessage($to, $from, '', $text, null, null, $emid);
             } catch (\Exception $e) {
@@ -42,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 }
                 
             }
+            
+            $connector->emitSmsInboundUserEvt($msgid, $to, $from, '', $text, null, 'Smsconnector', $emid);
         }
     }
     http_response_code(202);
