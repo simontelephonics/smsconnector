@@ -9,7 +9,7 @@
 				<div class="form-group">
 					<div class="col-md-3">
 						<label class="control-label" for="did"><?php echo _("DID") ?></label>
-						<i class="fa fa-question-circle fpbx-help-icon" data-for="subject"></i>
+						<i class="fa fa-question-circle fpbx-help-icon" data-for="did"></i>
 					</div>
 					<div class="col-md-9">
 						<input type="text" class="form-control" id="did" name="did" value="<?php echo $did?>" <?php echo $did?'readonly':'' ?>>
@@ -20,7 +20,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			<span id="subject-help" class="help-block fpbx-help-block"><?php echo _("Enter the DID")?></span>
+			<span id="did-help" class="help-block fpbx-help-block"><?php echo _("Enter the DID, including the country code. North America numbers must start with 1!")?></span>
 		</div>
 	</div>
 </div>
@@ -56,7 +56,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			<span id="body-help" class="help-block fpbx-help-block"><?php echo _("Select the user associated with the DID")?></span>
+			<span id="uid-help" class="help-block fpbx-help-block"><?php echo _("Select the user associated with the DID")?></span>
 		</div>
 	</div>
 </div>
@@ -83,7 +83,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			<span id="body-help" class="help-block fpbx-help-block"><?php echo _("Select the SMS provider")?></span>
+			<span id="name-help" class="help-block fpbx-help-block"><?php echo _("Select the SMS provider")?></span>
 		</div>
 	</div>
 </div>

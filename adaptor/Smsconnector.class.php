@@ -34,7 +34,7 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
         $media_urls = array();
         $ampWebAddress = $this->FreePBX->Config->get_conf_setting('AMPWEBADDRESS');
         if (empty($ampWebAddress)) { // we're going to make an educated guess and make an HTTP URL from the external IP
-            $ampWebAddress = 'http://' . $this->FreePBX->Sipsettings->getConfig('externip');
+            $ampWebAddress = $this->FreePBX->Sipsettings->getConfig('externip');
          }
         $sql = 'SELECT id, name FROM sms_media WHERE mid = :mid';
         $stmt = $this->db->prepare($sql);
@@ -42,7 +42,7 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
 		$stmt->execute();
         $media = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         foreach ($media as $media_item) {
-            $media_urls[] = $ampWebAddress . '/smsconn/media.php?id=' . $media_item['id'] . '&name=' . $media_item['name'];
+            $media_urls[] = 'https://' . $ampWebAddress . '/smsconn/media.php?id=' . $media_item['id'] . '&name=' . $media_item['name'];
         }
         // look up provider info
         $provider = $this->lookUpProvider($from);
