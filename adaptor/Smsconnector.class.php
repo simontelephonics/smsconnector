@@ -33,7 +33,7 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
         // generate media urls
         $media_urls = array();
         $ampWebAddress = $this->FreePBX->Config->get_conf_setting('AMPWEBADDRESS');
-        if (empty($ampWebAddress)) { // we're going to make an educated guess and make an HTTP URL from the external IP
+        if (empty($ampWebAddress)) { // we're going to make an educated guess and make an HTTPS URL from the external IP
             $ampWebAddress = $this->FreePBX->Sipsettings->getConfig('externip');
          }
         $sql = 'SELECT id, name FROM sms_media WHERE mid = :mid';
@@ -44,25 +44,43 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
         foreach ($media as $media_item) {
             $media_urls[] = 'https://' . $ampWebAddress . '/smsconn/media.php?id=' . $media_item['id'] . '&name=' . $media_item['name'];
         }
-        // look up provider info
+        // look up provider info containing name and api credentials
         $provider = $this->lookUpProvider($from);
 
         // send via connector
         switch ($provider['name']) {
 
             case 'telnyx':
-                require_once(__DIR__.'/include/telnyx-php/init.php');
-                \Telnyx\Telnyx::setApiKey($provider['api_key']);
-                try {
-                    $telnyxResponse = \Telnyx\Message::Create(['from' => '+'.$from, 'to' => '+'.$to, 'text' => $message,
-                        'media_urls' => $media_urls]);
-                    $this->setDelivered($retval['id']);
-                } catch (\Exception $e) {
-                    throw new \Exception('Unable to send media: ' .$e->getMessage());
+                $req = array(
+                    'from' => '+'.$from, 
+                    'to' => '+'.$to, 
+                    'media_urls' => $media_urls
+                );
+                if ($message) {
+                    $req['text'] = $message;
                 }
+                $this->sendTelnyx($provider, $req, $retval['id']);
                 break;
 
             case 'flowroute':
+                $attr = array(
+                    "to" => '+'.$to,
+                    "from" => '+'.$from,
+                    "is_mms" => "true",
+                    "media_urls" => $media_urls
+                );
+                if ($message) {
+                    $attr['body'] = $message;
+                }
+                $req = json_encode(
+                    array(
+                        "data" => array(
+                            "type" => "message",
+                            "attributes" => $attr
+                        )
+                    )
+                );
+                $this->sendFlowroute($provider, $req, $retval['id']);
                 break;
         }
         
@@ -79,28 +97,65 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
             throw new \Exception('Unable to store message: '.$e->getMessage());
         }
     
-        // look up provider info
+        // look up provider info containing name and api credentials
         $provider = $this->lookUpProvider($from);
 
         // send via connector
         switch ($provider['name']) {
 
             case 'telnyx':
-                require_once(__DIR__.'/include/telnyx-php/init.php');
-                \Telnyx\Telnyx::setApiKey($provider['api_key']);
-                try {
-                    $telnyxResponse = \Telnyx\Message::Create(['from' => '+'.$from, 'to' => '+'.$to, 'text' => $message]);
-                    $this->setDelivered($retval['id']);
-                } catch (\Exception $e) {
-                    throw new \Exception('Unable to send message: ' .$e->getMessage());
-                }
+                $req = array(
+                    'from' => '+'.$from, 
+                    'to' => '+'.$to, 
+                    'text' => $message
+                );
+                $this->sendTelnyx($provider, $req, $retval['id']);
                 break;
 
             case 'flowroute':
+                $req = json_encode(
+                    array(
+                        "data" => array(
+                            "type" => "message",
+                            "attributes" => array(
+                                "to" => '+'.$to,
+                                "from" => '+'.$from,
+                                "body" => $message
+                            )
+                        )
+                    )
+                );
+                $this->sendFlowroute($provider, $req, $retval['id']);
                 break;
         }
 
         return $retval;
+    }
+
+    private function sendTelnyx($provider, $payload, $mid) {
+        require_once(__DIR__.'/include/telnyx-php/init.php');
+        \Telnyx\Telnyx::setApiKey($provider['api_key']);
+        try {
+            $telnyxResponse = \Telnyx\Message::Create($payload);
+            freepbx_log(FPBX_LOG_INFO, $telnyxResponse, true);
+            $this->setDelivered($mid);
+        } catch (\Exception $e) {
+            throw new \Exception('Unable to send message: ' .$e->getMessage());
+        }
+    }
+
+    private function sendFlowroute($provider, $payload, $mid) {
+        $options = array("auth" => array($provider['api_key'], $provider['api_secret']));
+        $headers = array("Content-Type" => "application/vnd.api+json");
+        $url = 'https://api.flowroute.com/v2.2/messages';
+        $session = \FreePBX::Curl()->requests($url);
+        try {
+            $flowrouteResponse = $session->post('', $headers, $payload, $options);
+            freepbx_log(FPBX_LOG_INFO, $flowrouteResponse->body, true);
+            $this->setDelivered($mid);
+        } catch (\Exception $e) {
+            throw new \Exception('Unable to send message: ' .$e->getMessage());
+        }
     }
 
     public function getMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null) {

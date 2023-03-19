@@ -37,7 +37,7 @@
 					</div>
 					<div class="col-md-9">
 						<?php  ?>
-						<select class="form-control" id="uid" name="uid">
+						<select class="form-control" id="uid" name="uid" required>
 							<?php if ($id) {?><option value="<?php echo $uid; ?>" selected><?php echo "$displayname ($username)"; ?></option><?php }?>
 							<?php 
 								$users = \FreePBX::Userman()->getAllUsers();

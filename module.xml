@@ -2,7 +2,7 @@
 	<rawname>smsconnector</rawname>
 	<repo>unsupported</repo>
 	<name>SMS Connector</name>
-	<version>16.0.0alpha</version>
+	<version>16.0.0beta</version>
 	<category>Connectivity</category>
 	<Publisher>Simon Telephonics LLC</Publisher>
 	<info>http://wiki.freepbx.org/</info>
@@ -42,6 +42,9 @@
 			<field name="id" type="integer" primaryKey="true" autoincrement="true"/>
 			<field name="didid" type="integer" notnull="true"/>
 			<field name="providerid" type="integer" notnull="true"/>
+			<key name="didid" type="unique">
+				<column name="didid"/>
+			</key>
 		</table>
 	</database>
 	<changelog>

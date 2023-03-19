@@ -76,20 +76,19 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$name = $this->getReq('name');
 		$providers = $this->getReq('providers');
 
-		if ('add' == $action) {
-			return $this->addNumber($uid, $did, $name);
-		}
-
-		if ('delete' == $action) {
-			return $this->deleteNumber($id);
-		}
-
-		if ('edit' == $action) {
-			return $this->updateNumber($id, $uid, $did, $name);
-		}
-
-		if ('setproviders' == $action) {
-			return $this->updateProviders($providers);
+		switch ($action) {
+			case 'add':
+				return $this->addNumber($uid, $did, $name);
+				break;
+			case 'delete':
+				return $this->deleteNumber($id);
+				break;
+			case 'edit':
+				return $this->updateNumber($uid, $did, $name);
+				break;
+			case 'setproviders':
+				return $this->updateProviders($providers);
+				break;
 		}
 	}
 
@@ -199,7 +198,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	}
 
 	/**
-	 * getList gets a list of number and their associations
+	 * getList gets a list of numbers and their associations
 	 * @return array 
 	 */
 	public function getList()
@@ -221,19 +220,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function addNumber($uid, $did, $name)
 	{
-		$sql = 'INSERT INTO sms_dids (did) VALUES (:did)';
-		$stmt = $this->Database->prepare($sql);
-		$stmt->bindParam(':did', $did, \PDO::PARAM_STR);
-		$stmt->execute();
-		$didid = $this->Database->lastInsertId();
-
-		$sql = 'INSERT INTO sms_routing (did, uid, accepter, adaptor, didid) VALUES ' . 
-			'(:did, :uid, "UCP", "Smsconnector", :didid)';
-		$stmt = $this->Database->prepare($sql);
-		$stmt->bindParam(':did', $did, \PDO::PARAM_STR);
-		$stmt->bindParam(':uid', $uid, \PDO::PARAM_INT);
-		$stmt->bindParam(':didid', $didid, \PDO::PARAM_INT);
-		$stmt->execute();
+		$this->FreePBX->Sms->addDIDRouting($did, array($uid), 'Smsconnector');
 
 		$sql = 'SELECT id FROM smsconnector_providers WHERE name = :name';
 		$stmt = $this->Database->prepare($sql);
@@ -242,7 +229,13 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$row = $stmt->fetch();
 		$providerid = $row['id'];
 
-		$sql = 'INSERT INTO smsconnector_relations (didid, providerid) VALUES (:didid, :providerid)';
+		$sql = "SELECT id FROM sms_dids WHERE did = :did";
+		$sth = $this->Database->prepare($sql);
+		$sth->execute(array(':did' => $did));
+		$didid = $sth->fetchColumn();
+
+		$sql = 'INSERT INTO smsconnector_relations (didid, providerid) VALUES (:didid, :providerid) ' .
+				'ON DUPLICATE KEY UPDATE providerid = :providerid';
 		$stmt = $this->Database->prepare($sql);
 		$stmt->bindParam(':didid', $didid, \PDO::PARAM_INT);
 		$stmt->bindParam(':providerid', $providerid, \PDO::PARAM_INT);
@@ -253,15 +246,13 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	}
 	/**
 	 * updateNumber Updates the given ID
-	 * @param  int $id DID ID
 	 * @param  int $uid userman user ID
 	 * @param  string $did DID
 	 * @param  string $name provider name
 	 * @return bool          Returns true on success or false on failure
 	 */
-	public function updateNumber($id, $uid, $did, $name)
+	public function updateNumber($uid, $did, $name)
 	{
-		$this->deleteNumber($id);
 		$this->addNumber($uid, $did, $name);
 		return $this;
 	}
@@ -278,11 +269,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$stmt->execute();
 
 		$sql = 'DELETE FROM sms_routing WHERE didid = :id';
-		$stmt = $this->Database->prepare($sql);
-		$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-		$stmt->execute();
-
-		$sql = 'DELETE FROM sms_dids WHERE id = :id';
 		$stmt = $this->Database->prepare($sql);
 		$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
 		$stmt->execute();
