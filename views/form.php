@@ -12,7 +12,7 @@
 						<i class="fa fa-question-circle fpbx-help-icon" data-for="did"></i>
 					</div>
 					<div class="col-md-9">
-						<input type="text" class="form-control" id="did" name="did" value="<?php echo $did?>" <?php echo $did?'readonly':'' ?>>
+						<input type="text" class="form-control" id="did" name="did" value="<?php echo $did?>" <?php echo $did?'readonly':'' ?> required>
 					</div>
 				</div>
 			</div>
