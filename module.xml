@@ -6,8 +6,8 @@
 	<category>Connectivity</category>
 	<Publisher>Simon Telephonics LLC</Publisher>
 	<info>http://wiki.freepbx.org/</info>
-	<license>GPLv2</license>
-	<licenselink>http://www.gnu.org/licenses/gpl-2.0.txt</licenselink>
+	<license>GPLv3+</license>
+	<licenselink>https://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
 	<menuitems>
 		<smsconnector>SMS Connector</smsconnector>
 	</menuitems>
