@@ -5,16 +5,22 @@ use FreePBX_Helpers;
 use PDO;
 class Smsconnector extends FreePBX_Helpers implements BMO
 {
-	public $FreePBX = null;
+	public $FreePBX 	= null;
+	protected $Database = null;
+	protected $Userman 	= null;
+	protected $tables 	= array(
+		'providers' => 'smsconnector_providers',
+		'relations' => 'smsconnector_relations',
+	);
 
 	public function __construct($freepbx = null)
 	{
 		if ($freepbx == null) {
-			throw new Exception("Not given a FreePBX Object");
+			throw new \Exception("Not given a FreePBX Object");
 		}
-		$this->FreePBX = $freepbx;
+		$this->FreePBX 	= $freepbx;
 		$this->Database = $freepbx->Database;
-		$this->Userman = $freepbx->Userman;
+		$this->Userman 	= $freepbx->Userman;
 	}
 
 	/**
@@ -86,6 +92,19 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			case 'setproviders':
 				return $this->updateProviders($providers);
 				break;
+		}
+	}
+
+	public function getRightNav($request) {
+
+		switch($request['view'])
+		{
+			case 'settings':
+			case 'form':
+				return load_view(dirname(__FILE__).'/views/rnav.php', array());
+				break;
+			default:
+				//No show Nav
 		}
 	}
 
@@ -226,9 +245,14 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function addNumber($uid, $did, $name)
 	{
+		if ( ($name == "") || ($did == "") || ($uid == ""))
+		{
+			return false;
+		}
+
 		$this->FreePBX->Sms->addDIDRouting($did, array($uid), 'Smsconnector');
 
-		$sql = 'SELECT id FROM smsconnector_providers WHERE name = :name';
+		$sql  = sprintf('SELECT id FROM %s WHERE name = :name', $this->tables['providers']);
 		$stmt = $this->Database->prepare($sql);
 		$stmt->bindParam(':name', $name, \PDO::PARAM_STR);
 		$stmt->execute();
@@ -240,15 +264,13 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$sth->execute(array(':did' => $did));
 		$didid = $sth->fetchColumn();
 
-		$sql = 'INSERT INTO smsconnector_relations (didid, providerid) VALUES (:didid, :providerid) ' .
-				'ON DUPLICATE KEY UPDATE providerid = :providerid';
+		$sql = sprintf('INSERT INTO %s (didid, providerid) VALUES (:didid, :providerid) ON DUPLICATE KEY UPDATE providerid = :providerid', $this->tables['relations']);
 		$stmt = $this->Database->prepare($sql);
 		$stmt->bindParam(':didid', $didid, \PDO::PARAM_INT);
 		$stmt->bindParam(':providerid', $providerid, \PDO::PARAM_INT);
 		$stmt->execute();
 
-		return $this;
-
+		return true;
 	}
 	/**
 	 * updateNumber Updates the given ID
@@ -259,8 +281,13 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function updateNumber($uid, $did, $name)
 	{
+		if ( ($name == "") || ($did == "") || ($uid == ""))
+		{
+			return false;
+		}
+
 		$this->addNumber($uid, $did, $name);
-		return $this;
+		return true;
 	}
 	/**
 	 * deleteNumber Deletes the given number by didid
@@ -269,6 +296,8 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function deleteNumber($id)
 	{
+		if ($id == "") { return false; }
+
 		$sql = 'DELETE FROM smsconnector_relations WHERE didid = :id';
 		$stmt = $this->Database->prepare($sql);
 		$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
@@ -279,7 +308,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
 		$stmt->execute();
 
-		return $this;
+		return true;
 	}
 
 	/**
@@ -287,16 +316,27 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 * @param array hash of provider settings from form
 	 * @return bool success or failure
 	 */
-	public function updateProviders($providers) {
-		foreach ($providers as $provider => $creds) {
-			$sql = 'UPDATE smsconnector_providers SET api_key = :key, api_secret = :secret WHERE name = :name';
-			$stmt = $this->Database->prepare($sql);
-			$stmt->bindParam(':key', $creds['api_key']);
-			$stmt->bindParam(':secret', $creds['api_secret']);
-			$stmt->bindParam(':name', $provider);
-			$stmt->execute();
+	public function updateProviders($providers)
+	{
+		$sql 	= sprintf("INSERT IGNORE INTO %s (name) VALUES (:provider)", $this->tables['providers']);
+		$insert = $this->Database->prepare($sql);
+
+		$sql = sprintf("UPDATE %s SET api_key = :key, api_secret = :secret WHERE name = :provider", $this->tables['providers']);
+		$stmt = $this->Database->prepare($sql);
+		foreach ($providers as $provider => $creds)
+		{
+			// create the provider in case it doesn't exist.
+			$insert->execute(array(':provider' => $provider));
+
+			// update date.
+			$row = array(
+				':key' 		=> $creds['api_key'],
+				':secret' 	=> $creds['api_secret'],
+				':provider'	=> $provider,
+			);
+			$stmt->execute($row);
 		}
-		return $this;
+		return true;
 	}
 
 	/**
@@ -313,27 +353,45 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 *
 	 * @return string html
 	 */
-	public function showPage()
+	public function showPage($page, $params = array())
 	{
-		$subhead = _('Number List');
-		$content = load_view(__DIR__ . '/views/grid.php');
+		$request = $_REQUEST;
+		$data = array(
+			"smsconnector" => $this,
+			'request' 	   => $request,
+			'page' 	  	   => $page,
+		);
+		$data = array_merge($data, $params);
 
-		if ('form' == $_REQUEST['view']) {
-			$subhead = _('Add Number');
-			$content = load_view(__DIR__ . '/views/form.php');
-			if (isset($_REQUEST['id']) && !empty($_REQUEST['id'])) {
-				$subhead = _('Edit Number');
-				$content = load_view(__DIR__ . '/views/form.php', $this->getOne($_REQUEST['id']));
-			}
+		switch ($page)
+		{
+			case 'main':
+				$data_return = load_view(__DIR__ . '/views/page.main.php', $data);
+				break;
+
+			case 'grid':
+				$data_return = load_view(__DIR__ . '/views/grid.php', $data);
+				break;
+
+			case 'form':
+				$data['userman'] =& $this->Userman;
+				if (!empty($request['id']))
+				{
+					$data['edit_data'] = $this->getOne($request['id']);
+				}
+				$data_return = load_view(__DIR__ . '/views/form.php',  $data);
+				break;
+
+			case 'settings':
+				$data['settings'] = $this->getProviderSettings();
+				$data_return = load_view(__DIR__ . '/views/settings.php', $data);
+				
+				break;
+
+			default:
+				$data_return = sprintf(_("Page Not Found (%s)!!!!"), $page);
 		}
-		elseif ('settings' == $_REQUEST['view']) {
-			$subhead = _('Provider Settings');
-			$content = load_view(__DIR__ . '/views/settings.php', $this->getProviderSettings());
-		}
-		echo load_view(__DIR__ . '/views/default.php', array(
-			'subhead' => $subhead,
-			'content' => $content
-		));
+		return $data_return;
 	}
 
 	public function usermanShowPage() {

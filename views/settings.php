@@ -1,3 +1,11 @@
+<?php
+	if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
+	dbug($settings);
+	$providers = $settings['providers'];
+?>
+
+
+
 <form action="" method="post" class="fpbx-submit" id="smsconnectorprovidersform" name="smsconnectorprovidersform">
 <input type="hidden" name='action' value="setproviders">
 <!--Telnyx-->
