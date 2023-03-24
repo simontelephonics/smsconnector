@@ -3,7 +3,7 @@
 <!--Telnyx-->
 <div class="row">
 	<div class="col-md-12">
-		<h3>Telnyx</h3>
+		<h3><?php echo _('Telnyx'); ?></h3>
 	</div>
 </div>
 <div class="element-container">
@@ -32,7 +32,7 @@
 <!--Flowroute-->
 <div class="row">
 	<div class="col-md-12">
-		<h3>Flowroute</h3>
+		<h3><?php echo _('Flowroute'); ?></h3>
 	</div>
 </div>
 <div class="element-container">
@@ -81,7 +81,7 @@
 <!--Twilio-->
 <div class="row">
 	<div class="col-md-12">
-		<h3>Twilio</h3>
+		<h3><?php echo _('Twilio'); ?></h3>
 	</div>
 </div>
 <div class="element-container">
@@ -129,7 +129,7 @@
 <!--END Flowroute -->
 </form>
 
-<h3>Webhook settings</h3>
-<p>Set your public hostname in Advanced Settings -> FreePBX Web Address. (AMPWEBADDRESS)</p>
-<p>The webhook for inbound SMS will be in the form: <code>https://AMPWEBADDRESS/smsconn/provider.php</code> where <i>provider</i> is either <code>telnyx</code> or <code>flowroute</code>.</p>
-<p>Note that the server must have a valid TLS certificate generated in Certificate Manager and set for the web server to use.</p>
+<h3><?php echo _('Webhook settings'); ?></h3>
+<p><?php echo _('Set your public hostname in Advanced Settings -> FreePBX Web Address. (AMPWEBADDRESS)'); ?></p>
+<p><?php echo _('The webhook for inbound SMS will be in the form: <code>https://AMPWEBADDRESS/smsconn/provider.php</code> where <i>provider</i> is either <code>telnyx</code> or <code>flowroute</code>.')?></p>
+<p><?php echo _('Note that the server must have a valid TLS certificate generated in Certificate Manager and set for the web server to use.'); ?></p>

@@ -344,9 +344,9 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				case 'showuser':
 					return array(
 						array(
-							'title' => 'SMS Connector',
+							'title' => _('SMS Connector'),
 							'rawname' => 'smsconnector',
-							'content' => '<p>Not yet implemented. <a href="/admin/config.php?display=smsconnector">Go to SMS Connector.</a>'
+							'content' => sprintf('<p>%s<a href="/admin/config.php?display=smsconnector">%s</a></p>', _('Not yet implemented.'), _('Go to SMS Connector.')),
 						)
 					);
 					break;
