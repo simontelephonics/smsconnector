@@ -72,7 +72,7 @@
 						<i class="fa fa-question-circle fpbx-help-icon" data-for="name"></i>
 					</div>
 					<div class="col-md-9">
-						<select class="form-control" id="name" name="name">
+						<select class="form-control" id="name" name="name" required>
 							<?php 
 								$providers = \FreePBX::Smsconnector()->getAvailableProviders();
 								foreach ($providers as $provider) {
