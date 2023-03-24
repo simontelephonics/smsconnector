@@ -16,7 +16,7 @@
 						<i class="fa fa-question-circle fpbx-help-icon" data-for="tapikey"></i>
 					</div>
 					<div class="col-md-9">
-						<input type="text" class="form-control" id="tapikey" name="providers[telnyx][0][api_key]" value="<?php if (isset($providers['telnyx'])) echo $providers['telnyx'][0]['api_key']; ?>">
+						<input type="text" class="form-control" id="tapikey" name="providers[telnyx][api_key]" value="<?php if (isset($providers['telnyx'])) echo $providers['telnyx'][0]['api_key']; ?>">
 					</div>
 				</div>
 			</div>
@@ -45,7 +45,7 @@
 						<i class="fa fa-question-circle fpbx-help-icon" data-for="fapikey"></i>
 					</div>
 					<div class="col-md-9">
-						<input type="text" class="form-control" id="fapikey" name="providers[flowroute][0][api_key]" value="<?php if (isset($providers['flowroute'])) echo $providers['flowroute'][0]['api_key']; ?>">
+						<input type="text" class="form-control" id="fapikey" name="providers[flowroute][api_key]" value="<?php if (isset($providers['flowroute'])) echo $providers['flowroute'][0]['api_key']; ?>">
 					</div>
 				</div>
 			</div>
@@ -65,7 +65,7 @@
 						<i class="fa fa-question-circle fpbx-help-icon" data-for="fapisecret"></i>
 					</div>
 					<div class="col-md-9">
-						<input type="text" class="form-control" id="fapisecret" name="providers[flowroute][0][api_secret]" value="<?php if (isset($providers['flowroute'])) echo $providers['flowroute'][0]['api_secret']; ?>">
+						<input type="text" class="form-control" id="fapisecret" name="providers[flowroute][api_secret]" value="<?php if (isset($providers['flowroute'])) echo $providers['flowroute'][0]['api_secret']; ?>">
 					</div>
 				</div>
 			</div>
@@ -74,6 +74,55 @@
 	<div class="row">
 		<div class="col-md-12">
 			<span id="fapisecret-help" class="help-block fpbx-help-block"><?php echo _("Enter the Flowroute API secret")?></span>
+		</div>
+	</div>
+</div>
+<!--END Flowroute -->
+<!--Twilio-->
+<div class="row">
+	<div class="col-md-12">
+		<h3>Twilio</h3>
+	</div>
+</div>
+<div class="element-container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="form-group">
+					<div class="col-md-3">
+						<label class="control-label" for="twapikey"><?php echo _("Account SID") ?></label>
+						<i class="fa fa-question-circle fpbx-help-icon" data-for="twapikey"></i>
+					</div>
+					<div class="col-md-9">
+						<input type="text" class="form-control" id="twapikey" name="providers[twilio][api_key]" value="<?php if (isset($providers['twilio'])) echo $providers['twilio'][0]['api_key']; ?>">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<span id="twapikey-help" class="help-block fpbx-help-block"><?php echo _("Enter the Twilio account SID")?></span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="form-group">
+					<div class="col-md-3">
+						<label class="control-label" for="twapisecret"><?php echo _("Auth Token") ?></label>
+						<i class="fa fa-question-circle fpbx-help-icon" data-for="twapisecret"></i>
+					</div>
+					<div class="col-md-9">
+						<input type="text" class="form-control" id="twapisecret" name="providers[twilio][api_secret]" value="<?php if (isset($providers['twilio'])) echo $providers['twilio'][0]['api_secret']; ?>">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<span id="twapisecret-help" class="help-block fpbx-help-block"><?php echo _("Enter the Twilio Auth Token")?></span>
 		</div>
 	</div>
 </div>

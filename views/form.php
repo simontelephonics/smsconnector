@@ -73,8 +73,12 @@
 					</div>
 					<div class="col-md-9">
 						<select class="form-control" id="name" name="name">
-							<option value="telnyx" <?php echo ($name == 'telnyx')?'selected':'' ?>>Telnyx</option>
-							<option value="flowroute" <?php echo ($name == 'flowroute')?'selected':'' ?>>Flowroute</option>
+							<?php 
+								$providers = \FreePBX::Smsconnector()->getAvailableProviders();
+								foreach ($providers as $provider) {
+									echo '<option value="' . $provider . '" ' . (($name == $provider)?'selected':'') . ">$provider</option>"; 
+								}
+							?>
 						</select>
 					</div>
 				</div>

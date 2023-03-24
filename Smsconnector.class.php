@@ -38,12 +38,9 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function install()
 	{
-		$sql = 'SELECT * FROM smsconnector_providers';
-		$data = $this->Database->query($sql)->fetch();
-		if (! $data) { // set up providers
-			$sql = "INSERT INTO smsconnector_providers (name) VALUES ('telnyx'),('flowroute')";
-			$this->Database->query($sql);
-		}
+		// set up providers
+		$sql = "INSERT IGNORE INTO smsconnector_providers (name) VALUES ('telnyx'),('flowroute'),('twilio')";
+		$this->Database->query($sql);
 
 		if (! file_exists($this->FreePBX->Config->get("AMPWEBROOT") . '/smsconn')) {
 			symlink($this->FreePBX->Config->get("AMPWEBROOT") . '/admin/modules/smsconnector/public', 
@@ -198,6 +195,15 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	}
 
 	/**
+	 * getAvailableProviders
+	 * @return array list of providers
+	 */
+	public function getAvailableProviders() {
+		$sql = "select name from smsconnector_providers where api_key <> ''";
+		return $this->Database->query($sql)->fetchAll(\PDO::FETCH_COLUMN, 0);
+	}
+
+	/**
 	 * getList gets a list of numbers and their associations
 	 * @return array 
 	 */
@@ -278,22 +284,18 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 	/**
 	 * updateProviders
-	 * @param str $tapikey Telnyx api key
-	 * @param str $fapikey FR api key
-	 * @param str $fapisecret FR api secret
+	 * @param array hash of provider settings from form
 	 * @return bool success or failure
 	 */
 	public function updateProviders($providers) {
-		$sql = 'UPDATE smsconnector_providers SET api_key = :key WHERE name = "telnyx"';
-		$stmt = $this->Database->prepare($sql);
-		$stmt->bindParam(':key', $providers['telnyx'][0]['api_key'], \PDO::PARAM_STR);
-		$stmt->execute();
-
-		$sql = 'UPDATE smsconnector_providers SET api_key = :key, api_secret = :secret WHERE name = "flowroute"';
-		$stmt = $this->Database->prepare($sql);
-		$stmt->bindParam(':key', $providers['flowroute'][0]['api_key'], \PDO::PARAM_STR);
-		$stmt->bindParam(':secret', $providers['flowroute'][0]['api_secret'], \PDO::PARAM_STR);
-		$stmt->execute();
+		foreach ($providers as $provider => $creds) {
+			$sql = 'UPDATE smsconnector_providers SET api_key = :key, api_secret = :secret WHERE name = :name';
+			$stmt = $this->Database->prepare($sql);
+			$stmt->bindParam(':key', $creds['api_key']);
+			$stmt->bindParam(':secret', $creds['api_secret']);
+			$stmt->bindParam(':name', $provider);
+			$stmt->execute();
+		}
 		return $this;
 	}
 
