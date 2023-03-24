@@ -87,7 +87,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			<span id="name-help" class="help-block fpbx-help-block"><?php echo _("Select the SMS provider")?></span>
+			<span id="name-help" class="help-block fpbx-help-block"><?php echo _("Select the SMS provider. Only providers configured with credentials in the Provider Settings screen will be listed.")?></span>
 		</div>
 	</div>
 </div>
