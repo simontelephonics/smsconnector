@@ -4,7 +4,7 @@
 	switch($request['view'])
 	{
 		case 'form':
-			$subhead = (!empty($edit_data)) ? _('Edit Number') : _('Add Number');	
+			$subhead = (isset($request['id'])) ? _('Edit Number') : _('Add Number');	
 			$content = $smsconnector->showPage('form');
 			break;
 
