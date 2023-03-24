@@ -13,11 +13,9 @@
 	</menuitems>
 	<depends>
 		<version>16</version>
+		<module>sms</module>
 	</depends>
 	<supported>16.0</supported>
-	<requirements>
-		<module>sms</module>
-	</requirements>
 	<description>Implements a generic SMS connector</description>
 	<hooks>  
 		<sms namespace="FreePBX\modules" class="Sms">
@@ -37,6 +35,9 @@
 			<field name="name" type="string" length="20" notnull="true"/>
 			<field name="api_key" type="string" length="100" notnull="false"/>
 			<field name="api_secret" type="string" length="100" notnull="false"/>
+			<key name="name" type="unique">
+				<column name="name"/>
+			</key>
 		</table>
 		<table name="smsconnector_relations">
 			<field name="id" type="integer" primaryKey="true" autoincrement="true"/>
