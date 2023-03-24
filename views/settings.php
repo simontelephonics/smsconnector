@@ -131,5 +131,5 @@
 
 <h3>Webhook settings</h3>
 <p>Set your public hostname in Advanced Settings -> FreePBX Web Address. (AMPWEBADDRESS)</p>
-<p>The webhook for inbound SMS will be in the form: <code>https://AMPWEBADDRESS/smsconn/provider.php</code> where <i>provider</i> is either <code>telnyx</code> or <code>flowroute</code>.</p>
+<p>The webhook for inbound SMS will be in the form: <code>https://AMPWEBADDRESS/smsconn/provider.php</code> where <i>provider</i> is one of <code>telnyx</code>, <code>flowroute</code>, or <code>twilio</code>.</p>
 <p>Note that the server must have a valid TLS certificate generated in Certificate Manager and set for the web server to use.</p>
