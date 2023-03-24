@@ -45,12 +45,22 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	public function install()
 	{
 		// set up providers
+		outn(_("Creating Providers..."));
 		$sql = "INSERT IGNORE INTO smsconnector_providers (name) VALUES ('telnyx'),('flowroute'),('twilio')";
 		$this->Database->query($sql);
+		out(_("Done"));
 
-		if (! file_exists($this->FreePBX->Config->get("AMPWEBROOT") . '/smsconn')) {
-			symlink($this->FreePBX->Config->get("AMPWEBROOT") . '/admin/modules/smsconnector/public', 
-				$this->FreePBX->Config->get("AMPWEBROOT") . '/smsconn');
+		outn(_("Creating Link to Public Folder..."));
+		$link_public = sprintf("%s/smsconn", $this->FreePBX->Config->get("AMPWEBROOT"));
+		$link_public_module = sprintf("%s/admin/modules/smsconnector/public", $this->FreePBX->Config->get("AMPWEBROOT"));
+		if (! file_exists($link_public))
+		{
+			symlink($link_public_module, $link_public);
+			out(_("Done"));
+		}
+		else
+		{
+			out(_('Skip: The Path Already Exists!'));
 		}
 	}
 
@@ -61,6 +71,27 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function uninstall()
 	{
+		outn(_("Remove Folder Public..."));
+		$link_public = sprintf("%s/smsconn", $this->FreePBX->Config->get("AMPWEBROOT"));
+		if(file_exists($link_public))
+		{
+			if(is_link($link_public))
+			{
+				unlink($link_public);
+				if( ! file_exists($link_public))
+				{
+					out(_("Done"));
+				}
+				else
+				{
+					out(_("Error: The Path Still Exists!"));
+				}
+			}
+			else
+			{
+				out(_("Skip: The Path Is Not a Symbolic Link!"));
+			}
+		}
 	}
 
 	/**
