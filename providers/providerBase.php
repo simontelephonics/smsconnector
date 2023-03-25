@@ -37,12 +37,12 @@ class providerBase  {
         return $this->configInfo;
     }
 
-    public function sendMedia($provider, $id, $to, $from, $message=null)
+    public function sendMedia($id, $to, $from, $message=null)
     {
         return array();
     }
 
-    public function sendMessage($provider, $id, $to, $from, $message=null)
+    public function sendMessage($id, $to, $from, $message=null)
     {
         return array();
     }
@@ -84,5 +84,10 @@ class providerBase  {
             $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
             $stmt->execute();
         }
+    }
+
+    protected function getConfig($name)
+    {
+        return $this->FreePBX->Smsconnector->getProviderConfig($name);
     }
 }

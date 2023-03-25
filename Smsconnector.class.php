@@ -53,12 +53,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function install()
 	{
-		// set up providers
-		outn(_("Creating Providers..."));
-		$sql = sprintf("INSERT IGNORE INTO %s (name) VALUES ('telnyx'),('flowroute'),('twilio')", $this->tables['providers']);
-		$this->Database->query($sql);
-		out(_("Done"));
-
 		outn(_("Creating Link to Public Folder..."));
 		$link_public = sprintf("%s/smsconn", $this->FreePBX->Config->get("AMPWEBROOT"));
 		$link_public_module = sprintf("%s/admin/modules/smsconnector/public", $this->FreePBX->Config->get("AMPWEBROOT"));
@@ -121,14 +115,28 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 		switch ($action) {
 			case 'add':
-				return $this->addNumber($uid, $did, $name);
+				try 
+				{
+					$this->addNumber($uid, $did, $name);
+					header("Location: config.php?display=smsconnector");
+					exit();
+				}
+				catch (\Exception $e)
+				{
+					$_REQUEST['error_add'] = $e->getMessage();
+				}
 				break;
+
 			case 'delete':
 				return $this->deleteNumber($id);
 				break;
+
 			case 'edit':
-				return $this->updateNumber($uid, $did, $name);
+				$this->updateNumber($uid, $did, $name);
+				header("Location: config.php?display=smsconnector");
+				exit();
 				break;
+
 			case 'setproviders':
 				return $this->updateProviders($providers);
 				break;
@@ -225,10 +233,10 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function getOne($id)
 	{
-		$sql = sprintf('select rt.didid as id, p.name, u.username, u.id as uid, u.displayname, rt.did from %s as rt ' .
-		'inner join userman_users as u on rt.uid = u.id inner join %s as r ' . 
-		'on rt.didid = r.didid inner join %s as p on p.id = r.providerid WHERE ' . 
-		'rt.adaptor = "%s" AND rt.didid = :id', $this->tablesSms['routing'], $this->tables['relations'], $this->tables['provider'], self::adapterName);
+		$sql = sprintf('SELECT rt.didid as id, r.providerid as name, u.username, u.id as uid, u.displayname, rt.did from %s as rt ' .
+		'INNER JOIN userman_users as u ON rt.uid = u.id ' .
+		'INNER JOIN %s as r ON rt.didid = r.didid ' .
+		'WHERE rt.adaptor = "%s" AND rt.didid = :id', $this->tablesSms['routing'], $this->tables['relations'], self::adapterName);
 		$stmt = $this->Database->prepare($sql);
 		$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
 		$stmt->execute();
@@ -247,21 +255,18 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 * getProviderSettings 
 	 * @return array returns an associative array
 	 */
-	public function getProviderSettings() {
-		$sql = sprintf('select name, api_key, api_secret from %s', $this->tables['providers']);
-		$data = $this->Database->query($sql)->fetchAll(\PDO::FETCH_ASSOC | \PDO::FETCH_GROUP);
-		return array('providers' => $data);
+	public function getProviderSettings()
+	{
+		return array('providers' => $this->getAll('provider'));
 	}
 
 	/**
 	 * getAvailableProviders
 	 * @return array list of providers
 	 */
-	public function getAvailableProviders() {
-
+	public function getAvailableProviders()
+	{
 		return $this->getProvider("");
-		// $sql = sprintf("select name from %s where api_key <> ''", $this->tables['providers']);
-		// return $this->Database->query($sql)->fetchAll(\PDO::FETCH_COLUMN, 0);
 	}
 
 	/**
@@ -270,10 +275,10 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function getList()
 	{
-		$sql = sprintf('select rt.didid as id, p.name, u.username, rt.did from %s as rt ' .
-		'inner join userman_users as u on rt.uid = u.id inner join %s as r ' . 
-		'on rt.didid = r.didid inner join %s as p on p.id = r.providerid WHERE ' . 
-		'rt.adaptor = "%s"', $this->tablesSms['routing'], $this->tables['relations'], $this->tables['providers'], self::adapterName);
+		$sql = sprintf('SELECT rt.didid as id, r.providerid as name, u.username, rt.did from %s as rt ' .
+		'INNER JOIN userman_users as u on rt.uid = u.id ' .
+		'INNER JOIN %s as r ON rt.didid = r.didid ' .
+		'WHERE rt.adaptor = "%s"', $this->tablesSms['routing'], $this->tables['relations'], self::adapterName);
 		$data = $this->Database->query($sql)->fetchAll(\PDO::FETCH_NAMED);
 		return $data;
 	}
@@ -285,31 +290,36 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 * @param string $did DID
 	 * @param string $name name of the SMS provider
 	 */
-	public function addNumber($uid, $did, $name)
+	public function addNumber($uid, $did, $name, $checkExists = true)
 	{
 		if ( ($name == "") || ($did == "") || ($uid == ""))
 		{
-			return false;
+			throw new \Exception('Necessary data is missing!');
+		}
+
+		if ($checkExists == true)
+		{
+			$sql = 'SELECT COUNT(*) FROM smsconnector_relations as r INNER JOIN sms_dids AS d ON r.didid = d.id WHERE d.did = :did';
+			$stmt = $this->Database->prepare($sql);
+			$stmt->bindParam(':did', $did, \PDO::PARAM_STR);
+			$stmt->execute();
+			if ($stmt->fetchColumn() > 0)
+			{
+				throw new \Exception('The DID already exists!');
+			}
 		}
 
 		$this->FreePBX->Sms->addDIDRouting($did, array($uid), self::adapterName);
-
-		$sql  = sprintf('SELECT id FROM %s WHERE name = :name', $this->tables['providers']);
-		$stmt = $this->Database->prepare($sql);
-		$stmt->bindParam(':name', $name, \PDO::PARAM_STR);
-		$stmt->execute();
-		$row = $stmt->fetch();
-		$providerid = $row['id'];
 
 		$sql = "SELECT id FROM sms_dids WHERE did = :did";
 		$sth = $this->Database->prepare($sql);
 		$sth->execute(array(':did' => $did));
 		$didid = $sth->fetchColumn();
 
-		$sql = sprintf('INSERT INTO %s (didid, providerid) VALUES (:didid, :providerid) ON DUPLICATE KEY UPDATE providerid = :providerid', $this->tables['relations']);
+		$sql = sprintf('INSERT INTO %s (didid, providerid) VALUES (:didid, :provider) ON DUPLICATE KEY UPDATE providerid = :provider', $this->tables['relations']);
 		$stmt = $this->Database->prepare($sql);
 		$stmt->bindParam(':didid', $didid, \PDO::PARAM_INT);
-		$stmt->bindParam(':providerid', $providerid, \PDO::PARAM_INT);
+		$stmt->bindParam(':provider', $name, \PDO::PARAM_STR);
 		$stmt->execute();
 
 		return true;
@@ -328,7 +338,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			return false;
 		}
 
-		$this->addNumber($uid, $did, $name);
+		$this->addNumber($uid, $did, $name, false);
 		return true;
 	}
 	/**
@@ -360,23 +370,9 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function updateProviders($providers)
 	{
-		$sql 	= sprintf("INSERT IGNORE INTO %s (name) VALUES (:provider)", $this->tables['providers']);
-		$insert = $this->Database->prepare($sql);
-
-		$sql = sprintf("UPDATE %s SET api_key = :key, api_secret = :secret WHERE name = :provider", $this->tables['providers']);
-		$stmt = $this->Database->prepare($sql);
 		foreach ($providers as $provider => $creds)
 		{
-			// create the provider in case it doesn't exist.
-			$insert->execute(array(':provider' => $provider));
-
-			// update date.
-			$row = array(
-				':key' 		=> $creds['api_key'],
-				':secret' 	=> $creds['api_secret'],
-				':provider'	=> $provider,
-			);
-			$stmt->execute($row);
+			$this->setProviderConfig($provider, $creds);
 		}
 		return true;
 	}
@@ -425,7 +421,12 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				break;
 
 			case 'settings':
-				$data['settings'] = $this->getProviderSettings();
+				foreach ($this->listProviders() as $provider)
+				{
+					$data['settings'][$provider]['info'] = $this->getProvider($provider);
+					// unset($data['settings'][$provider]['info']['class']);
+					$data['settings'][$provider]['value'] = $this->getProviderConfig($provider);
+				}
 				$data_return = load_view(__DIR__ . '/views/settings.php', $data);
 				break;
 
@@ -464,8 +465,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 	public function usermanDelUser($id, $display, $data) {}
 
-
-
 	private function loadProvieders()
     {
 		include_once dirname(__FILE__) . "/providers/providerBase.php";
@@ -486,13 +485,15 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 					$this->providers[$this_provider_name]['name']    	= $this_provider_class->getName();
                     $this->providers[$this_provider_name]['nameraw'] 	= $this_provider_class->getNameRaw();
-					$this->providers[$this_provider_name]['configs'] 	= $this_provider_class->getConfig();
+					$this->providers[$this_provider_name]['configs'] 	= $this_provider_class->getConfigInfo();
                     $this->providers[$this_provider_name]['class_full'] = $this_provider_name_full;
 					$this->providers[$this_provider_name]['class_name'] = $this_provider_name;
 					$this->providers[$this_provider_name]['class']   	= $this_provider_class;
                 }
             }
         }
+
+		$this->getProviderConfigDefault('Twilio');
     }
 
 	public function listProviders()
@@ -516,4 +517,35 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		}
 		return $return_data;
 	}
+
+	public function getProviderConfigDefault($name)
+	{
+		$data_return = array();
+		$info = $this->getProvider($name);
+		foreach ($info['configs'] as $config => $options)
+		{
+			$data_return[$config] = isset($options['default']) ? $options['default'] : '';
+		}
+		return $data_return;
+	}
+
+	public function getProviderConfig($name)
+	{
+		$data_return = array();
+
+		$default = $this->getProviderConfigDefault($name);
+		$setting = $this->getConfig($name, 'provider');
+
+		foreach ($default as $option => $value)
+		{
+			$data_return[$option] = isset($setting[$option]) ? $setting[$option] : $value;
+		}
+		return $data_return;
+	}
+
+	public function setProviderConfig($name, $config)
+	{
+		$this->setConfig($name, $config, 'provider');
+	}
+
 }

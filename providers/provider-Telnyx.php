@@ -20,9 +20,9 @@ class Telnyx extends providerBase {
         );
     }
     
-    public function sendMedia($provider, $id, $to, $from, $message=null)
+    public function sendMedia($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMedia($provider, $id, $to, $from, $message);
+        $retval = parent::sendMedia($id, $to, $from, $message);
 
         $req = array(
             'from'       => '+'.$from,
@@ -33,26 +33,28 @@ class Telnyx extends providerBase {
         {
             $req['text'] = $message;
         }
-        $this->sendTelnyx($provider, $req, $id);
+        $this->sendTelnyx($req, $id);
         return $retval;
     }
 
-    public function sendMessage($provider, $id, $to, $from, $message=null)
+    public function sendMessage($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMessage($provider, $id, $to, $from, $message);
+        $retval = parent::sendMessage($id, $to, $from, $message);
         $req = array(
             'from'  => '+'.$from,
             'to'    => '+'.$to,
             'text'  => $message
         );
-        $this->sendTelnyx($provider, $req, $id);
+        $this->sendTelnyx($req, $id);
         return $retval;
     }
 
-    private function sendTelnyx($provider, $payload, $mid)
+    private function sendTelnyx($payload, $mid)
     {
+        $config = $this->getConfig($this->nameRaw);
+
         require_once(__DIR__.'/include/telnyx-php/init.php');
-        \Telnyx\Telnyx::setApiKey($provider['api_key']);
+        \Telnyx\Telnyx::setApiKey($config['api_key']);
         try {
             $telnyxResponse = \Telnyx\Message::Create($payload);
             freepbx_log(FPBX_LOG_INFO, $telnyxResponse, true);

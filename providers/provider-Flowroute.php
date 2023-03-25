@@ -26,9 +26,9 @@ class Flowroute extends providerBase {
         );
     }
     
-    public function sendMedia($provider, $id, $to, $from, $message=null)
+    public function sendMedia($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMedia($provider, $id, $to, $from, $message);
+        $retval = parent::sendMedia($id, $to, $from, $message);
 
         $attr = array(
             "to"         => '+'.$to,
@@ -48,13 +48,13 @@ class Flowroute extends providerBase {
                 )
             )
         );
-        $this->sendFlowroute($provider, $req, $id);
+        $this->sendFlowroute($req, $id);
         return $retval;
     }
 
-    public function sendMessage($provider, $id, $to, $from, $message=null)
+    public function sendMessage($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMessage($provider, $id, $to, $from, $message);
+        $retval = parent::sendMessage($id, $to, $from, $message);
 
         $req = json_encode(
             array(
@@ -68,16 +68,18 @@ class Flowroute extends providerBase {
                 )
             )
         );
-        $this->sendFlowroute($provider, $req, $id);
+        $this->sendFlowroute($req, $id);
         return $retval;
     }
 
-    private function sendFlowroute($provider, $payload, $mid)
+    private function sendFlowroute($payload, $mid)
     {
+        $config = $this->getConfig($this->nameRaw);
+
         $options = array(
             "auth" => array(
-                $provider['api_key'],
-                $provider['api_secret']
+                $config['api_key'],
+                $config['api_secret']
             )
         );
         $headers = array("Content-Type" => "application/vnd.api+json");

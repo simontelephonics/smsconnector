@@ -26,9 +26,9 @@ class Twilio extends providerBase {
         );
     }
     
-    public function sendMedia($provider, $id, $to, $from, $message=null)
+    public function sendMedia($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMedia($provider, $id, $to, $from, $message);
+        $retval = parent::sendMedia($id, $to, $from, $message);
 
         // this manual generation of the www-form-data request is because Twilio wants
         // MediaUrl specified multiple times in the request data, not as a MediaUrl[] array
@@ -45,31 +45,34 @@ class Twilio extends providerBase {
         {
             $req[] = 'Body=' . urlencode($message);
         }
-        $this->sendTwilio($provider, implode('&', $req), $id);
+        $this->sendTwilio(implode('&', $req), $id);
         return $retval;
     }
 
-    public function sendMessage($provider, $id, $to, $from, $message=null)
+    public function sendMessage($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMessage($provider, $id, $to, $from, $message);
+        $retval = parent::sendMessage($id, $to, $from, $message);
 
         $req = array(
             'From' => '+'.$from,
             'To'   => '+'.$to,
             'Body' => $message
         );
-        $this->sendTwilio($provider, $req, $id);
+        $this->sendTwilio($req, $id);
         return $retval;
     }
 
-    private function sendTwilio($provider, $payload, $mid) {
+    private function sendTwilio($payload, $mid)
+    {
+        $config = $this->getConfig($this->nameRaw);
+
         $options = array(
             "auth" => array(
-                $provider['api_key'],
-                $provider['api_secret']
+                $config['api_key'],
+                $config['api_secret']
             )
         );
-        $url = sprintf('https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json', $provider['api_key']);
+        $url = sprintf('https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json', $config['api_key']);
         $session = \FreePBX::Curl()->requests($url);
         try
         {

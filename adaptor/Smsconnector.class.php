@@ -32,12 +32,12 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
         
         // look up provider info containing name and api credentials
         $provider     = $this->lookUpProvider($from);
-        $providerInfo = $this->FreePBX->Smsconnector->getProvider($provider['name']);
+        $providerInfo = $this->FreePBX->Smsconnector->getProvider($provider);
         if (!empty($providerInfo))
         {
             if (! empty($providerInfo['class']))
             {
-                $providerInfo['class']->sendMedia($provider, $retval['id'], $to, $from, $message);
+                $providerInfo['class']->sendMedia($retval['id'], $to, $from, $message);
             }
         }  
         return $retval;
@@ -56,12 +56,12 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
         // look up provider info containing name and api credentials
         $provider = $this->lookUpProvider($from);
 
-        $providerInfo = $this->FreePBX->Smsconnector->getProvider($provider['name']);
+        $providerInfo = $this->FreePBX->Smsconnector->getProvider($provider);
         if (!empty($providerInfo))
         {
             if (! empty($providerInfo['class']))
             {
-                $providerInfo['class']->sendMessage($provider, $retval['id'], $to, $from, $message);
+                $providerInfo['class']->sendMessage($retval['id'], $to, $from, $message);
             }
         }
         return $retval;
@@ -83,18 +83,20 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
 	 */
 	private function lookUpProvider($did)
 	{
-		$sql = 'SELECT p.name, p.api_key, p.api_secret FROM smsconnector_providers AS p INNER JOIN ' .
-				'smsconnector_relations AS r ON p.id = r.providerid ' .
-				'INNER JOIN sms_dids AS d ON r.didid = d.id ' .
-				'WHERE d.did = :did';
+
+        $sql = 'SELECT providerid FROM smsconnector_relations as r ' .
+                'INNER JOIN sms_dids AS d ON r.didid = d.id ' .
+                'WHERE d.did = :did';
+
+		// $sql = 'SELECT p.name, p.api_key, p.api_secret FROM smsconnector_providers AS p ' .
+		// 		'INNER JOIN smsconnector_relations AS r ON p.id = r.providerid ' .
+		// 		'INNER JOIN sms_dids AS d ON r.didid = d.id ' .
+		// 		'WHERE d.did = :did';
 		$stmt = $this->db->prepare($sql);
 		$stmt->bindParam(':did', $did, \PDO::PARAM_STR);
 		$stmt->execute();
 		$row = $stmt->fetchObject();
-		return array( 
-            'name' => $row->name,
-            'api_key' => $row->api_key,
-            'api_secret' => $row->api_secret
-        );
+
+        return $row->providerid;
 	}
 }

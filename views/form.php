@@ -11,6 +11,15 @@
 	$users 		 	= $userman->getAllUsers();
 	$existingusers	= $smsconnector->getUsersWithDids();
 	$providers 		= $smsconnector->getAvailableProviders();
+
+	if (!empty($_REQUEST['error_add']))
+	{
+		?>
+		<div class="alert alert-danger" role="alert">
+			<i class="fa fa-exclamation fa-lg" aria-hidden="true"></i> <?php echo $_REQUEST['error_add']; ?>
+		</div>
+		<?php
+	}
 ?>
 
 <form action="" method="post" class="fpbx-submit" id="numberform" name="numberform" data-fpbx-delete="config.php?display=smsconnector&action=delete&id=<?php echo $id?>">
