@@ -7,6 +7,8 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 {
 	const adapterName = 'Smsconnector';
 
+	public $providers;
+
 	public $FreePBX 	= null;
 	protected $Database = null;
 	protected $Userman 	= null;
@@ -26,6 +28,8 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$this->FreePBX 	= $freepbx;
 		$this->Database = $freepbx->Database;
 		$this->Userman 	= $freepbx->Userman;
+
+		$this->loadProvieders();
 	}
 
 	/**
@@ -254,8 +258,10 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 * @return array list of providers
 	 */
 	public function getAvailableProviders() {
-		$sql = sprintf("select name from %s where api_key <> ''", $this->tables['providers']);
-		return $this->Database->query($sql)->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+		return $this->getProvider("");
+		// $sql = sprintf("select name from %s where api_key <> ''", $this->tables['providers']);
+		// return $this->Database->query($sql)->fetchAll(\PDO::FETCH_COLUMN, 0);
 	}
 
 	/**
@@ -458,4 +464,54 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 	public function usermanDelUser($id, $display, $data) {}
 
+
+
+	private function loadProvieders()
+    {
+		include_once dirname(__FILE__) . "/providers/providerBase.php";
+        $this->providers = array();
+        foreach (glob(dirname(__FILE__) . "/providers/provider-*.php") as $filename)
+        {
+            if (file_exists($filename))
+            {
+                include_once $filename;
+
+                preg_match('/provider-(.*)\.php/i', $filename, $matches);
+				$this_provider_name      = $matches[1];
+                $this_provider_name_full = sprintf("FreePBX\modules\Smsconnector\Provider\%s", $this_provider_name);
+
+                if(class_exists($this_provider_name_full))
+                {
+                	$this_provider_class = new $this_provider_name_full();					
+
+					$this->providers[$this_provider_name]['name']    = $this_provider_class->getName();
+                    $this->providers[$this_provider_name]['nameraw'] = $this_provider_class->getNameRaw();
+                    // $this->providers[$this_provider_name]['class']   = $this_provider_name_full;
+					$this->providers[$this_provider_name]['class']   = $this_provider_class;
+                }
+            }
+        }
+    }
+
+	public function listProviders()
+	{
+		return array_keys($this->providers);
+	}
+
+	public function getProvider($name)
+	{
+		$return_data = array();
+		if (empty($name))
+		{
+			$return_data = $this->providers;
+		}
+		else
+		{
+			if (array_key_exists($name, $this->providers))
+			{
+				$return_data = $this->providers[$name];
+			}
+		}
+		return $return_data;
+	}
 }

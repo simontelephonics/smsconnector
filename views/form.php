@@ -88,9 +88,9 @@
 					<div class="col-md-9">
 						<select class="form-control" id="name" name="name">
 							<?php 
-								foreach ($providers as $provider)
+								foreach ($providers as $provider => $info)
 								{
-									echo sprintf('<option value="%s" %s>%s</option>', $provider, $name == $provider ? 'selected' : '', $provider);
+									echo sprintf('<option value="%s" %s>%s</option>', $info['nameraw'], $name == $info['nameraw'] ? 'selected' : '', $info['name']);
 								}
 							?>
 						</select>
