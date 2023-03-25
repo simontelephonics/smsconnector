@@ -9,6 +9,21 @@ class Flowroute extends providerBase {
         parent::__construct();
         $this->name     = _('Flowroute');
         $this->nameRaw  = 'flowroute';
+
+        $this->configInfo = array(
+            'api_key' => array(
+                'type'    => 'string',
+                'label'   => _('API Key'),
+                'help'    => _("Enter the Flowroute API key"),
+                'default' => ''
+            ),
+            'api_secret' => array(
+                'type'    => 'string',
+                'label'   => _('API Secret'),
+                'help'    => _("Enter the Flowroute API secret"),
+                'default' => ''
+            )
+        );
     }
     
     public function sendMedia($provider, $id, $to, $from, $message=null)

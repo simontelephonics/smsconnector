@@ -484,10 +484,12 @@ class Smsconnector extends FreePBX_Helpers implements BMO
                 {
                 	$this_provider_class = new $this_provider_name_full();					
 
-					$this->providers[$this_provider_name]['name']    = $this_provider_class->getName();
-                    $this->providers[$this_provider_name]['nameraw'] = $this_provider_class->getNameRaw();
-                    // $this->providers[$this_provider_name]['class']   = $this_provider_name_full;
-					$this->providers[$this_provider_name]['class']   = $this_provider_class;
+					$this->providers[$this_provider_name]['name']    	= $this_provider_class->getName();
+                    $this->providers[$this_provider_name]['nameraw'] 	= $this_provider_class->getNameRaw();
+					$this->providers[$this_provider_name]['configs'] 	= $this_provider_class->getConfig();
+                    $this->providers[$this_provider_name]['class_full'] = $this_provider_name_full;
+					$this->providers[$this_provider_name]['class_name'] = $this_provider_name;
+					$this->providers[$this_provider_name]['class']   	= $this_provider_class;
                 }
             }
         }

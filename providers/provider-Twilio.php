@@ -9,6 +9,21 @@ class Twilio extends providerBase {
         parent::__construct();
         $this->name     = _('Twilio');
         $this->nameRaw  = 'twilio';
+
+        $this->configInfo = array(
+            'api_key' => array(
+                'type'    => 'string',
+                'label'   => _('Account SID'),
+                'help'    => _("Enter the Twilio account SID"),
+                'default' => ''
+            ),
+            'api_secret' => array(
+                'type'    => 'string',
+                'label'   => _('Auth Token'),
+                'help'    => _("Enter the Twilio Auth Token"),
+                'default' => ''
+            )
+        );
     }
     
     public function sendMedia($provider, $id, $to, $from, $message=null)

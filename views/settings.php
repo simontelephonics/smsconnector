@@ -1,6 +1,6 @@
 <?php
 	if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
-	dbug($settings);
+	
 	$providers = $settings['providers'];
 ?>
 

@@ -10,8 +10,9 @@ class providerBase  {
     // protected $Smsconnector;
     protected $Sipsettings;
 
-    protected $name     = '';
-    protected $nameRaw  = '';
+    protected $name       = '';
+    protected $nameRaw    = '';
+    protected $configInfo = array();
 
     public function __construct ()
     {
@@ -29,6 +30,11 @@ class providerBase  {
     public function getNameRaw ()
     {
         return $this->nameRaw;
+    }
+
+    public function getConfigInfo ()
+    {
+        return $this->configInfo;
     }
 
     public function sendMedia($provider, $id, $to, $from, $message=null)

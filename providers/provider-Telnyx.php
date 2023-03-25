@@ -9,6 +9,15 @@ class Telnyx extends providerBase {
         parent::__construct();
         $this->name     = _('Telnyx');
         $this->nameRaw  = 'telnyx';
+
+        $this->configInfo = array(
+            'api_key' => array(
+                'type'    => 'string',
+                'label'   => _('API Key'),
+                'help'    => _("Enter the Telnyx v2 API key"),
+                'default' => ''
+            ),
+        );
     }
     
     public function sendMedia($provider, $id, $to, $from, $message=null)
