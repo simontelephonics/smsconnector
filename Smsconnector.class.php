@@ -476,24 +476,23 @@ class Smsconnector extends FreePBX_Helpers implements BMO
                 include_once $filename;
 
                 preg_match('/provider-(.*)\.php/i', $filename, $matches);
-				$this_provider_name      = $matches[1];
-                $this_provider_name_full = sprintf("FreePBX\modules\Smsconnector\Provider\%s", $this_provider_name);
+				$this_provider_name       = $matches[1];
+				$this_provider_name_full  = sprintf("FreePBX\modules\Smsconnector\Provider\%s", $this_provider_name);
+				$this_provider_name_lower = strtolower($this_provider_name);
 
                 if(class_exists($this_provider_name_full))
                 {
-                	$this_provider_class = new $this_provider_name_full();					
+					$this_provider_class = new $this_provider_name_full();					
 
-					$this->providers[$this_provider_name]['name']    	= $this_provider_class->getName();
-                    $this->providers[$this_provider_name]['nameraw'] 	= $this_provider_class->getNameRaw();
-					$this->providers[$this_provider_name]['configs'] 	= $this_provider_class->getConfigInfo();
-                    $this->providers[$this_provider_name]['class_full'] = $this_provider_name_full;
-					$this->providers[$this_provider_name]['class_name'] = $this_provider_name;
-					$this->providers[$this_provider_name]['class']   	= $this_provider_class;
+					$this->providers[$this_provider_name_lower]['name']    	= $this_provider_class->getName();
+					$this->providers[$this_provider_name_lower]['nameraw'] 	= $this_provider_class->getNameRaw();
+					$this->providers[$this_provider_name_lower]['configs'] 	= $this_provider_class->getConfigInfo();
+					$this->providers[$this_provider_name_lower]['class_full'] = $this_provider_name_full;
+					$this->providers[$this_provider_name_lower]['class_name'] = $this_provider_name;
+					$this->providers[$this_provider_name_lower]['class']   	= $this_provider_class;
                 }
             }
         }
-
-		$this->getProviderConfigDefault('Twilio');
     }
 
 	public function listProviders()
