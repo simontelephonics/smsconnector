@@ -14,6 +14,7 @@
 	<depends>
 		<version>16</version>
 		<module>sms</module>
+		<module>userman</module>
 	</depends>
 	<supported>16.0</supported>
 	<description>Implements a generic SMS connector</description>
@@ -30,19 +31,10 @@
 
 	</hooks>
 	<database>
-		<table name="smsconnector_providers">
-			<field name="id" type="integer" primaryKey="true" autoincrement="true"/>
-			<field name="name" type="string" length="20" notnull="true"/>
-			<field name="api_key" type="string" length="100" notnull="false"/>
-			<field name="api_secret" type="string" length="100" notnull="false"/>
-			<key name="name" type="unique">
-				<column name="name"/>
-			</key>
-		</table>
 		<table name="smsconnector_relations">
 			<field name="id" type="integer" primaryKey="true" autoincrement="true"/>
 			<field name="didid" type="integer" notnull="true"/>
-			<field name="providerid" type="integer" notnull="true"/>
+			<field name="providerid" type="string" length="120" notnull="true"/>
 			<key name="didid" type="unique">
 				<column name="didid"/>
 			</key>

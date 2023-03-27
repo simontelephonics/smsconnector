@@ -30,76 +30,16 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
             throw new \Exception('Unable to store media: '.$e->getmessage());
         }
         
-        // generate media urls
-        $media_urls = array();
-        $ampWebAddress = $this->FreePBX->Config->get_conf_setting('AMPWEBADDRESS');
-        if (empty($ampWebAddress)) { // we're going to make an educated guess and make an HTTPS URL from the external IP
-            $ampWebAddress = $this->FreePBX->Sipsettings->getConfig('externip');
-         }
-        $sql = 'SELECT id, name FROM sms_media WHERE mid = :mid';
-        $stmt = $this->db->prepare($sql);
-		$stmt->bindParam(':mid', $retval['id'], \PDO::PARAM_INT);
-		$stmt->execute();
-        $media = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        foreach ($media as $media_item) {
-            $media_urls[] = 'https://' . $ampWebAddress . '/smsconn/media.php?id=' . $media_item['id'] . '&name=' . $media_item['name'];
-        }
         // look up provider info containing name and api credentials
-        $provider = $this->lookUpProvider($from);
-
-        // send via connector
-        switch ($provider['name']) {
-
-            case 'telnyx':
-                $req = array(
-                    'from' => '+'.$from, 
-                    'to' => '+'.$to, 
-                    'media_urls' => $media_urls
-                );
-                if ($message) {
-                    $req['text'] = $message;
-                }
-                $this->sendTelnyx($provider, $req, $retval['id']);
-                break;
-
-            case 'flowroute':
-                $attr = array(
-                    "to" => '+'.$to,
-                    "from" => '+'.$from,
-                    "is_mms" => "true",
-                    "media_urls" => $media_urls
-                );
-                if ($message) {
-                    $attr['body'] = $message;
-                }
-                $req = json_encode(
-                    array(
-                        "data" => array(
-                            "type" => "message",
-                            "attributes" => $attr
-                        )
-                    )
-                );
-                $this->sendFlowroute($provider, $req, $retval['id']);
-                break;
-
-            case 'twilio':
-                // this manual generation of the www-form-data request is because Twilio wants
-                // MediaUrl specified multiple times in the request data, not as a MediaUrl[] array
-                $req = array(
-                    'From=' . urlencode("+$from"),
-                    'To=' . urlencode("+$to")
-                );
-                foreach ($media_urls as $media_url) {
-                    $req[] = 'MediaUrl=' . urlencode($media_url);
-                }
-                if ($message) {
-                    $req[] = 'Body=' . urlencode($message);
-                }
-                $this->sendTwilio($provider, implode('&', $req), $retval['id']);
-                break;
-        }
-        
+        $provider     = $this->lookUpProvider($from);
+        $providerInfo = $this->FreePBX->Smsconnector->getProvider($provider);
+        if (!empty($providerInfo))
+        {
+            if (! empty($providerInfo['class']))
+            {
+                $providerInfo['class']->sendMedia($retval['id'], $to, $from, $message);
+            }
+        }  
         return $retval;
     }
 
@@ -116,84 +56,15 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
         // look up provider info containing name and api credentials
         $provider = $this->lookUpProvider($from);
 
-        // send via connector
-        switch ($provider['name']) {
-
-            case 'telnyx':
-                $req = array(
-                    'from' => '+'.$from, 
-                    'to' => '+'.$to, 
-                    'text' => $message
-                );
-                $this->sendTelnyx($provider, $req, $retval['id']);
-                break;
-
-            case 'flowroute':
-                $req = json_encode(
-                    array(
-                        "data" => array(
-                            "type" => "message",
-                            "attributes" => array(
-                                "to" => '+'.$to,
-                                "from" => '+'.$from,
-                                "body" => $message
-                            )
-                        )
-                    )
-                );
-                $this->sendFlowroute($provider, $req, $retval['id']);
-                break;
-
-            case 'twilio':
-                $req = array(
-                    'From' => '+'.$from,
-                    'To' => '+'.$to,
-                    'Body' => $message
-                );
-                $this->sendTwilio($provider, $req, $retval['id']);
-                break;
+        $providerInfo = $this->FreePBX->Smsconnector->getProvider($provider);
+        if (!empty($providerInfo))
+        {
+            if (! empty($providerInfo['class']))
+            {
+                $providerInfo['class']->sendMessage($retval['id'], $to, $from, $message);
+            }
         }
-
         return $retval;
-    }
-
-    private function sendTelnyx($provider, $payload, $mid) {
-        require_once(__DIR__.'/include/telnyx-php/init.php');
-        \Telnyx\Telnyx::setApiKey($provider['api_key']);
-        try {
-            $telnyxResponse = \Telnyx\Message::Create($payload);
-            freepbx_log(FPBX_LOG_INFO, $telnyxResponse, true);
-            $this->setDelivered($mid);
-        } catch (\Exception $e) {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
-        }
-    }
-
-    private function sendFlowroute($provider, $payload, $mid) {
-        $options = array("auth" => array($provider['api_key'], $provider['api_secret']));
-        $headers = array("Content-Type" => "application/vnd.api+json");
-        $url = 'https://api.flowroute.com/v2.2/messages';
-        $session = \FreePBX::Curl()->requests($url);
-        try {
-            $flowrouteResponse = $session->post('', $headers, $payload, $options);
-            freepbx_log(FPBX_LOG_INFO, $flowrouteResponse->body, true);
-            $this->setDelivered($mid);
-        } catch (\Exception $e) {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
-        }
-    }
-
-    private function sendTwilio($provider, $payload, $mid) {
-        $options = array("auth" => array($provider['api_key'], $provider['api_secret']));
-        $url = 'https://api.twilio.com/2010-04-01/Accounts/' . $provider['api_key'] . '/Messages.json';
-        $session = \FreePBX::Curl()->requests($url);
-        try {
-            $twilioResponse = $session->post('', null, $payload, $options);
-            freepbx_log(FPBX_LOG_INFO, $twilioResponse->body, true);
-            $this->setDelivered($mid);
-        } catch (\Exception $e) {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
-        }
     }
 
     public function getMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null) {
@@ -212,32 +83,20 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
 	 */
 	private function lookUpProvider($did)
 	{
-		$sql = 'SELECT p.name, p.api_key, p.api_secret FROM smsconnector_providers AS p INNER JOIN ' .
-				'smsconnector_relations AS r ON p.id = r.providerid ' .
-				'INNER JOIN sms_dids AS d ON r.didid = d.id ' .
-				'WHERE d.did = :did';
+
+        $sql = 'SELECT providerid FROM smsconnector_relations as r ' .
+                'INNER JOIN sms_dids AS d ON r.didid = d.id ' .
+                'WHERE d.did = :did';
+
+		// $sql = 'SELECT p.name, p.api_key, p.api_secret FROM smsconnector_providers AS p ' .
+		// 		'INNER JOIN smsconnector_relations AS r ON p.id = r.providerid ' .
+		// 		'INNER JOIN sms_dids AS d ON r.didid = d.id ' .
+		// 		'WHERE d.did = :did';
 		$stmt = $this->db->prepare($sql);
 		$stmt->bindParam(':did', $did, \PDO::PARAM_STR);
 		$stmt->execute();
 		$row = $stmt->fetchObject();
-		return array( 
-            'name' => $row->name,
-            'api_key' => $row->api_key,
-            'api_secret' => $row->api_secret
-        );
-	}
 
-    /**
-     * Set an outbound message to delivered
-     * 
-     * @param int $id message id
-     */
-    private function setDelivered($id)
-    {
-        $sql = 'UPDATE sms_messages SET delivered = 1 where id = :id';
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-        $stmt->execute();
-        return $this;
-    }
+        return $row->providerid;
+	}
 }

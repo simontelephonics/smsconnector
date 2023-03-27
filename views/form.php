@@ -1,3 +1,27 @@
+<?php
+	if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
+
+	$id 		 = $edit_data['id'];
+	$name 		 = $edit_data['name'];
+	$username 	 = $edit_data['username'];
+	$displayname = $edit_data['displayname'];
+	$uid 		 = $edit_data['uid'];
+	$did 		 = $edit_data['did'];
+
+	$users 		 	= $userman->getAllUsers();
+	$existingusers	= $smsconnector->getUsersWithDids();
+	$providers 		= $smsconnector->getAvailableProviders();
+
+	if (!empty($_REQUEST['error_add']))
+	{
+		?>
+		<div class="alert alert-danger" role="alert">
+			<i class="fa fa-exclamation fa-lg" aria-hidden="true"></i> <?php echo $_REQUEST['error_add']; ?>
+		</div>
+		<?php
+	}
+?>
+
 <form action="" method="post" class="fpbx-submit" id="numberform" name="numberform" data-fpbx-delete="config.php?display=smsconnector&action=delete&id=<?php echo $id?>">
 <input type="hidden" name='action' value="<?php echo $id?'edit':'add' ?>">
 <input type="hidden" id="id" name="id" value="<?php echo $id?>">
@@ -40,12 +64,11 @@
 						<select class="form-control" id="uid" name="uid" required>
 							<?php if ($id) {?><option value="<?php echo $uid; ?>" selected><?php echo "$displayname ($username)"; ?></option><?php }?>
 							<?php 
-								$users = \FreePBX::Userman()->getAllUsers();
-								$existingusers = \FreePBX::Smsconnector()->getUsersWithDids();
-								foreach($users as $user) { 
-									if (!in_array($user['id'], $existingusers)) {
-										echo '<option value="' . $user['id'] . '">';
-										echo $user['displayname'] . ' (' . $user['username'] . ')</option>';
+								foreach($users as $user)
+								{
+									if (!in_array($user['id'], $existingusers))
+									{
+										echo sprintf('<option value="%s">%s (%s)</option>', $user['id'], $user['displayname'], $user['username']);
 									}
 								} ?>
 						</select>
@@ -74,9 +97,9 @@
 					<div class="col-md-9">
 						<select class="form-control" id="name" name="name" required>
 							<?php 
-								$providers = \FreePBX::Smsconnector()->getAvailableProviders();
-								foreach ($providers as $provider) {
-									echo '<option value="' . $provider . '" ' . (($name == $provider)?'selected':'') . ">$provider</option>"; 
+								foreach ($providers as $provider => $info)
+								{
+									echo sprintf('<option value="%s" %s>%s</option>', $info['nameraw'], $name == $info['nameraw'] ? 'selected' : '', $info['name']);
 								}
 							?>
 						</select>
