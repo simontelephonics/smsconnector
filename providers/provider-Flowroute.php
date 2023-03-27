@@ -2,9 +2,9 @@
 
 namespace FreePBX\modules\Smsconnector\Provider;
 
-class Flowroute extends providerBase {
-
-    public function __construct ()
+class Flowroute extends providerBase 
+{
+    public function __construct()
     {
         parent::__construct();
         $this->name     = _('Flowroute');
@@ -28,8 +28,6 @@ class Flowroute extends providerBase {
     
     public function sendMedia($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMedia($id, $to, $from, $message);
-
         $attr = array(
             "to"         => '+'.$to,
             "from"       => '+'.$from,
@@ -40,36 +38,30 @@ class Flowroute extends providerBase {
         {
             $attr['body'] = $message;
         }
-        $req = json_encode(
-            array(
+        $req = array(
                 "data" => array(
                     "type"       => "message",
                     "attributes" => $attr
-                )
-            )
-        );
+                    )
+                );
         $this->sendFlowroute($req, $id);
-        return $retval;
+        return true;
     }
 
     public function sendMessage($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMessage($id, $to, $from, $message);
-
-        $req = json_encode(
-            array(
-                "data" => array(
-                    "type" => "message",
-                    "attributes" => array(
-                        "to"    => '+'.$to,
-                        "from"  => '+'.$from,
-                        "body"  => $message
-                    )
+        $req = array(
+            "data" => array(
+                "type" => "message",
+                "attributes" => array(
+                    "to"    => '+'.$to,
+                    "from"  => '+'.$from,
+                    "body"  => $message
                 )
             )
         );
         $this->sendFlowroute($req, $id);
-        return $retval;
+        return true;
     }
 
     private function sendFlowroute($payload, $mid)
@@ -84,9 +76,11 @@ class Flowroute extends providerBase {
         );
         $headers = array("Content-Type" => "application/vnd.api+json");
         $url = 'https://api.flowroute.com/v2.2/messages';
+        $json = json_encode($payload);
         $session = \FreePBX::Curl()->requests($url);
-        try {
-            $flowrouteResponse = $session->post('', $headers, $payload, $options);
+        try 
+        {
+            $flowrouteResponse = $session->post('', $headers, $json, $options);
             freepbx_log(FPBX_LOG_INFO, $flowrouteResponse->body, true);
             $this->setDelivered($mid);
         }
@@ -95,5 +89,4 @@ class Flowroute extends providerBase {
             throw new \Exception('Unable to send message: ' .$e->getMessage());
         }
     }
-
 }

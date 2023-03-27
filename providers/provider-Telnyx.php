@@ -2,9 +2,9 @@
 
 namespace FreePBX\modules\Smsconnector\Provider;
 
-class Telnyx extends providerBase {
-
-    public function __construct ()
+class Telnyx extends providerBase 
+{
+    public function __construct()
     {
         parent::__construct();
         $this->name     = _('Telnyx');
@@ -22,8 +22,6 @@ class Telnyx extends providerBase {
     
     public function sendMedia($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMedia($id, $to, $from, $message);
-
         $req = array(
             'from'       => '+'.$from,
             'to'         => '+'.$to,
@@ -34,30 +32,36 @@ class Telnyx extends providerBase {
             $req['text'] = $message;
         }
         $this->sendTelnyx($req, $id);
-        return $retval;
+        return true;
     }
 
     public function sendMessage($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMessage($id, $to, $from, $message);
         $req = array(
             'from'  => '+'.$from,
             'to'    => '+'.$to,
             'text'  => $message
         );
         $this->sendTelnyx($req, $id);
-        return $retval;
+        return true;
     }
 
     private function sendTelnyx($payload, $mid)
     {
         $config = $this->getConfig($this->nameRaw);
 
-        require_once(__DIR__.'/include/telnyx-php/init.php');
-        \Telnyx\Telnyx::setApiKey($config['api_key']);
-        try {
-            $telnyxResponse = \Telnyx\Message::Create($payload);
-            freepbx_log(FPBX_LOG_INFO, $telnyxResponse, true);
+        $headers = array(
+            "Authorization" => sprintf("Bearer %s", $config['api_key']),
+            "Content-Type" => "application/json"
+        );
+        $url = 'https://api.telnyx.com/v2/messages';
+        $json = json_encode($payload);
+
+        $session = \FreePBX::Curl()->requests($url);
+        try 
+        {
+            $telnyxResponse = $session->post('', $headers, $json, array());
+            freepbx_log(FPBX_LOG_INFO, $telnyxResponse->body, true);
             $this->setDelivered($mid);
         }
         catch (\Exception $e)

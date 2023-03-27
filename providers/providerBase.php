@@ -2,58 +2,50 @@
 
 namespace FreePBX\modules\Smsconnector\Provider;
 
-class providerBase  {
-
+abstract class providerBase  
+{
     protected $FreePBX;
     protected $Database;
     protected $Config;
-    // protected $Smsconnector;
     protected $Sipsettings;
 
     protected $name       = '';
     protected $nameRaw    = '';
     protected $configInfo = array();
 
-    public function __construct ()
+    public function __construct()
     {
         $this->FreePBX      = \FreePBX::create();
         $this->Database     = $this->FreePBX->Database;
         $this->Config       = $this->FreePBX->Config;
-        // $this->Smsconnector = $this->FreePBX->Smsconnector;
         $this->Sipsettings  = $this->FreePBX->Sipsettings;
     }
 
-    public function getName () {
+    public function getName() 
+    {
         return $this->name;
     }
 
-    public function getNameRaw ()
+    public function getNameRaw()
     {
         return $this->nameRaw;
     }
 
-    public function getConfigInfo ()
+    public function getConfigInfo()
     {
         return $this->configInfo;
     }
 
-    public function sendMedia($id, $to, $from, $message=null)
-    {
-        return array();
-    }
-
-    public function sendMessage($id, $to, $from, $message=null)
-    {
-        return array();
-    }
+    abstract public function sendMedia($id, $to, $from, $message=null);
+    abstract public function sendMessage($id, $to, $from, $message=null);
 
     public function media_urls($id)
     {
-        // generate media urls
+        // Generate media urls
         $media_urls = array();
         
         $ampWebAddress = $this->Config->get_conf_setting('AMPWEBADDRESS');
-        if (empty($ampWebAddress))  // we're going to make an educated guess and make an HTTPS URL from the external IP
+        if (empty($ampWebAddress))  // We're going to make an educated guess and make an HTTPS URL from the external IP
         {
             $ampWebAddress = $this->Sipsettings->getConfig('externip');
         }

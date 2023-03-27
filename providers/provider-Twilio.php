@@ -2,9 +2,9 @@
 
 namespace FreePBX\modules\Smsconnector\Provider;
 
-class Twilio extends providerBase {
-
-    public function __construct ()
+class Twilio extends providerBase 
+{
+    public function __construct()
     {
         parent::__construct();
         $this->name     = _('Twilio');
@@ -28,8 +28,6 @@ class Twilio extends providerBase {
     
     public function sendMedia($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMedia($id, $to, $from, $message);
-
         // this manual generation of the www-form-data request is because Twilio wants
         // MediaUrl specified multiple times in the request data, not as a MediaUrl[] array
         $req = array(
@@ -46,20 +44,18 @@ class Twilio extends providerBase {
             $req[] = 'Body=' . urlencode($message);
         }
         $this->sendTwilio(implode('&', $req), $id);
-        return $retval;
+        return true;
     }
 
     public function sendMessage($id, $to, $from, $message=null)
     {
-        $retval = parent::sendMessage($id, $to, $from, $message);
-
         $req = array(
             'From' => '+'.$from,
             'To'   => '+'.$to,
             'Body' => $message
         );
         $this->sendTwilio($req, $id);
-        return $retval;
+        return true;
     }
 
     private function sendTwilio($payload, $mid)
@@ -85,5 +81,4 @@ class Twilio extends providerBase {
             throw new \Exception('Unable to send message: ' .$e->getMessage());
         }
     }
-
 }

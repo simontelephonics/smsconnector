@@ -8,9 +8,11 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
 	* @param object Database Object
 	* @return object Adaptor\Smsconnector object
 	*/
-	static function &create() {
+	static function &create() 
+    {
 		static $obj;
-		if (!isset($obj)) {
+		if (!isset($obj)) 
+        {
 			$obj = new Smsconnector();
 		}
 		return $obj;
@@ -21,16 +23,19 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
      */
 
     public function sendMedia($to,$from,$cnam,$message=null,$files=array(),$time=null,$adaptor=null,$emid=null,$chatId='') {
-        // store in database
+        // Store in database
         $retval = array();
-        try {
+        try 
+        {
             $retval['id'] = parent::sendMedia($to, $from, $cnam, $message, $files, $time, 'Smsconnector', $emid, $chatId);
             $retval['status'] = true;
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) 
+        {
             throw new \Exception('Unable to store media: '.$e->getmessage());
         }
         
-        // look up provider info containing name and api credentials
+        // Look up provider info containing name and api credentials
         $provider     = $this->lookUpProvider($from);
         $providerInfo = $this->FreePBX->Smsconnector->getProvider($provider);
         if (!empty($providerInfo))
@@ -44,12 +49,15 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
     }
 
     public function sendMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null,$chatId='') {
-        // store in database
+        // Store in database
         $retval = array();
-        try {
+        try 
+        {
             $retval['id'] = parent::sendMessage($to, $from, $cnam, $message, $time, 'Smsconnector', $emid, $chatId);
             $retval['status'] = true;
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) 
+        {
             throw new \Exception('Unable to store message: '.$e->getMessage());
         }
     
@@ -67,11 +75,13 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
         return $retval;
     }
 
-    public function getMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null) {
+    public function getMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null) 
+    {
         return parent::getMessage($to, $from, $cnam, $message, $time, 'Smsconnector', $emid);
     }
 
-    public function updateMessageByEMID($emid,$message,$adaptor=null) {
+    public function updateMessageByEMID($emid,$message,$adaptor=null) 
+    {
         return parent::updateMessageByEMID($emid, $message, 'Smsconnector');
     }
 
@@ -83,15 +93,10 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
 	 */
 	private function lookUpProvider($did)
 	{
-
         $sql = 'SELECT providerid FROM smsconnector_relations as r ' .
                 'INNER JOIN sms_dids AS d ON r.didid = d.id ' .
                 'WHERE d.did = :did';
 
-		// $sql = 'SELECT p.name, p.api_key, p.api_secret FROM smsconnector_providers AS p ' .
-		// 		'INNER JOIN smsconnector_relations AS r ON p.id = r.providerid ' .
-		// 		'INNER JOIN sms_dids AS d ON r.didid = d.id ' .
-		// 		'WHERE d.did = :did';
 		$stmt = $this->db->prepare($sql);
 		$stmt->bindParam(':did', $did, \PDO::PARAM_STR);
 		$stmt->execute();

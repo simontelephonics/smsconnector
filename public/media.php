@@ -1,8 +1,10 @@
 <?php
 include '/etc/freepbx.conf';
 
-if ($_SERVER['REQUEST_METHOD'] === "GET") {
-    if (empty($_GET['id']) || empty($_GET['name'])) { //shenanigans
+if ($_SERVER['REQUEST_METHOD'] === "GET") 
+{
+    if (empty($_GET['id']) || empty($_GET['name'])) //shenanigans
+    { 
         http_response_code(404);
     }
     $id = $_GET['id'];
@@ -18,7 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === "GET") {
     $finfo = new \finfo(FILEINFO_MIME);
     header('Content-Type: ' . $finfo->buffer($row->raw));
     echo $row->raw;
-} else {
+} 
+else 
+{
     http_response_code(405);
 }
 

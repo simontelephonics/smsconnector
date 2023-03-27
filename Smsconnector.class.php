@@ -13,7 +13,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	protected $Database = null;
 	protected $Userman 	= null;
 	protected $tables 	= array(
-		'providers' => 'smsconnector_providers',
 		'relations' => 'smsconnector_relations',
 	);
 	protected $tablesSms = array(
@@ -53,7 +52,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function install()
 	{
-		outn(_("Creating Link to Public Folder..."));
+		outn(_("Creating link to public folder..."));
 		$link_public = sprintf("%s/smsconn", $this->FreePBX->Config->get("AMPWEBROOT"));
 		$link_public_module = sprintf("%s/admin/modules/smsconnector/public", $this->FreePBX->Config->get("AMPWEBROOT"));
 		if (! file_exists($link_public))
@@ -63,7 +62,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		}
 		else
 		{
-			out(_('Skip: The Path Already Exists!'));
+			out(_('Skip: the path already exists!'));
 		}
 	}
 
@@ -74,7 +73,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function uninstall()
 	{
-		outn(_("Remove Folder Public..."));
+		outn(_("Removing public folder link..."));
 		$link_public = sprintf("%s/smsconn", $this->FreePBX->Config->get("AMPWEBROOT"));
 		if(file_exists($link_public))
 		{
@@ -87,12 +86,12 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				}
 				else
 				{
-					out(_("Error: The Path Still Exists!"));
+					out(_("Error: the path still exists!"));
 				}
 			}
 			else
 			{
-				out(_("Skip: The Path Is Not a Symbolic Link!"));
+				out(_("Skip: the path is not a symbolic link!"));
 			}
 		}
 	}
@@ -113,13 +112,14 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$name = $this->getReq('name');
 		$providers = $this->getReq('providers');
 
-		switch ($action) {
+		switch ($action) 
+		{
 			case 'add':
 				try 
 				{
 					$this->addNumber($uid, $did, $name);
 					header("Location: config.php?display=smsconnector");
-					exit();
+					exit;
 				}
 				catch (\Exception $e)
 				{
@@ -134,7 +134,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			case 'edit':
 				$this->updateNumber($uid, $did, $name);
 				header("Location: config.php?display=smsconnector");
-				exit();
+				exit;
 				break;
 
 			case 'setproviders':
@@ -143,8 +143,8 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		}
 	}
 
-	public function getRightNav($request) {
-
+	public function getRightNav($request) 
+	{
 		switch($request['view'])
 		{
 			case 'settings':
@@ -164,8 +164,10 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function getActionBar($request)
 	{
-		if ('smsconnector' == $request['display']) {
-			if (!isset($_GET['view'])) {
+		if ('smsconnector' == $request['display']) 
+		{
+			if (!isset($_GET['view'])) 
+			{
 				return [];
 			}
 			$buttons = [
@@ -185,7 +187,8 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 					'value' => _("Submit")
 				]
 			];
-			if (!isset($_GET['id']) || empty($_GET['id'])) {
+			if (!isset($_GET['id']) || empty($_GET['id'])) 
+			{
 				unset($buttons['delete']);
 			}
 			return $buttons;
@@ -202,7 +205,8 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	public function ajaxRequest($command, &$setting)
 	{
 		//The ajax request
-		if ("getJSON" == $command) {
+		if ("getJSON" == $command) 
+		{
 			return true;
 		}
 		return false;
@@ -216,7 +220,8 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function ajaxHandler()
 	{
-		if ('getJSON' == $_REQUEST['command'] && 'grid' == $_REQUEST['jdata']) {
+		if ('getJSON' == $_REQUEST['command'] && 'grid' == $_REQUEST['jdata']) 
+		{
 			return $this->getList();
 		}
 		return json_encode([
@@ -324,6 +329,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 		return true;
 	}
+
 	/**
 	 * updateNumber Updates the given ID
 	 * @param  int $uid userman user ID
@@ -341,6 +347,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$this->addNumber($uid, $did, $name, false);
 		return true;
 	}
+	
 	/**
 	 * deleteNumber Deletes the given number by didid
 	 * @param  int $id      DID ID
@@ -381,7 +388,8 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 * getUsersWithDids
 	 * @return array of user IDs associated with SMS DIDs
 	 */
-	public function getUsersWithDids() {
+	public function getUsersWithDids() 
+	{
 		$sql = sprintf('SELECT uid FROM %s', $this->tablesSms['routing']);
 		return $this->Database->query($sql)->fetchAll(\PDO::FETCH_COLUMN, 0);
 	}
@@ -441,10 +449,13 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		return $data_return;
 	}
 
-	public function usermanShowPage() {
+	public function usermanShowPage() 
+	{
 		$request = $_REQUEST;
-		if(isset($request['action'])) {
-			switch($request['action']) {
+		if(isset($request['action'])) 
+		{
+			switch($request['action']) 
+			{
 				case 'adduser':
 				case 'showuser':
 					return array(
@@ -546,5 +557,4 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	{
 		$this->setConfig($name, $config, 'provider');
 	}
-
 }
