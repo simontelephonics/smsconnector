@@ -1,0 +1,17 @@
+# Mac OS X dumps these all over the place.
+.DS_Store
+
+# Ignore the SimpleTest library if it is installed to /test/.
+/test/simpletest/
+
+# Ignore all vendor/ directories for people using composer
+vendor/
+
+# Ignore PHPUnit coverage file
+clover.xml
+
+# Ignore IDE's configuration files
+.idea
+
+# Ignore PHP CS Fixer cache
+.php_cs.cache

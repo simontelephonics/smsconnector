@@ -1,5 +1,8 @@
 <?php
 namespace FreePBX\modules;
+
+require_once(__DIR__.'/vendor/autoload.php');
+
 use BMO;
 use FreePBX_Helpers;
 use PDO;

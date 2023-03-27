@@ -53,7 +53,6 @@ class Telnyx extends providerBase {
     {
         $config = $this->getConfig($this->nameRaw);
 
-        require_once(__DIR__.'/include/telnyx-php/init.php');
         \Telnyx\Telnyx::setApiKey($config['api_key']);
         try {
             $telnyxResponse = \Telnyx\Message::Create($payload);

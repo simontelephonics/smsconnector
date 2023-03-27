@@ -1,0 +1,94 @@
+sudo: false
+language: php
+
+env:
+  global:
+    - COVERAGE_DEPS="php-coveralls/php-coveralls"
+    - COMPOSER_ARGS="--no-interaction"
+
+matrix:
+  include:
+    - php: 5.6
+      env:
+        - DEPS=lowest
+    - php: 5.6
+      env:
+        - DEPS=latest
+    - php: 7
+      env:
+        - DEPS=lowest
+    - php: 7
+      env:
+        - DEPS=locked
+    - php: 7
+      env:
+        - DEPS=latest
+    - php: 7.1
+      env:
+        - DEPS=lowest
+    - php: 7.1
+      env:
+        - DEPS=locked
+    - php: 7.1
+      env:
+        - DEPS=latest
+    - php: 7.2
+      env:
+        - DEPS=lowest
+    - php: 7.2
+      env:
+        - DEPS=locked
+        - CS_CHECK=false
+        - TEST_COVERAGE=true
+    - php: 7.2
+      env:
+        - DEPS=latest
+    - php: 7.3
+      env:
+        - DEPS=lowest
+    - php: 7.3
+      env:
+        - DEPS=locked
+    - php: 7.3
+      env:
+        - DEPS=latest
+    - php: 7.4
+      env:
+        - DEPS=lowest
+    - php: 7.4
+      env:
+        - DEPS=locked
+    - php: 7.4
+      env:
+        - DEPS=latest
+
+before_install:
+  - shopt -s expand_aliases
+  - alias composer="travis_retry docker-compose run --rm php composer"
+  - alias php="travis_retry docker-compose run -e TRAVIS -e TRAVIS_JOB_ID --rm php php"
+  - docker-compose build --build-arg PHP_VERSION=${TRAVIS_PHP_VERSION} --build-arg XDEBUG=${TEST_COVERAGE:+1} --no-cache php
+  - composer --version
+  - php -v
+  - php -m
+
+install:
+  - composer install $COMPOSER_ARGS --ignore-platform-reqs
+  - if [[ $LEGACY_DEPS != '' ]]; then composer update $COMPOSER_ARGS --with-dependencies $LEGACY_DEPS ; fi
+  - if [[ $DEPS == 'latest' ]]; then composer update $COMPOSER_ARGS ; fi
+  - if [[ $DEPS == 'lowest' ]]; then composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
+  - if [[ $TRAVIS_PHP_VERSION != "5.6" ]] ; then composer require --dev $COMPOSER_ARGS $ADAPTER_DEPS ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
+  - stty cols 120 && composer show
+  - composer show
+
+script:
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
+
+after_script:
+  - if [[ $TEST_COVERAGE == 'true' ]]; then php vendor/bin/php-coveralls -v ; fi
+
+notifications:
+  email: false
+
+
