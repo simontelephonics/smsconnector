@@ -267,11 +267,21 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 	/**
 	 * getAvailableProviders
-	 * @return array list of providers
+	 * @return array list of providers that are configured and available for use
 	 */
 	public function getAvailableProviders()
 	{
-		return $this->getProvider("");
+		$retlist = array();
+		$list = $this->getProvider("");
+		foreach ($list as $key => $value)
+		{
+			$settings = $this->getConfig($value['nameraw'], 'provider');
+			if (! empty($settings['api_key']))
+			{
+				$retlist[$key] = $value;
+			}
+		}
+		return $retlist;
 	}
 
 	/**
