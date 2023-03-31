@@ -2,7 +2,7 @@
 	<rawname>smsconnector</rawname>
 	<repo>unsupported</repo>
 	<name>SMS Connector</name>
-	<version>16.0.4beta</version>
+	<version>16.0.5beta</version>
 	<category>Connectivity</category>
 	<Publisher>Simon Telephonics LLC</Publisher>
 	<info>http://wiki.freepbx.org/</info>
@@ -41,6 +41,7 @@
 		</table>
 	</database>
 	<changelog>
+		*16.0.5beta* Add Commio/Thinq provider, small improvements
 		*16.0.4beta* Numerous improvements
 		*16.0.2beta* Fix #3 and add some verbiage
 		*16.0.1beta* Add Twilio and fix manifest
