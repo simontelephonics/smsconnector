@@ -27,6 +27,7 @@
 		{
 			$info_line = $info['configs'][$key_data];
 			$prefixline = $nameraw.'-'.$key_data;
+			$class_input = empty($info_line['class']) ? '' : $info_line['class'];
 			?>
 
 	<div class="element-container">
@@ -39,7 +40,7 @@
 							<i class="fa fa-question-circle fpbx-help-icon" data-for="<?php echo $prefixline; ?>"></i>
 						</div>
 						<div class="col-md-9">
-							<input type="text" class="form-control" id="<?php echo $prefixline; ?>" name="providers[<?php echo $nameraw; ?>][<?php echo $key_data; ?>]" value="<?php echo $value_data; ?>">
+							<input type="text" class="form-control <?php echo $class_input; ?>" id="<?php echo $prefixline; ?>" name="providers[<?php echo $nameraw; ?>][<?php echo $key_data; ?>]" value="<?php echo $value_data; ?>">
 						</div>
 					</div>
 				</div>

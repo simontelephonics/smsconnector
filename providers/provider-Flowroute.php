@@ -24,6 +24,7 @@ class Flowroute extends providerBase
                 'help'      => _("Enter the Flowroute API secret"),
                 'default'   => '',
                 'required'  => true,
+                'class'     => 'confidential',
             )
         );
     }

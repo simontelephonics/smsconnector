@@ -17,6 +17,7 @@ class Telnyx extends providerBase
                 'help'      => _("Enter the Telnyx v2 API key"),
                 'default'   => '',
                 'required'  => true,
+                'class'     => 'confidential',
             ),
         );
     }

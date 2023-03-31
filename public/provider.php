@@ -1,5 +1,4 @@
 <?php
-
 if (! empty($_GET['provider']))
 {
     $provider = $_GET['provider'];

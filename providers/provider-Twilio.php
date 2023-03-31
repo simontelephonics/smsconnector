@@ -24,6 +24,7 @@ class Twilio extends providerBase
                 'help'      => _("Enter the Twilio Auth Token"),
                 'default'   => '',
                 'required'  => true,
+                'class'     => 'confidential',
             )
         );
     }

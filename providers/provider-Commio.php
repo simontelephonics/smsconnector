@@ -24,6 +24,7 @@ class Commio extends providerBase
                 'help'      => _("Enter the Commio API token"),
                 'default'   => '',
                 'required'  => true,
+                'class'     => 'confidential',
             ),
             'account_id' => array(
                 'type'      => 'string',
