@@ -36,6 +36,28 @@ abstract class providerBase
         return $this->configInfo;
     }
 
+    public function isAvailable()
+    {
+        $configInfo = $this->configInfo;
+        $config = $this->getConfig($this->nameRaw);
+
+        $data_return = true;
+        foreach ($configInfo as $key => $value)
+        {
+            if (isset($value['required']) && $value['required'] === true)
+            {
+                if (! isset($config[$key]) || $config[$key] == "")
+                {
+                    $data_return = false;
+                    break;
+                }
+            }
+        }
+        return $data_return;
+    }
+
+
+    abstract public function callPublic($connector);
     abstract public function sendMedia($id, $to, $from, $message=null);
     abstract public function sendMessage($id, $to, $from, $message=null);
 

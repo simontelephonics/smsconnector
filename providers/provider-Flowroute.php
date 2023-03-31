@@ -12,16 +12,18 @@ class Flowroute extends providerBase
 
         $this->configInfo = array(
             'api_key' => array(
-                'type'    => 'string',
-                'label'   => _('API Key'),
-                'help'    => _("Enter the Flowroute API key"),
-                'default' => ''
+                'type'      => 'string',
+                'label'     => _('API Key'),
+                'help'      => _("Enter the Flowroute API key"),
+                'default'   => '',
+                'required'  => true,
             ),
             'api_secret' => array(
-                'type'    => 'string',
-                'label'   => _('API Secret'),
-                'help'    => _("Enter the Flowroute API secret"),
-                'default' => ''
+                'type'      => 'string',
+                'label'     => _('API Secret'),
+                'help'      => _("Enter the Flowroute API secret"),
+                'default'   => '',
+                'required'  => true,
             )
         );
     }
@@ -88,5 +90,74 @@ class Flowroute extends providerBase
         {
             throw new \Exception('Unable to send message: ' .$e->getMessage());
         }
+    }
+
+    
+    public function callPublic($connector)
+    {
+        $return_code = 202;
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") 
+        {
+            $postdata = file_get_contents("php://input");
+            $sms      = json_decode($postdata);
+
+            freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+            if (empty($sms)) 
+            { 
+                $return_code = 403;
+            }
+            else
+            {
+                if (isset($sms->data)) 
+                {
+                    if (isset($sms->data->type) && ($sms->data->type == 'message')) 
+                    {
+                        $from = ltrim($sms->data->attributes->from, '+'); // strip + if exists
+                        $to   = ltrim($sms->data->attributes->to, '+'); // strip + if exists
+                        $text = $sms->data->attributes->body;
+                        $emid = $sms->data->id;
+                        
+                        try 
+                        {
+                            $msgid = $connector->getMessage($to, $from, '', $text, null, null, $emid);
+                        } 
+                        catch (\Exception $e) 
+                        {
+                            throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                        }
+                
+                        if (isset($sms->included[0])) 
+                        {
+                            foreach ($sms->included as $media) 
+                            {
+                                if ($media->type == 'media') 
+                                {
+                                    $img = file_get_contents($media->attributes->url);
+                                    $name = $media->attributes->file_name;
+                                
+                                    try 
+                                    {
+                                        $connector->addMedia($msgid, $name, $img);
+                                    } 
+                                    catch (\Exception $e) 
+                                    {
+                                        throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                                    }
+                                }
+                            }
+                        }
+                        
+                        $connector->emitSmsInboundUserEvt($msgid, $to, $from, '', $text, null, 'Smsconnector', $emid);
+                    }
+                }
+                $return_code = 202;
+            }
+        }
+        else
+        {
+            $return_code = 405;
+        }
+        return $return_code;
     }
 }

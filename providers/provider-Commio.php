@@ -12,22 +12,25 @@ class Commio extends providerBase
 
         $this->configInfo = array(
             'api_key' => array(
-                'type'    => 'string',
-                'label'   => _('Username'),
-                'help'    => _("Enter the Commio API username"),
-                'default' => ''
+                'type'      => 'string',
+                'label'     => _('Username'),
+                'help'      => _("Enter the Commio API username"),
+                'default'   => '',
+                'required'  => true,
             ),
             'api_secret' => array(
-                'type'    => 'string',
-                'label'   => _('API Token'),
-                'help'    => _("Enter the Commio API token"),
-                'default' => ''
+                'type'      => 'string',
+                'label'     => _('API Token'),
+                'help'      => _("Enter the Commio API token"),
+                'default'   => '',
+                'required'  => true,
             ),
             'account_id' => array(
-                'type'    => 'string',
-                'label'   => _('Account ID'),
-                'help'    => _("Enter the Commio account ID"),
-                'default' => ''
+                'type'      => 'string',
+                'label'     => _('Account ID'),
+                'help'      => _("Enter the Commio account ID"),
+                'default'   => '',
+                'required'  => true,
             )
         );
     }
@@ -103,5 +106,72 @@ class Commio extends providerBase
         {
             throw new \Exception('Unable to send message: ' .$e->getMessage());
         }
+    }
+
+    
+    public function callPublic($connector)
+    {
+        $return_code = 202;
+
+        if ($_SERVER['REQUEST_METHOD'] === "POST") 
+        {
+            $postdata = $_POST;
+
+            freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+            if (empty($postdata)) 
+            { 
+                $return_code = 403;
+            }
+            else
+            {
+                if (isset($postdata['type']) && isset($postdata['from']) && isset($postdata['to']) && isset($postdata['message']))
+                {
+                    // Commio will send either 11-digit or 10-digit NANP. If 10 then we will add the 1
+                    $from = (strlen($postdata['from']) == 10) ? '1'.$postdata['from'] : $postdata['from'];
+                    $to   = (strlen($postdata['to']) == 10) ? '1'.$postdata['to'] : $postdata['to'];
+                    $text = '';
+
+                    if (($postdata['type'] == 'sms') || ($postdata['type'] == 'mms' && (stripos($postdata['message'], 'http') !== 0))) 
+                    {
+                        // SMS will have text in the 'message' field and MMS will have either a URL or text, so we have to check
+                        $text = $postdata['message'];
+                    }
+
+                    try 
+                    {
+                        $msgid = $connector->getMessage($to, $from, '', $text, null, null, null);
+                    } 
+                    catch (\Exception $e) 
+                    {
+                        throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                    }
+
+                    if ($postdata['type'] == 'mms' && (stripos($postdata['message'], 'http') === 0))
+                    {
+                        // MMS with a URL in the message field: fetch the media
+                        $img = file_get_contents($postdata['message']);
+                        $purl = parse_url($postdata['message']);
+                        $name = basename($purl['path']);
+                        try 
+                        {
+                            $connector->addMedia($msgid, $name, $img);
+                        } 
+                        catch (\Exception $e) 
+                        {
+                            throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                        }
+                    }
+                    
+                    // TODO: $emid not definde?????
+                    $connector->emitSmsInboundUserEvt($msgid, $to, $from, '', $text, null, 'Smsconnector', $emid);
+                }
+                $return_code = 202;
+            }
+        } 
+        else 
+        {
+            $return_code = 405;
+        }
+        return $return_code;
     }
 }
