@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === "GET")
     if (empty($_GET['id']) || empty($_GET['name'])) //shenanigans
     { 
         http_response_code(404);
+        exit;
     }
     $id = $_GET['id'];
     $name = $_GET['name'];

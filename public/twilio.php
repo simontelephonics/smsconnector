@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
     {
         http_response_code(500);
         throw new \Exception('Unable to get message: ' .$e->getMessage());
+        exit;
     }
     
     if (isset($postdata['NumMedia']) && ($postdata['NumMedia'] > 0)) 
@@ -49,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
             {
                 http_response_code(500);
                 throw new \Exception('Unable to store MMS media: ' .$e->getMessage());
+                exit;
             }
         }
     }
@@ -57,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
 
     header('Content-Type: application/xml');
     echo '<Response/>';
-
 } 
 else 
 {

@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
             {
                 http_response_code(500);
                 throw new \Exception('Unable to get message: ' .$e->getMessage());
+                exit;
             }
     
             if (isset($sms->included[0])) 
@@ -53,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
                         {
                             http_response_code(500);
                             throw new \Exception('Unable to store MMS media: ' .$e->getMessage());
+                            exit;
                         }
                     }
                 }
