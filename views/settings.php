@@ -1,7 +1,7 @@
 <?php
 	if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
 
-	echo show_help('<p>'._('Set your public hostname in Advanced Settings -> FreePBX Web Address. (AMPWEBADDRESS)').'</p><p>'._('The webhook for inbound SMS will be in the form: <code>https://AMPWEBADDRESS/smsconn/provider.php?provider=nameprovider</code> where <i>nameprovider</i> is one of <code>telnyx</code>, <code>flowroute</code>, <code>twilio</code>, <code>etc...</code>.').'</p><p>'._('Note that the server must have a valid TLS certificate generated in Certificate Manager and set for the web server to use.').'</p>', _('Webhook Settings'), false, true, "info");
+	echo show_help('<p>'._('Set your public hostname in Advanced Settings -> FreePBX Web Address. (AMPWEBADDRESS)').' <a href="config.php?display=advancedsettings#AMPWEBADDRESS" target="_blank"><i class="fa fa-cog fa-spin fa-lg" aria-hidden="true"></i></a></p><p>'._('The webhook for inbound SMS will be in the form: <code>https://AMPWEBADDRESS/smsconn/provider.php?provider=nameprovider</code> where <i>nameprovider</i> is one of <code>telnyx</code>, <code>flowroute</code>, <code>twilio</code>, <code>etc...</code>.').'</p><p>'._('Note that the server must have a valid TLS certificate generated in Certificate Manager and set for the web server to use.').'</p>', _('Webhook Settings'), false, true, "info");
 ?>
 <form action="" method="post" class="fpbx-submit" id="smsconnectorprovidersform" name="smsconnectorprovidersform">
 <input type="hidden" name='action' value="setproviders">
