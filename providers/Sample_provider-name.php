@@ -17,7 +17,7 @@ class Name extends providerBase
                 'default'     => 'default value',
                 'class'       => '',
                 'required'    => true, // True to set this property as required to make the provider available.
-                'placeholder' => _('Text to dispaly in input settings.'),
+                'placeholder' => _('Text to display in the input when it is empty.'),
             ),
         );
     }

@@ -1,0 +1,282 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-04-01 16:35+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: .git\n"
+"X-Poedit-SearchPathExcluded-1: i18n\n"
+
+#: Smsconnector.class.php:55
+msgid "Creating link to public folder..."
+msgstr ""
+
+#: Smsconnector.class.php:61 Smsconnector.class.php:85
+msgid "Done"
+msgstr ""
+
+#: Smsconnector.class.php:65
+msgid "Skip: the path already exists!"
+msgstr ""
+
+#: Smsconnector.class.php:76
+msgid "Removing public folder link..."
+msgstr ""
+
+#: Smsconnector.class.php:89
+msgid "Error: the path still exists!"
+msgstr ""
+
+#: Smsconnector.class.php:94
+msgid "Skip: the path is not a symbolic link!"
+msgstr ""
+
+#: Smsconnector.class.php:177
+msgid "Delete"
+msgstr ""
+
+#: Smsconnector.class.php:182
+msgid "Reset"
+msgstr ""
+
+#: Smsconnector.class.php:187
+msgid "Submit"
+msgstr ""
+
+#: Smsconnector.class.php:229
+msgid "Invalid Request"
+msgstr ""
+
+#: Smsconnector.class.php:456
+#, php-format
+msgid "Page Not Found (%s)!!!!"
+msgstr ""
+
+#: Smsconnector.class.php:472 views/page.main.php:25
+msgid "SMS Connector"
+msgstr ""
+
+#: assets/js/smsconnector.js:14
+msgid "URL copied to clipboard"
+msgstr ""
+
+#: providers/Sample_provider-name.php:9
+msgid "Name"
+msgstr ""
+
+#: providers/Sample_provider-name.php:15
+msgid "Option"
+msgstr ""
+
+#: providers/Sample_provider-name.php:16
+msgid "Help text for the option."
+msgstr ""
+
+#: providers/Sample_provider-name.php:20
+msgid "Text to display in the input when it is empty."
+msgstr ""
+
+#: providers/provider-Commio.php:9
+msgid "Commio"
+msgstr ""
+
+#: providers/provider-Commio.php:15
+msgid "Username"
+msgstr ""
+
+#: providers/provider-Commio.php:16
+msgid "Enter the Commio API username"
+msgstr ""
+
+#: providers/provider-Commio.php:19
+msgid "Enter Username"
+msgstr ""
+
+#: providers/provider-Commio.php:23
+msgid "API Token"
+msgstr ""
+
+#: providers/provider-Commio.php:24
+msgid "Enter the Commio API token"
+msgstr ""
+
+#: providers/provider-Commio.php:28 providers/provider-Twilio.php:28
+msgid "Enter Token"
+msgstr ""
+
+#: providers/provider-Commio.php:32
+msgid "Account ID"
+msgstr ""
+
+#: providers/provider-Commio.php:33
+msgid "Enter the Commio account ID"
+msgstr ""
+
+#: providers/provider-Commio.php:36
+msgid "Enter Account ID"
+msgstr ""
+
+#: providers/provider-Flowroute.php:9
+msgid "Flowroute"
+msgstr ""
+
+#: providers/provider-Flowroute.php:15 providers/provider-Telnyx.php:15
+msgid "API Key"
+msgstr ""
+
+#: providers/provider-Flowroute.php:16
+msgid "Enter the Flowroute API key"
+msgstr ""
+
+#: providers/provider-Flowroute.php:19 providers/provider-Telnyx.php:20
+msgid "Enter Key"
+msgstr ""
+
+#: providers/provider-Flowroute.php:23
+msgid "API Secret"
+msgstr ""
+
+#: providers/provider-Flowroute.php:24
+msgid "Enter the Flowroute API secret"
+msgstr ""
+
+#: providers/provider-Flowroute.php:28
+msgid "Enter Secret"
+msgstr ""
+
+#: providers/provider-Telnyx.php:9
+msgid "Telnyx"
+msgstr ""
+
+#: providers/provider-Telnyx.php:16
+msgid "Enter the Telnyx v2 API key"
+msgstr ""
+
+#: providers/provider-Twilio.php:9
+msgid "Twilio"
+msgstr ""
+
+#: providers/provider-Twilio.php:15
+msgid "Account SID"
+msgstr ""
+
+#: providers/provider-Twilio.php:16
+msgid "Enter the Twilio account SID"
+msgstr ""
+
+#: providers/provider-Twilio.php:19
+msgid "Enter Account SID"
+msgstr ""
+
+#: providers/provider-Twilio.php:23
+msgid "Auth Token"
+msgstr ""
+
+#: providers/provider-Twilio.php:24
+msgid "Enter the Twilio Auth Token"
+msgstr ""
+
+#: views/form.php:35 views/grid.php:22
+msgid "DID"
+msgstr ""
+
+#: views/form.php:47
+msgid ""
+"Enter the DID, including the country code. North America numbers must start "
+"with 1!"
+msgstr ""
+
+#: views/form.php:59
+msgid "User"
+msgstr ""
+
+#: views/form.php:82
+msgid "Select the user associated with the DID"
+msgstr ""
+
+#: views/form.php:94
+msgid "Provider Name"
+msgstr ""
+
+#: views/form.php:113
+msgid ""
+"Select the SMS provider. Only providers configured with credentials in the "
+"Provider Settings screen will be listed."
+msgstr ""
+
+#: views/grid.php:4 views/page.main.php:7 views/rnav.php:5
+msgid "Add Number"
+msgstr ""
+
+#: views/grid.php:5 views/page.main.php:12 views/rnav.php:6
+msgid "Provider Settings"
+msgstr ""
+
+#: views/grid.php:21
+msgid "Id"
+msgstr ""
+
+#: views/grid.php:23
+msgid "User ID"
+msgstr ""
+
+#: views/grid.php:24
+msgid "Provider"
+msgstr ""
+
+#: views/grid.php:25
+msgid "Action"
+msgstr ""
+
+#: views/page.main.php:7
+msgid "Edit Number"
+msgstr ""
+
+#: views/page.main.php:19 views/rnav.php:4
+msgid "List Numbers"
+msgstr ""
+
+#: views/settings.php:4
+msgid ""
+"Set your public hostname in Advanced Settings -> FreePBX Web Address. "
+"(AMPWEBADDRESS)"
+msgstr ""
+
+#: views/settings.php:4
+msgid ""
+"The webhook for inbound SMS will be in the form: <code>https://AMPWEBADDRESS/"
+"smsconn/provider.php?provider=nameprovider</code> where <i>nameprovider</i> "
+"is one of <code>telnyx</code>, <code>flowroute</code>, <code>twilio</code>, "
+"<code>etc...</code>."
+msgstr ""
+
+#: views/settings.php:4
+msgid ""
+"Note that the server must have a valid TLS certificate generated in "
+"Certificate Manager and set for the web server to use."
+msgstr ""
+
+#: views/settings.php:4
+msgid "Webhook Settings"
+msgstr ""
+
+#: views/settings.php:69
+msgid "Webhook Provider"
+msgstr ""
+
+#: views/view.userman.user.php:2
+msgid "Not yet implemented."
+msgstr ""
+
+#: views/view.userman.user.php:2
+msgid "Go to SMS Connector."
+msgstr ""
