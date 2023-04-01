@@ -16,7 +16,7 @@
 		case 'main':
 		case 'grid':
 		default:
-			$subhead = _('Number List');
+			$subhead = _('List Numbers');
 			$content = $smsconnector->showPage('grid');
 	}
 ?>
