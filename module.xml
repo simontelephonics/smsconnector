@@ -15,6 +15,7 @@
 		<version>16</version>
 		<module>sms</module>
 		<module>userman</module>
+		<module>sipsettings</module>
 	</depends>
 	<supported>16.0</supported>
 	<description>Implements a generic SMS connector</description>

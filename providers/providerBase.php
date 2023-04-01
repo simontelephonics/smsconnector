@@ -64,13 +64,9 @@ abstract class providerBase
     public function media_urls($id)
     {
         // Generate media urls
-        $media_urls = array();
+        $media_urls    = array();
+        $ampWebAddress = $ampWebAddress = $this->getWebAddress();
         
-        $ampWebAddress = $this->Config->get_conf_setting('AMPWEBADDRESS');
-        if (empty($ampWebAddress))  // We're going to make an educated guess and make an HTTPS URL from the external IP
-        {
-            $ampWebAddress = $this->Sipsettings->getConfig('externip');
-        }
         $sql = 'SELECT id, name FROM sms_media WHERE mid = :mid';
         $stmt = $this->Database->prepare($sql);
         $stmt->bindParam(':mid', $id, \PDO::PARAM_INT);
@@ -103,5 +99,22 @@ abstract class providerBase
     protected function getConfig($name)
     {
         return $this->FreePBX->Smsconnector->getProviderConfig($name);
+    }
+
+    public function getWebHookUrl()
+    {
+        $ampWebAddress = $this->getWebAddress();
+        return sprintf("https://%s/smsconn/provider.php?provider=%s", $ampWebAddress, $this->nameRaw);
+
+    }
+
+    protected function getWebAddress()
+    {
+        $ampWebAddress = $this->Config->get_conf_setting('AMPWEBADDRESS');
+        if (empty($ampWebAddress))  // We're going to make an educated guess and make an HTTPS URL from the external IP
+        {
+            $ampWebAddress = $this->Sipsettings->getConfig('externip');
+        }
+        return $ampWebAddress;
     }
 }

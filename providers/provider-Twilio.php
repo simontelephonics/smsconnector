@@ -1,5 +1,4 @@
 <?php
-
 namespace FreePBX\modules\Smsconnector\Provider;
 
 class Twilio extends providerBase 
@@ -17,6 +16,7 @@ class Twilio extends providerBase
                 'help'      => _("Enter the Twilio account SID"),
                 'default'   => '',
                 'required'  => true,
+                'placeholder' => _('Enter Account SID'),
             ),
             'api_secret' => array(
                 'type'      => 'string',
@@ -25,6 +25,7 @@ class Twilio extends providerBase
                 'default'   => '',
                 'required'  => true,
                 'class'     => 'confidential',
+                'placeholder' => _('Enter Token'),
             )
         );
     }

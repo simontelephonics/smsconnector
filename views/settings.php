@@ -9,15 +9,15 @@
 <?php
 	foreach ($settings as $key => $value)
 	{
-		$info = $value['info'];
-		$data = $value['value'];
-
-		$name = $info['name'];
-		$nameraw = $info['nameraw'];
+		$info 	 	= $value['info'];
+		$data 	 	= $value['value'];
+		$name  	 	= $info['name'];
+		$nameraw 	= $info['nameraw'];
+		$webhook	= $info['webhook'];
+		$id_webhook = $nameraw . "_webhook";
 		?>
 
-
-<div class="section-title" data-for="<?php echo  $nameraw?>">
+<div class="section-title" data-for="<?php echo  $nameraw; ?>">
     <h2><i class="fa fa-minus"></i> <?php echo  $name; ?></h2>
 </div>
 <div class="section" data-id="<?php echo $nameraw?>">
@@ -27,7 +27,8 @@
 		{
 			$info_line = $info['configs'][$key_data];
 			$prefixline = $nameraw.'-'.$key_data;
-			$class_input = empty($info_line['class']) ? '' : $info_line['class'];
+			$class_input = empty($info_line['class']) 		? '' : $info_line['class'];
+			$placeholder = empty($info_line['placeholder']) ? '' : sprintf(' placeholder="%s" ',$info_line['placeholder']);
 			?>
 
 	<div class="element-container">
@@ -40,7 +41,7 @@
 							<i class="fa fa-question-circle fpbx-help-icon" data-for="<?php echo $prefixline; ?>"></i>
 						</div>
 						<div class="col-md-9">
-							<input type="text" class="form-control <?php echo $class_input; ?>" id="<?php echo $prefixline; ?>" name="providers[<?php echo $nameraw; ?>][<?php echo $key_data; ?>]" value="<?php echo $value_data; ?>">
+							<input type="text" class="form-control <?php echo $class_input; ?>" <?php echo $placeholder; ?> id="<?php echo $prefixline; ?>" name="providers[<?php echo $nameraw; ?>][<?php echo $key_data; ?>]" value="<?php echo $value_data; ?>">
 						</div>
 					</div>
 				</div>
@@ -54,6 +55,34 @@
 	</div>
 
 			<?php
+		}
+		if (! empty($webhook))
+		{
+		?>
+
+	<div class="element-container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="row">
+					<div class="form-group">
+						<div class="col-md-3">
+							<label class="control-label"><?php echo _("Webhook Provider"); ?></label>
+						</div>
+						<div class="col-md-9">
+							<div class="input-group">
+								<input type="text" class="form-control" aria-describedby="<?php echo $id_webhook; ?>" value="<?php echo $webhook; ?>" readonly>
+								<span class="input-group-addon webhook-copy" id="<?php echo $id_webhook; ?>">
+									<i class="fa fa-files-o" aria-hidden="true"></i>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+		<?php
 		}
 		?>
 </div>

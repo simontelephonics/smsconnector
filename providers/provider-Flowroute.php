@@ -1,5 +1,4 @@
 <?php
-
 namespace FreePBX\modules\Smsconnector\Provider;
 
 class Flowroute extends providerBase 
@@ -17,6 +16,7 @@ class Flowroute extends providerBase
                 'help'      => _("Enter the Flowroute API key"),
                 'default'   => '',
                 'required'  => true,
+                'placeholder' => _('Enter Key'),
             ),
             'api_secret' => array(
                 'type'      => 'string',
@@ -25,6 +25,7 @@ class Flowroute extends providerBase
                 'default'   => '',
                 'required'  => true,
                 'class'     => 'confidential',
+                'placeholder' => _('Enter Secret'),
             )
         );
     }

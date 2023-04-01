@@ -1,5 +1,4 @@
 <?php
-
 namespace FreePBX\modules\Smsconnector\Provider;
 
 class Commio extends providerBase 
@@ -17,6 +16,7 @@ class Commio extends providerBase
                 'help'      => _("Enter the Commio API username"),
                 'default'   => '',
                 'required'  => true,
+                'placeholder' => _('Enter Username'),
             ),
             'api_secret' => array(
                 'type'      => 'string',
@@ -25,6 +25,7 @@ class Commio extends providerBase
                 'default'   => '',
                 'required'  => true,
                 'class'     => 'confidential',
+                'placeholder' => _('Enter Token'),
             ),
             'account_id' => array(
                 'type'      => 'string',
@@ -32,6 +33,7 @@ class Commio extends providerBase
                 'help'      => _("Enter the Commio account ID"),
                 'default'   => '',
                 'required'  => true,
+                'placeholder' => _('Enter Account ID'),
             )
         );
     }
@@ -129,7 +131,8 @@ class Commio extends providerBase
                 {
                     // Commio will send either 11-digit or 10-digit NANP. If 10 then we will add the 1
                     $from = (strlen($postdata['from']) == 10) ? '1'.$postdata['from'] : $postdata['from'];
-                    $to   = (strlen($postdata['to']) == 10) ? '1'.$postdata['to'] : $postdata['to'];
+                    $to   = (strlen($postdata['to']) == 10)   ? '1'.$postdata['to']   : $postdata['to'];
+                    $emid = $postdata['id'];
                     $text = '';
 
                     if (($postdata['type'] == 'sms') || ($postdata['type'] == 'mms' && (stripos($postdata['message'], 'http') !== 0))) 
@@ -163,7 +166,6 @@ class Commio extends providerBase
                         }
                     }
                     
-                    // TODO: $emid not definde?????
                     $connector->emitSmsInboundUserEvt($msgid, $to, $from, '', $text, null, 'Smsconnector', $emid);
                 }
                 $return_code = 202;

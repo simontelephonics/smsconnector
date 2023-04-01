@@ -1,5 +1,4 @@
 <?php
-
 namespace FreePBX\modules\Smsconnector\Provider;
 
 class Telnyx extends providerBase 
@@ -12,12 +11,13 @@ class Telnyx extends providerBase
 
         $this->configInfo = array(
             'api_key' => array(
-                'type'      => 'string',
-                'label'     => _('API Key'),
-                'help'      => _("Enter the Telnyx v2 API key"),
-                'default'   => '',
-                'required'  => true,
-                'class'     => 'confidential',
+                'type'        => 'string',
+                'label'       => _('API Key'),
+                'help'        => _("Enter the Telnyx v2 API key"),
+                'default'     => '',
+                'required'    => true,
+                'class'       => 'confidential',
+                'placeholder' => _('Enter Key'),
             ),
         );
     }
