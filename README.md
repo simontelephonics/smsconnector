@@ -26,7 +26,7 @@ a generic, expandable connector, with new providers added as contributed by the 
 
 ### Installation
 
-* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.5beta/smsconnector-16.0.5beta.tar.gz`
+* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.6beta/smsconnector-16.0.6beta.tar.gz`
 * `fwconsole r`
 
 ### Configuration
@@ -44,10 +44,10 @@ module or document.
 
 #### Provider Settings
 
-Once setup with your provider, generate an API key (Telnyx), or an API key and secret (Flowroute), or Account SID and 
-Auth Token (Twilio) and enter these into the SMS Connector -> Provider Settings screen.
+Once setup with your provider, generate an API key (Telnyx), an API key and secret (Flowroute), Account SID and 
+Auth Token (Twilio), or API token (Commio)  and enter these into the SMS Connector -> Provider Settings screen.
 
-In the provider portal, set the webhook URL in the format shown on the Provider Settings screen.
+In the provider portal, set the webhook URL for inbound SMS/MMS in the format shown on the Provider Settings screen ("Webhook Provider").
 
 #### Adding Numbers
 
