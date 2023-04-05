@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-01 16:35+0200\n"
+"POT-Creation-Date: 2023-04-05 22:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,33 +40,111 @@ msgstr ""
 msgid "Skip: the path is not a symbolic link!"
 msgstr ""
 
-#: Smsconnector.class.php:177
+#: Smsconnector.class.php:150
 msgid "Delete"
 msgstr ""
 
-#: Smsconnector.class.php:182
+#: Smsconnector.class.php:155
 msgid "Reset"
 msgstr ""
 
-#: Smsconnector.class.php:187
+#: Smsconnector.class.php:160
 msgid "Submit"
 msgstr ""
 
-#: Smsconnector.class.php:229
-msgid "Invalid Request"
+#: Smsconnector.class.php:234
+msgid "Number updated successfully"
 msgstr ""
 
-#: Smsconnector.class.php:456
+#: Smsconnector.class.php:238 Smsconnector.class.php:351
+msgid "Necessary data is missing!"
+msgstr ""
+
+#: Smsconnector.class.php:244
+msgid "Number created successfully"
+msgstr ""
+
+#: Smsconnector.class.php:258
+msgid "Number delete successfully"
+msgstr ""
+
+#: Smsconnector.class.php:262
+msgid "Number delete failed!"
+msgstr ""
+
+#: Smsconnector.class.php:268
+msgid "Command not found!"
+msgstr ""
+
+#: Smsconnector.class.php:362
+msgid "The DID already exists!"
+msgstr ""
+
+#: Smsconnector.class.php:490
 #, php-format
 msgid "Page Not Found (%s)!!!!"
 msgstr ""
 
-#: Smsconnector.class.php:472 views/page.main.php:25
+#: Smsconnector.class.php:506 views/page.main.php:20
 msgid "SMS Connector"
 msgstr ""
 
-#: assets/js/smsconnector.js:14
+#: assets/js/smsconnector.js:15
 msgid "URL copied to clipboard"
+msgstr ""
+
+#: assets/js/smsconnector.js:30
+msgid "New Number"
+msgstr ""
+
+#: assets/js/smsconnector.js:31 assets/js/smsconnector.js:139
+msgid "Create New"
+msgstr ""
+
+#: assets/js/smsconnector.js:41
+#, javascript-format
+msgid "Edit Number (%s)"
+msgstr ""
+
+#: assets/js/smsconnector.js:42 assets/js/smsconnector.js:139
+#: views/view.number.form.php:93
+msgid "Save Changes"
+msgstr ""
+
+#: assets/js/smsconnector.js:90
+msgid "DID cannot be blank"
+msgstr ""
+
+#: assets/js/smsconnector.js:95
+msgid "User cannot be blank"
+msgstr ""
+
+#: assets/js/smsconnector.js:100
+msgid "Provider cannot be blank"
+msgstr ""
+
+#: assets/js/smsconnector.js:105
+msgid "Updating..."
+msgstr ""
+
+#: assets/js/smsconnector.js:105
+msgid "Adding..."
+msgstr ""
+
+#: assets/js/smsconnector.js:151
+msgid "ID not detected!"
+msgstr ""
+
+#: assets/js/smsconnector.js:155
+msgid "Are you sure you want to delete the Number?"
+msgstr ""
+
+#: assets/js/smsconnector.js:156
+msgid "Yes"
+msgstr ""
+
+#: assets/js/smsconnector.js:156
+msgid "No"
 msgstr ""
 
 #: providers/Sample_provider-name.php:9
@@ -185,63 +263,11 @@ msgstr ""
 msgid "Enter the Twilio Auth Token"
 msgstr ""
 
-#: views/form.php:35 views/grid.php:22
-msgid "DID"
-msgstr ""
-
-#: views/form.php:47
-msgid ""
-"Enter the DID, including the country code. North America numbers must start "
-"with 1!"
-msgstr ""
-
-#: views/form.php:59
-msgid "User"
-msgstr ""
-
-#: views/form.php:82
-msgid "Select the user associated with the DID"
-msgstr ""
-
-#: views/form.php:94
-msgid "Provider Name"
-msgstr ""
-
-#: views/form.php:113
-msgid ""
-"Select the SMS provider. Only providers configured with credentials in the "
-"Provider Settings screen will be listed."
-msgstr ""
-
-#: views/grid.php:4 views/page.main.php:7 views/rnav.php:5
-msgid "Add Number"
-msgstr ""
-
-#: views/grid.php:5 views/page.main.php:12 views/rnav.php:6
+#: views/page.main.php:7 views/rnav.php:5 views/view.number.grid.php:5
 msgid "Provider Settings"
 msgstr ""
 
-#: views/grid.php:21
-msgid "Id"
-msgstr ""
-
-#: views/grid.php:23
-msgid "User ID"
-msgstr ""
-
-#: views/grid.php:24
-msgid "Provider"
-msgstr ""
-
-#: views/grid.php:25
-msgid "Action"
-msgstr ""
-
-#: views/page.main.php:7
-msgid "Edit Number"
-msgstr ""
-
-#: views/page.main.php:19 views/rnav.php:4
+#: views/page.main.php:14 views/rnav.php:4
 msgid "List Numbers"
 msgstr ""
 
@@ -271,6 +297,54 @@ msgstr ""
 
 #: views/settings.php:69
 msgid "Webhook Provider"
+msgstr ""
+
+#: views/view.number.form.php:15
+msgid "Loading..."
+msgstr ""
+
+#: views/view.number.form.php:24 views/view.number.grid.php:22
+msgid "DID"
+msgstr ""
+
+#: views/view.number.form.php:34
+msgid ""
+"Enter the DID, including the country code. North America numbers must start "
+"with 1!"
+msgstr ""
+
+#: views/view.number.form.php:43 views/view.number.grid.php:23
+msgid "User"
+msgstr ""
+
+#: views/view.number.form.php:60
+msgid "Select the user associated with the DID"
+msgstr ""
+
+#: views/view.number.form.php:69 views/view.number.grid.php:24
+msgid "Provider"
+msgstr ""
+
+#: views/view.number.form.php:86
+msgid ""
+"Select the SMS provider. Only providers configured with credentials in the "
+"Provider Settings screen will be listed."
+msgstr ""
+
+#: views/view.number.form.php:92
+msgid "Close"
+msgstr ""
+
+#: views/view.number.grid.php:4
+msgid "Add Number"
+msgstr ""
+
+#: views/view.number.grid.php:21
+msgid "Id"
+msgstr ""
+
+#: views/view.number.grid.php:25
+msgid "Action"
 msgstr ""
 
 #: views/view.userman.user.php:2

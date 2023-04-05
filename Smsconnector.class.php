@@ -105,38 +105,11 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	public function doConfigPageInit($page)
 	{
 		/** getReq provided by FreePBX_Helpers see https://wiki.freepbx.org/x/0YGUAQ */
-		$action = $this->getReq('action', '');
-		$id = $this->getReq('id', '');
-		$uid = $this->getReq('uid');
-		$did = $this->getReq('did');
-		$name = $this->getReq('name');
+		$action	   = $this->getReq('action', '');
 		$providers = $this->getReq('providers');
 
 		switch ($action) 
 		{
-			case 'add':
-				try 
-				{
-					$this->addNumber($uid, $did, $name);
-					header("Location: config.php?display=smsconnector");
-					exit;
-				}
-				catch (\Exception $e)
-				{
-					$_REQUEST['error_add'] = $e->getMessage();
-				}
-				break;
-
-			case 'delete':
-				return $this->deleteNumber($id);
-				break;
-
-			case 'edit':
-				$this->updateNumber($uid, $did, $name);
-				header("Location: config.php?display=smsconnector");
-				exit;
-				break;
-
 			case 'setproviders':
 				return $this->updateProviders($providers);
 				break;
@@ -202,32 +175,99 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 * @param array $setting ajax settings for this command typically untouched
 	 * @return bool
 	 */
-	public function ajaxRequest($command, &$setting)
+	public function ajaxRequest($req, &$setting)
 	{
-		//The ajax request
-		if ("getJSON" == $command) 
+		// ** Allow remote consultation with Postman **
+		// ********************************************
+		// $setting['authenticate'] = false;
+		// $setting['allowremote'] = true;
+		// return true;
+		// ********************************************
+		switch($req)
 		{
-			return true;
+			case "numbers_list":
+			case "numbers_get":
+			case "numbers_update":
+			case "numbers_delete":
+				return true;
+				break;
+
+			default:
+				return false;
 		}
 		return false;
 	}
 
 	/**
 	 * Handle Ajax request
-	 * @url ajax.php?module=smsconnector&command=getJSON&jdata=grid
-	 *
-	 * @return array
 	 */
 	public function ajaxHandler()
 	{
-		if ('getJSON' == $_REQUEST['command'] && 'grid' == $_REQUEST['jdata']) 
+		$command = $this->getReq("command", "");
+		$data_return = false;
+
+		switch ($command)
 		{
-			return $this->getList();
+			case 'numbers_list':
+				$data_return = $this->getList();
+				break;
+
+			case 'numbers_get':
+				$id = $this->getReq("id", array());
+				$data_return = array("status" => true, "data" => $this->getOne($id));
+				break;
+
+			case 'numbers_update':
+				$getdata = $this->getReq("data", array());
+
+				$id   = $getdata['id'];
+				$did  = $getdata['didNumber'];
+				$uid  = $getdata['uidNumber'];
+				$name = $getdata['providerNumber'];
+
+				try
+				{
+					if ($getdata['type'] == 'edit')
+					{
+						if ($this->updateNumber($uid, $did, $name))
+						{
+							$data_return = array("status" => true, "message" => _("Number updated successfully"));
+						}
+						else
+						{
+							$data_return = array("status" => false, "message" => _("Necessary data is missing!"));
+						}
+					}
+					else
+					{
+						$this->addNumber($uid, $did, $name);
+						$data_return = array("status" => true, "message" => _("Number created successfully"));
+					}
+				}
+				catch (\Exception $e)
+				{
+					$data_return = array("status" => false, "message" => $e->getMessage());
+				}
+				
+				break;
+
+			case 'numbers_delete':
+				$id = $this->getReq("id", array());
+				if ($this->deleteNumber($id))
+				{
+					$data_return = array("status" => true, "message" => _("Number delete successfully"));
+				}
+				else
+				{
+					$data_return = array("status" => false, "message" => _("Number delete failed!"));
+				}
+					
+				break;
+
+			default:
+				$data_return = array("status" => false, "message" => _("Command not found!"), "command" => $command);
 		}
-		return json_encode([
-			'status' => false,
-			'message' => _("Invalid Request")
-		]);
+		return $data_return;
 	}
 
 	//Module getters These are all custom methods
@@ -289,7 +329,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function getList()
 	{
-		$sql = sprintf('SELECT rt.didid as id, r.providerid as name, u.username, rt.did from %s as rt ' .
+		$sql = sprintf('SELECT rt.didid as id, r.providerid as name, u.username, rt.did, rt.uid from %s as rt ' .
 		'INNER JOIN userman_users as u on rt.uid = u.id ' .
 		'INNER JOIN %s as r ON rt.didid = r.didid ' .
 		'WHERE rt.adaptor = "%s"', $this->tablesSms['routing'], $this->tables['relations'], self::adapterName);
@@ -308,7 +348,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	{
 		if ( ($name == "") || ($did == "") || ($uid == ""))
 		{
-			throw new \Exception('Necessary data is missing!');
+			throw new \Exception(_('Necessary data is missing!'));
 		}
 
 		if ($checkExists == true)
@@ -319,7 +359,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			$stmt->execute();
 			if ($stmt->fetchColumn() > 0)
 			{
-				throw new \Exception('The DID already exists!');
+				throw new \Exception(_('The DID already exists!'));
 			}
 		}
 
@@ -425,16 +465,10 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				break;
 
 			case 'grid':
-				$data_return = load_view(__DIR__ . '/views/grid.php', $data);
-				break;
-
-			case 'form':
 				$data['userman'] =& $this->Userman;
-				if (!empty($request['id']))
-				{
-					$data['edit_data'] = $this->getOne($request['id']);
-				}
-				$data_return = load_view(__DIR__ . '/views/form.php',  $data);
+
+				$data_return  = load_view(__DIR__ . '/views/view.number.grid.php', $data);
+				$data_return .= load_view(__DIR__ . '/views/view.number.form.php', $data);
 				break;
 
 			case 'settings':

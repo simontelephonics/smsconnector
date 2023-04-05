@@ -3,11 +3,6 @@
 	
 	switch($request['view'])
 	{
-		case 'form':
-			$subhead = (isset($request['id'])) ? _('Edit Number') : _('Add Number');	
-			$content = $smsconnector->showPage('form');
-			break;
-
 		case 'settings':
 			$subhead = _('Provider Settings');
 			$content = $smsconnector->showPage('settings');

@@ -22,7 +22,7 @@
 	<hooks>  
 		<sms namespace="FreePBX\modules" class="Sms">
 			<method namespace="FreePBX\Modules" class="Smsconnector" callingMethod="loadAdaptor">smsAdaptor</method>
-        </sms>
+		</sms>
 		<userman class="Userman" namespace="FreePBX\modules">
 			<method callingMethod="myShowPage" class="Smsconnector" namespace="FreePBX\modules">usermanShowPage</method>
 			<method callingMethod="delUser" class="Smsconnector" namespace="FreePBX\modules">usermanDelUser</method>
