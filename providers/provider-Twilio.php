@@ -6,8 +6,10 @@ class Twilio extends providerBase
     public function __construct()
     {
         parent::__construct();
-        $this->name     = _('Twilio');
-        $this->nameRaw  = 'twilio';
+        $this->name       = _('Twilio');
+        $this->nameRaw    = 'twilio';
+        $this->APIUrlInfo = 'https://www.twilio.com/docs/sms';
+        $this->APIVersion = '2010-04-01';
 
         $this->configInfo = array(
             'api_key' => array(
@@ -29,7 +31,7 @@ class Twilio extends providerBase
             )
         );
     }
-    
+
     public function sendMedia($id, $to, $from, $message=null)
     {
         // this manual generation of the www-form-data request is because Twilio wants
@@ -85,7 +87,7 @@ class Twilio extends providerBase
             throw new \Exception('Unable to send message: ' .$e->getMessage());
         }
     }
-
+    
     public function callPublic($connector)
     {
         $return_code = 202;

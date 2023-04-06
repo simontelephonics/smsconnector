@@ -6,8 +6,10 @@ class Commio extends providerBase
     public function __construct()
     {
         parent::__construct();
-        $this->name     = _('Commio');
-        $this->nameRaw  = 'commio';
+        $this->name       = _('Commio');
+        $this->nameRaw    = 'commio';
+        $this->APIUrlInfo = 'https://apidocs.thinq.com/#bac2ace6-7777-47d8-931e-495b62f01799';
+        $this->APIVersion = '';
 
         $this->configInfo = array(
             'api_key' => array(
@@ -52,7 +54,7 @@ class Commio extends providerBase
         $this->sendCommio($req, $id, 'mms');
         return true;
     }
-
+    
     public function sendMessage($id, $to, $from, $message=null)
     {
         $req = array(
@@ -111,7 +113,6 @@ class Commio extends providerBase
         }
     }
 
-    
     public function callPublic($connector)
     {
         $return_code = 202;

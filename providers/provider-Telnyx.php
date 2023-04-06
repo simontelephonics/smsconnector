@@ -6,8 +6,10 @@ class Telnyx extends providerBase
     public function __construct()
     {
         parent::__construct();
-        $this->name     = _('Telnyx');
-        $this->nameRaw  = 'telnyx';
+        $this->name       = _('Telnyx');
+        $this->nameRaw    = 'telnyx';
+        $this->APIUrlInfo = 'https://developers.telnyx.com/docs/api/v2/messaging';
+        $this->APIVersion = 'v2';
 
         $this->configInfo = array(
             'api_key' => array(
@@ -36,7 +38,7 @@ class Telnyx extends providerBase
         $this->sendTelnyx($req, $id);
         return true;
     }
-
+    
     public function sendMessage($id, $to, $from, $message=null)
     {
         $req = array(

@@ -6,8 +6,10 @@ class Flowroute extends providerBase
     public function __construct()
     {
         parent::__construct();
-        $this->name     = _('Flowroute');
-        $this->nameRaw  = 'flowroute';
+        $this->name       = _('Flowroute');
+        $this->nameRaw    = 'flowroute';
+        $this->APIUrlInfo = 'https://developer.flowroute.com/api/messages/v2.2/';
+        $this->APIVersion = 'v2.2';
 
         $this->configInfo = array(
             'api_key' => array(
@@ -51,7 +53,7 @@ class Flowroute extends providerBase
         $this->sendFlowroute($req, $id);
         return true;
     }
-
+    
     public function sendMessage($id, $to, $from, $message=null)
     {
         $req = array(
@@ -94,7 +96,6 @@ class Flowroute extends providerBase
         }
     }
 
-    
     public function callPublic($connector)
     {
         $return_code = 202;

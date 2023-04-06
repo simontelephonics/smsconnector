@@ -12,6 +12,8 @@ abstract class providerBase
     protected $name       = '';
     protected $nameRaw    = '';
     protected $configInfo = array();
+    protected $APIUrlInfo = '';
+    protected $APIVersion = '';
 
     public function __construct()
     {
@@ -116,5 +118,12 @@ abstract class providerBase
             $ampWebAddress = $this->Sipsettings->getConfig('externip');
         }
         return $ampWebAddress;
+    }
+
+    public function getAPIInfo() {
+        return array(
+            'URL'     => $this->APIUrlInfo,
+            'VERSION' => $this->APIVersion,
+        );
     }
 }
