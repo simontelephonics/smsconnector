@@ -1,10 +1,4 @@
-<?php
-    if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
-
-    $users 		 	= $userman->getAllUsers();
-	$existingusers	= $smsconnector->getUsersWithDids();
-    $providers 		= $smsconnector->getAvailableProviders();
-?>
+<?php if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); } ?>
 
 <!--Add number Modal -->
 <div class="modal fade" id="numberForm" tabindex="-1" role="dialog" aria-labelledby="numberForm" aria-hidden="true">
@@ -44,14 +38,7 @@
                                 <i class="fa fa-question-circle fpbx-help-icon" data-for="uidNumber"></i>
                             </div>
                             <div class="col-md-8 col-lg-8 col-sm-12">
-                                <select name="uidNumber" id="uidNumber" class="form-control" required>
-                                    <?php 
-                                        foreach($users as $user)
-                                        {
-                                            echo sprintf('<option value="%s">%s (%s)</option>', $user['id'], $user['displayname'], $user['username']);
-                                        }
-                                    ?>
-                                </select>
+                                <select name="uidNumber" id="uidNumber" class="form-control" required></select>
                             </div>
                         </div>
                     </div>
@@ -70,14 +57,7 @@
                                 <i class="fa fa-question-circle fpbx-help-icon" data-for="providerNumber"></i>
                             </div>
                             <div class="col-md-8 col-lg-8 col-sm-12">
-                                <select name="providerNumber" id="providerNumber" class="form-control" required>
-                                    <?php 
-                                        foreach ($providers as $provider => $info)
-                                        {
-                                            echo sprintf('<option value="%s">%s</option>', $info['nameraw'], $info['name']);
-                                        }
-                                    ?>
-                                </select>
+                                <select name="providerNumber" id="providerNumber" class="form-control" required></select>
                             </div>
                         </div>
                     </div>

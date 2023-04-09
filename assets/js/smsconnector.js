@@ -1,9 +1,14 @@
 //This format's the action column
 function linkFormat(value, row, idx){
-	var html = '<a href="#" data-toggle="modal" data-target="#numberForm" data-id="' + row['id'] + '" data-did="' + row['did'] + '" data-uid="' + row['uid'] + '" data-provider="' + row['name'] + '" ><i class="fa fa-pencil"></i></a>';
+	var html = '<a href="#" data-toggle="modal" data-target="#numberForm" data-id="' + row['didid'] + '" data-did="' + row['did'] + '" data-uid="' + row['uid'] + '" data-provider="' + row['name'] + '" ><i class="fa fa-pencil"></i></a>';
 	html += '&nbsp;';
-	html += '<a href="#" data-id="' + row['id'] + '" id="del" data-idx="' + idx + '" ><i class="fa fa-trash"></i></a>';
+	html += '<a href="#" data-id="' + row['didid'] + '" id="del" data-idx="' + idx + '" ><i class="fa fa-trash"></i></a>';
 	return html;
+}
+
+function userFormat(value, row, idx)
+{
+	return (row['displayname'] == "") ? value : sprintf("%s (%s)", value, row['displayname']);
 }
 
 $(document).ready(function() {
@@ -17,9 +22,58 @@ $(document).ready(function() {
 });
 
 
+function updateInputSelects()
+{
+	var status_return = true;
+
+	$('#uidNumber').empty();
+	$('#providerNumber').empty();
+
+	$.ajax({
+		type: "POST",
+		url: window.FreePBX.ajaxurl,
+		data: {
+			module  : 'smsconnector',
+			command : 'get_selects',
+		},
+		async: false,
+		success: function(response)
+		{
+			if (response.status)
+			{
+				$.each(response.data.users, function(user_id, user_display) {
+					$('#uidNumber').append($('<option>', {
+						value: user_id,
+						text: user_display
+					}));
+				});
+				$.each(response.data.providers, function(provider_id, provider_display) {
+					$('#providerNumber').append($('<option>', {
+						value: provider_id,
+						text: provider_display
+					}));
+				});
+			}
+			else
+			{
+				fpbxToast(response.message, '', 'error');
+				status_return = false;
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown)
+		{
+			fpbxToast(textStatus + ' - ' + errorThrown, '', 'error');
+			status_return = false;
+		}
+	});
+	return status_return;
+}
+
 //initailise data when modal opens
 $('#numberForm').on('show.bs.modal', function (e) {
 	var id = $(e.relatedTarget).data('id');
+	var showModal = true;
+	
 
 	$('.element-container').removeClass('has-error');
 
@@ -42,29 +96,60 @@ $('#numberForm').on('show.bs.modal', function (e) {
 		var btn_send = _("Save Changes");
 
 		var didNumber_readonly = true;
-		
-		// TODO: Implement get data via AJAX, now get data from buttom edit.
-		var number	 = $(e.relatedTarget).data('did');
-		var user	 = $(e.relatedTarget).data('uid');
-		var provider = $(e.relatedTarget).data('provider');
+
+		$.ajax({
+			type: "POST",
+			url: window.FreePBX.ajaxurl,
+			data: {
+				module	: 'smsconnector',
+				command	: 'numbers_get',
+				id		: id,
+			},
+			async: false,
+			success: function(response)
+			{
+				if (response.status)
+				{
+					number 	 = response.data.did;
+					user 	 = response.data.uid;
+					provider = response.data.name;
+				}
+				else
+				{
+					fpbxToast(response.message, '', 'error');
+					showModal = false;
+				}
+			},
+			error: function(xhr, status, error)
+			{
+				fpbxToast(sprintf(_('Error: %s'), error), '', 'error');
+				showModal = false;
+			}
+		});
 	}
 
-	$this = this;
+	if (showModal && updateInputSelects())
+	{
+		$this = this;	
+		
+		$("#submitForm").text(btn_send);
+		$("#submitForm").prop("disabled", false);
 
-	$("#submitForm").text(btn_send);
-	$("#submitForm").prop("disabled", false);
-
-	$(this).find('.modal-title').text(title);
+		$(this).find('.modal-title').text(title);
 	
-	$("#idNumber").val(id);
+		$("#idNumber").val(id);
 
-	$('#didNumber').prop('readonly', didNumber_readonly);
-	$("#didNumber").val(number);
+		$('#didNumber').prop('readonly', didNumber_readonly);
+		$("#didNumber").val(number);
 
-	// TODO: Implement get data list via ajax, now generate list in process generate page
-	$("#uidNumber").val(user);
-	$("#providerNumber").val(provider);
+		$("#uidNumber").val(user);
+		$("#providerNumber").val(provider);
+	}
 
+	if (!showModal)
+	{
+		e.preventDefault();
+	}
 });
 
 //add / update Number

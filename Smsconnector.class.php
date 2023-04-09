@@ -16,7 +16,11 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		'relations' => 'smsconnector_relations',
 	);
 	protected $tablesSms = array(
-		'routing' => 'sms_routing'
+		'routing' => 'sms_routing',
+		'dids'	  => 'sms_dids',
+	);
+	protected $tablesUserman = array(
+		'users' => 'userman_users',
 	);
 
 	public function __construct($freepbx = null)
@@ -121,7 +125,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		switch($request['view'])
 		{
 			case 'settings':
-			case 'form':
 				return load_view(dirname(__FILE__).'/views/rnav.php', array());
 				break;
 			default:
@@ -144,11 +147,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				return [];
 			}
 			$buttons = [
-				'delete' => [
-					'name' => 'delete',
-					'id' => 'delete',
-					'value' => _('Delete')
-				],
 				'reset' => [
 					'name' => 'reset',
 					'id' => 'reset',
@@ -160,10 +158,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 					'value' => _("Submit")
 				]
 			];
-			if (!isset($_GET['id']) || empty($_GET['id'])) 
-			{
-				unset($buttons['delete']);
-			}
 			return $buttons;
 		}
 	}
@@ -185,6 +179,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		// ********************************************
 		switch($req)
 		{
+			case "get_selects":
 			case "numbers_list":
 			case "numbers_get":
 			case "numbers_update":
@@ -208,13 +203,39 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 		switch ($command)
 		{
+			case 'get_selects':
+				$data['users'] 	   = array();
+				$data['providers'] = array();
+				foreach($this->Userman->getAllUsers() as $user)
+				{
+					$data['users'][$user['id']] = empty($user['displayname']) ? $user['username'] : sprintf('%s (%s)', $user['displayname'], $user['username']);
+				}
+				foreach ($this->getAvailableProviders() as $provider => $info)
+				{
+					$data['providers'][$info['nameraw']] = $info['name'];
+				}
+				$data_return = array("status" => true, 'data' => $data);
+				break;
+
 			case 'numbers_list':
 				$data_return = $this->getList();
 				break;
 
 			case 'numbers_get':
-				$id = $this->getReq("id", array());
-				$data_return = array("status" => true, "data" => $this->getOne($id));
+				$id 	= $this->getReq("id", null);
+				if (empty($id))
+				{
+					$data_return = array("status" => false, "message" => _("ID is missing!"));
+				}
+				else if (! $this->isExistDIDByID($id))
+				{
+					$data_return = array("status" => false, "message" => _("ID does not exist!"));
+				}
+				else
+				{
+					$dataId = $this->getNumber($id);
+					$data_return = array("status" => true, "data" => $dataId);
+				}
 				break;
 
 			case 'numbers_update':
@@ -229,14 +250,8 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				{
 					if ($getdata['type'] == 'edit')
 					{
-						if ($this->updateNumber($uid, $did, $name))
-						{
-							$data_return = array("status" => true, "message" => _("Number updated successfully"));
-						}
-						else
-						{
-							$data_return = array("status" => false, "message" => _("Necessary data is missing!"));
-						}
+						$this->updateNumber($uid, $did, $name);
+						$data_return = array("status" => true, "message" => _("Number updated successfully"));
 					}
 					else
 					{
@@ -252,8 +267,16 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				break;
 
 			case 'numbers_delete':
-				$id = $this->getReq("id", array());
-				if ($this->deleteNumber($id))
+				$id = $this->getReq("id", null);
+				if (empty($id))
+				{
+					$data_return = array("status" => false, "message" => _("ID is missing!"));
+				}
+				else if (! $this->isExistDIDByID($id))
+				{
+					$data_return = array("status" => false, "message" => _("ID does not exist!"));
+				}
+				else if ($this->deleteNumber($id))
 				{
 					$data_return = array("status" => true, "message" => _("Number delete successfully"));
 				}
@@ -261,39 +284,12 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				{
 					$data_return = array("status" => false, "message" => _("Number delete failed!"));
 				}
-					
 				break;
 
 			default:
 				$data_return = array("status" => false, "message" => _("Command not found!"), "command" => $command);
 		}
 		return $data_return;
-	}
-
-	//Module getters These are all custom methods
-	/**
-	 * getOne Gets an individual item by ID
-	 * @param  int $id Item ID
-	 * @return array Returns an associative array with id, subject and body.
-	 */
-	public function getOne($id)
-	{
-		$sql = sprintf('SELECT rt.didid as id, r.providerid as name, u.username, u.id as uid, u.displayname, rt.did from %s as rt ' .
-		'INNER JOIN userman_users as u ON rt.uid = u.id ' .
-		'INNER JOIN %s as r ON rt.didid = r.didid ' .
-		'WHERE rt.adaptor = "%s" AND rt.didid = :id', $this->tablesSms['routing'], $this->tables['relations'], self::adapterName);
-		$stmt = $this->Database->prepare($sql);
-		$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-		$stmt->execute();
-		$row = $stmt->fetchObject();
-		return [
-			'id' => $row->id,
-			'name' => $row->name,
-			'username' => $row->username,
-			'displayname' => $row->displayname,
-			'uid' => $row->uid,
-			'did' => $row->did
-		];
 	}
 
 	/**
@@ -329,14 +325,44 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function getList()
 	{
-		$sql = sprintf('SELECT rt.didid as id, r.providerid as name, u.username, rt.did, rt.uid from %s as rt ' .
-		'INNER JOIN userman_users as u on rt.uid = u.id ' .
+		$sql = sprintf('SELECT r.id, rt.didid, r.providerid AS name, u.username, u.displayname, rt.did, rt.uid FROM %s AS rt ' .
+		'INNER JOIN %s as u on rt.uid = u.id ' .
 		'INNER JOIN %s as r ON rt.didid = r.didid ' .
-		'WHERE rt.adaptor = "%s"', $this->tablesSms['routing'], $this->tables['relations'], self::adapterName);
+		'WHERE rt.adaptor = "%s"', $this->tablesSms['routing'], $this->tablesUserman['users'], $this->tables['relations'], self::adapterName);
 		$data = $this->Database->query($sql)->fetchAll(\PDO::FETCH_NAMED);
 		return $data;
 	}
-	//Module setters these are all custom methods.
+
+	/**
+	 * getNumber Gets an individual item by smsconnector_relations.ID
+	 * @param  int $id Item ID
+	 * @return array Returns an associative array with id, subject and body.
+	 */
+	public function getNumber($id)
+	{
+		$data_return = null;
+		if ($this->isExistDIDByID($id))
+		{
+			$sql = sprintf('SELECT r.id, rt.didid, r.providerid as name, u.username, u.id as uid, u.displayname, rt.did from %s as rt ' .
+			'INNER JOIN %s as u ON rt.uid = u.id ' .
+			'INNER JOIN %s as r ON rt.didid = r.didid ' .
+			'WHERE rt.adaptor = "%s" AND rt.didid = :id', $this->tablesSms['routing'], $this->tablesUserman['users'], $this->tables['relations'], self::adapterName);
+			$stmt = $this->Database->prepare($sql);
+			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+			$stmt->execute();
+			$row = $stmt->fetchObject();
+			$data_return = [
+				'id' 		  => $row->id,
+				'didid' 	  => $row->didid,
+				'name'		  => $row->name,
+				'username' 	  => $row->username,
+				'displayname' => $row->displayname,
+				'did' 		  => $row->did,
+				'uid' 		  => $row->uid,
+			];
+		}
+		return $data_return;
+	}
 
 	/**
 	 * addNumber Add a number
@@ -350,33 +376,29 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		{
 			throw new \Exception(_('Necessary data is missing!'));
 		}
-
-		if ($checkExists == true)
+		else if (($checkExists == true) && ($this->isExistDID($did)))
 		{
-			$sql = 'SELECT COUNT(*) FROM smsconnector_relations as r INNER JOIN sms_dids AS d ON r.didid = d.id WHERE d.did = :did';
-			$stmt = $this->Database->prepare($sql);
-			$stmt->bindParam(':did', $did, \PDO::PARAM_STR);
-			$stmt->execute();
-			if ($stmt->fetchColumn() > 0)
-			{
-				throw new \Exception(_('The DID already exists!'));
-			}
+			throw new \Exception(_('The DID already exists!'));
 		}
 
 		$this->FreePBX->Sms->addDIDRouting($did, array($uid), self::adapterName);
 
-		$sql = "SELECT id FROM sms_dids WHERE did = :did";
+		$sql = sprintf("SELECT id FROM %s WHERE did = :did", $this->tablesSms['dids']);
 		$sth = $this->Database->prepare($sql);
 		$sth->execute(array(':did' => $did));
 		$didid = $sth->fetchColumn();
 
-		$sql = sprintf('INSERT INTO %s (didid, providerid) VALUES (:didid, :provider) ON DUPLICATE KEY UPDATE providerid = :provider', $this->tables['relations']);
-		$stmt = $this->Database->prepare($sql);
-		$stmt->bindParam(':didid', $didid, \PDO::PARAM_INT);
-		$stmt->bindParam(':provider', $name, \PDO::PARAM_STR);
-		$stmt->execute();
+		if (! empty($didid))
+		{
+			$sql = sprintf('INSERT INTO %s (didid, providerid) VALUES (:didid, :provider) ON DUPLICATE KEY UPDATE providerid = :provider', $this->tables['relations']);
+			$stmt = $this->Database->prepare($sql);
+			$stmt->bindParam(':didid', $didid, \PDO::PARAM_INT);
+			$stmt->bindParam(':provider', $name, \PDO::PARAM_STR);
+			$stmt->execute();
+			return true;
+		}
 
-		return true;
+		return false;
 	}
 
 	/**
@@ -388,35 +410,80 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function updateNumber($uid, $did, $name)
 	{
-		if ( ($name == "") || ($did == "") || ($uid == ""))
-		{
-			return false;
-		}
-
-		$this->addNumber($uid, $did, $name, false);
-		return true;
+		return $this->addNumber($uid, $did, $name, false);
 	}
 	
 	/**
-	 * deleteNumber Deletes the given number by didid
-	 * @param  int $id      DID ID
-	 * @return bool          Returns true on success or false on failure
+	 * deleteNumber Deletes the given number by smsconnector_relations.didid
+	 * @param  int $id      ID
+	 * @return bool         Returns true on success or false on failure
 	 */
 	public function deleteNumber($id)
 	{
-		if ($id == "") { return false; }
+		if ($this->isExistDIDByID($id))
+		{
+			$sql = sprintf('DELETE FROM %s WHERE didid = :id', $this->tables['relations']);
+			$stmt = $this->Database->prepare($sql);
+			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+			$stmt->execute();
 
-		$sql = sprintf('DELETE FROM %s WHERE didid = :id', $this->tables['relations']);
-		$stmt = $this->Database->prepare($sql);
-		$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-		$stmt->execute();
+			$sql = sprintf('DELETE FROM %s WHERE didid = :id', $this->tablesSms['routing']);
+			$stmt = $this->Database->prepare($sql);
+			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+			$stmt->execute();
 
-		$sql = sprintf('DELETE FROM %s WHERE didid = :id', $this->tablesSms['routing']);
-		$stmt = $this->Database->prepare($sql);
-		$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-		$stmt->execute();
+			$sql = sprintf('DELETE FROM %s WHERE id = :id', $this->tablesSms['dids']);
+			$stmt = $this->Database->prepare($sql);
+			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+			$stmt->execute();
 
-		return true;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * isExistDIDByID Check if the ID exists using the ID or DIDID (table relations)
+	 * @param int $id           ID
+	 * @param bool $useddidid	True used column DIDID, False used column ID (defualt DIDID).
+	 * @return bool             Returns true on existe of false if is not exist or not definded id.
+	 */
+	public function isExistDIDByID($id, $useddidid = true)
+	{
+		if (trim($id) != "")
+		{
+			$sql  = sprintf('SELECT COUNT(*) FROM %s WHERE %s = :id', $this->tables['relations'], ($useddidid ? 'didid' : 'id'));
+			$stmt = $this->Database->prepare($sql);
+			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+			$stmt->execute();
+			if ($stmt->fetchColumn() > 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * isExistDID Check if the Did exist
+	 * @param string $did Number DID
+	 * @return bool Returns true on exist and False if not exist.
+	 */
+	public function isExistDID($did)
+	{
+		$data_raturn = false;
+		if (trim($did) != "")
+		{
+			$sql  = sprintf('SELECT COUNT(*) FROM %s as r INNER JOIN %s AS d ON r.didid = d.id WHERE d.did = :did', $this->tables['relations'], $this->tablesSms['dids']);
+			$stmt = $this->Database->prepare($sql);
+			$stmt->bindParam(':did', $did, \PDO::PARAM_STR);
+			$stmt->execute();
+			if ($stmt->fetchColumn() > 0)
+			{
+				$data_raturn = true;
+			}
+		}
+		return $data_raturn;
 	}
 
 	/**
@@ -465,8 +532,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				break;
 
 			case 'grid':
-				$data['userman'] =& $this->Userman;
-
 				$data_return  = load_view(__DIR__ . '/views/view.number.grid.php', $data);
 				$data_return .= load_view(__DIR__ . '/views/view.number.form.php', $data);
 				break;

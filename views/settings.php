@@ -106,7 +106,7 @@
 		if (! empty($webhook))
 		{
 			$api_info = $info['class']->getAPIInfo();
-			$help = sprintf('<p>%s <a href="%s" target="_blank">%s</a>%s</p>', _('More information about the API'), $api_info['URL'], _('Click Here') , empty($api_info['VERSION']) ? '' : sprintf(_(' - Supported Version %s'), $api_info['VERSION']));
+			$help = sprintf('<p>%s <a href="%s" target="_blank"><i class="fa fa-external-link-square" aria-hidden="true"></i></a>%s</p>', _('More information about the API'), $api_info['URL'], empty($api_info['VERSION']) ? '' : sprintf(_(' - Supported Version %s'), $api_info['VERSION']));
 			$replace  = array(
 				"%%__PREFIXLINE__%%" => $nameraw.'-webhook',
 				"%%__ID_WEBHOOK__%%" => $nameraw . "_webhook",
