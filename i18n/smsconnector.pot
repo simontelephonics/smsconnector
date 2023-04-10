@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-05 22:46+0200\n"
+"POT-Creation-Date: 2023-04-10 15:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,134 +16,144 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: .git\n"
 "X-Poedit-SearchPathExcluded-1: i18n\n"
 
-#: Smsconnector.class.php:55
+#: Smsconnector.class.php:56
 msgid "Creating link to public folder..."
 msgstr ""
 
-#: Smsconnector.class.php:61 Smsconnector.class.php:85
+#: Smsconnector.class.php:62 Smsconnector.class.php:86
 msgid "Done"
 msgstr ""
 
-#: Smsconnector.class.php:65
+#: Smsconnector.class.php:66
 msgid "Skip: the path already exists!"
 msgstr ""
 
-#: Smsconnector.class.php:76
+#: Smsconnector.class.php:77
 msgid "Removing public folder link..."
 msgstr ""
 
-#: Smsconnector.class.php:89
+#: Smsconnector.class.php:90
 msgid "Error: the path still exists!"
 msgstr ""
 
-#: Smsconnector.class.php:94
+#: Smsconnector.class.php:95
 msgid "Skip: the path is not a symbolic link!"
 msgstr ""
 
 #: Smsconnector.class.php:150
-msgid "Delete"
-msgstr ""
-
-#: Smsconnector.class.php:155
 msgid "Reset"
 msgstr ""
 
-#: Smsconnector.class.php:160
+#: Smsconnector.class.php:155
 msgid "Submit"
 msgstr ""
 
-#: Smsconnector.class.php:234
+#: Smsconnector.class.php:225 Smsconnector.class.php:270
+msgid "ID is missing!"
+msgstr ""
+
+#: Smsconnector.class.php:229 Smsconnector.class.php:274
+msgid "ID does not exist!"
+msgstr ""
+
+#: Smsconnector.class.php:251
 msgid "Number updated successfully"
 msgstr ""
 
-#: Smsconnector.class.php:238 Smsconnector.class.php:351
-msgid "Necessary data is missing!"
-msgstr ""
-
-#: Smsconnector.class.php:244
+#: Smsconnector.class.php:256
 msgid "Number created successfully"
 msgstr ""
 
-#: Smsconnector.class.php:258
+#: Smsconnector.class.php:278
 msgid "Number delete successfully"
 msgstr ""
 
-#: Smsconnector.class.php:262
+#: Smsconnector.class.php:282
 msgid "Number delete failed!"
 msgstr ""
 
-#: Smsconnector.class.php:268
+#: Smsconnector.class.php:287
 msgid "Command not found!"
 msgstr ""
 
-#: Smsconnector.class.php:362
+#: Smsconnector.class.php:420
+msgid "Necessary data is missing!"
+msgstr ""
+
+#: Smsconnector.class.php:424
 msgid "The DID already exists!"
 msgstr ""
 
-#: Smsconnector.class.php:490
+#: Smsconnector.class.php:598
 #, php-format
 msgid "Page Not Found (%s)!!!!"
 msgstr ""
 
-#: Smsconnector.class.php:506 views/page.main.php:20
+#: Smsconnector.class.php:614 views/page.main.php:20
 msgid "SMS Connector"
 msgstr ""
 
-#: assets/js/smsconnector.js:15
+#: assets/js/smsconnector.js:27
 msgid "URL copied to clipboard"
 msgstr ""
 
-#: assets/js/smsconnector.js:30
+#: assets/js/smsconnector.js:99
 msgid "New Number"
 msgstr ""
 
-#: assets/js/smsconnector.js:31 assets/js/smsconnector.js:139
+#: assets/js/smsconnector.js:100 assets/js/smsconnector.js:246
 msgid "Create New"
 msgstr ""
 
-#: assets/js/smsconnector.js:41
+#: assets/js/smsconnector.js:106
 #, javascript-format
 msgid "Edit Number (%s)"
 msgstr ""
 
-#: assets/js/smsconnector.js:42 assets/js/smsconnector.js:139
-#: views/view.number.form.php:93
+#: assets/js/smsconnector.js:107 assets/js/smsconnector.js:246
+#: views/view.number.form.php:96
 msgid "Save Changes"
 msgstr ""
 
-#: assets/js/smsconnector.js:90
+#: assets/js/smsconnector.js:137
+#, javascript-format
+msgid "Error: %s"
+msgstr ""
+
+#: assets/js/smsconnector.js:197
 msgid "DID cannot be blank"
 msgstr ""
 
-#: assets/js/smsconnector.js:95
-msgid "User cannot be blank"
+#: assets/js/smsconnector.js:202
+msgid "User list cannot be blank"
 msgstr ""
 
-#: assets/js/smsconnector.js:100
+#: assets/js/smsconnector.js:207
 msgid "Provider cannot be blank"
 msgstr ""
 
-#: assets/js/smsconnector.js:105
+#: assets/js/smsconnector.js:212
 msgid "Updating..."
 msgstr ""
 
-#: assets/js/smsconnector.js:105
+#: assets/js/smsconnector.js:212
 msgid "Adding..."
 msgstr ""
 
-#: assets/js/smsconnector.js:151
+#: assets/js/smsconnector.js:259
 msgid "ID not detected!"
 msgstr ""
 
-#: assets/js/smsconnector.js:155
-msgid "Are you sure you want to delete the Number?"
+#: assets/js/smsconnector.js:264
+#, javascript-format
+msgid "Are you sure you want to delete the DID (%s)?"
 msgstr ""
 
-#: assets/js/smsconnector.js:156
+#: assets/js/smsconnector.js:265
 msgid "Yes"
 msgstr ""
 
-#: assets/js/smsconnector.js:156
+#: assets/js/smsconnector.js:265
 msgid "No"
 msgstr ""
 
@@ -167,39 +177,39 @@ msgstr ""
 msgid "Commio"
 msgstr ""
 
-#: providers/provider-Commio.php:15
+#: providers/provider-Commio.php:17
 msgid "Username"
 msgstr ""
 
-#: providers/provider-Commio.php:16
+#: providers/provider-Commio.php:18
 msgid "Enter the Commio API username"
 msgstr ""
 
-#: providers/provider-Commio.php:19
+#: providers/provider-Commio.php:21
 msgid "Enter Username"
 msgstr ""
 
-#: providers/provider-Commio.php:23
+#: providers/provider-Commio.php:25
 msgid "API Token"
 msgstr ""
 
-#: providers/provider-Commio.php:24
+#: providers/provider-Commio.php:26
 msgid "Enter the Commio API token"
 msgstr ""
 
-#: providers/provider-Commio.php:28 providers/provider-Twilio.php:28
+#: providers/provider-Commio.php:30 providers/provider-Twilio.php:30
 msgid "Enter Token"
 msgstr ""
 
-#: providers/provider-Commio.php:32
+#: providers/provider-Commio.php:34
 msgid "Account ID"
 msgstr ""
 
-#: providers/provider-Commio.php:33
+#: providers/provider-Commio.php:35
 msgid "Enter the Commio account ID"
 msgstr ""
 
-#: providers/provider-Commio.php:36
+#: providers/provider-Commio.php:38
 msgid "Enter Account ID"
 msgstr ""
 
@@ -207,27 +217,27 @@ msgstr ""
 msgid "Flowroute"
 msgstr ""
 
-#: providers/provider-Flowroute.php:15 providers/provider-Telnyx.php:15
+#: providers/provider-Flowroute.php:17 providers/provider-Telnyx.php:17
 msgid "API Key"
 msgstr ""
 
-#: providers/provider-Flowroute.php:16
+#: providers/provider-Flowroute.php:18
 msgid "Enter the Flowroute API key"
 msgstr ""
 
-#: providers/provider-Flowroute.php:19 providers/provider-Telnyx.php:20
+#: providers/provider-Flowroute.php:21 providers/provider-Telnyx.php:22
 msgid "Enter Key"
 msgstr ""
 
-#: providers/provider-Flowroute.php:23
+#: providers/provider-Flowroute.php:25
 msgid "API Secret"
 msgstr ""
 
-#: providers/provider-Flowroute.php:24
+#: providers/provider-Flowroute.php:26
 msgid "Enter the Flowroute API secret"
 msgstr ""
 
-#: providers/provider-Flowroute.php:28
+#: providers/provider-Flowroute.php:30
 msgid "Enter Secret"
 msgstr ""
 
@@ -235,7 +245,7 @@ msgstr ""
 msgid "Telnyx"
 msgstr ""
 
-#: providers/provider-Telnyx.php:16
+#: providers/provider-Telnyx.php:18
 msgid "Enter the Telnyx v2 API key"
 msgstr ""
 
@@ -243,23 +253,23 @@ msgstr ""
 msgid "Twilio"
 msgstr ""
 
-#: providers/provider-Twilio.php:15
+#: providers/provider-Twilio.php:17
 msgid "Account SID"
 msgstr ""
 
-#: providers/provider-Twilio.php:16
+#: providers/provider-Twilio.php:18
 msgid "Enter the Twilio account SID"
 msgstr ""
 
-#: providers/provider-Twilio.php:19
+#: providers/provider-Twilio.php:21
 msgid "Enter Account SID"
 msgstr ""
 
-#: providers/provider-Twilio.php:23
+#: providers/provider-Twilio.php:25
 msgid "Auth Token"
 msgstr ""
 
-#: providers/provider-Twilio.php:24
+#: providers/provider-Twilio.php:26
 msgid "Enter the Twilio Auth Token"
 msgstr ""
 
@@ -295,52 +305,65 @@ msgstr ""
 msgid "Webhook Settings"
 msgstr ""
 
-#: views/settings.php:69
+#: views/settings.php:48
 msgid "Webhook Provider"
 msgstr ""
 
-#: views/view.number.form.php:15
+#: views/settings.php:109
+msgid "More information about the API"
+msgstr ""
+
+#: views/settings.php:109
+#, php-format
+msgid " - Supported Version %s"
+msgstr ""
+
+#: views/view.number.form.php:9
 msgid "Loading..."
 msgstr ""
 
-#: views/view.number.form.php:24 views/view.number.grid.php:22
+#: views/view.number.form.php:18 views/view.number.grid.php:22
 msgid "DID"
 msgstr ""
 
-#: views/view.number.form.php:34
+#: views/view.number.form.php:28
 msgid ""
 "Enter the DID, including the country code. North America numbers must start "
 "with 1!"
 msgstr ""
 
-#: views/view.number.form.php:43 views/view.number.grid.php:23
-msgid "User"
+#: views/view.number.form.php:39 views/view.number.grid.php:23
+msgid "Users"
 msgstr ""
 
-#: views/view.number.form.php:60
-msgid "Select the user associated with the DID"
+#: views/view.number.form.php:44
+msgid "Select the users associated with the DID"
 msgstr ""
 
-#: views/view.number.form.php:69 views/view.number.grid.php:24
+#: views/view.number.form.php:55
+msgid "Available"
+msgstr ""
+
+#: views/view.number.form.php:61
+msgid "Selected"
+msgstr ""
+
+#: views/view.number.form.php:79 views/view.number.grid.php:24
 msgid "Provider"
 msgstr ""
 
-#: views/view.number.form.php:86
+#: views/view.number.form.php:89
 msgid ""
 "Select the SMS provider. Only providers configured with credentials in the "
 "Provider Settings screen will be listed."
 msgstr ""
 
-#: views/view.number.form.php:92
+#: views/view.number.form.php:95
 msgid "Close"
 msgstr ""
 
 #: views/view.number.grid.php:4
 msgid "Add Number"
-msgstr ""
-
-#: views/view.number.grid.php:21
-msgid "Id"
 msgstr ""
 
 #: views/view.number.grid.php:25
