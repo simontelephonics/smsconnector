@@ -1,7 +1,55 @@
-
 @media (min-width: 768px){
 	.modal-dialog {
 		width: 726px;
 		margin: 30px auto;
+	}
+}
+
+.BoxUsersList {
+	.alert {
+		text-align: center;
+	}
+	ul {
+		width: 100%;
+		height: 250px;
+		max-height: 250px;
+		margin-bottom: 10px;
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+
+		border: 1px dashed rgb(197, 70, 70);
+	}
+
+	ul li {
+		background-color: Azure;
+		list-style-type: "";
+		text-align: left;
+		padding: 5px;
+		border: 0px;
+	}
+
+	ul li:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+
+	ul li.selected {
+		background-color: GoldenRod;
+	}
+}
+
+#hwgrid {
+	td,th {
+  		vertical-align: middle;
+	}
+
+	td.col-users {
+		white-space: normal !important;
+		word-wrap: break-word;
+	}
+
+	span.label-username {
+		display: inline-block;
+		white-space: normal;
+		margin-right: 5px;
 	}
 }

@@ -19,10 +19,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		'routing' => 'sms_routing',
 		'dids'	  => 'sms_dids',
 	);
-	protected $tablesUserman = array(
-		'users' => 'userman_users',
-	);
-
+	
 	public function __construct($freepbx = null)
 	{
 		if ($freepbx == null) {
@@ -240,22 +237,22 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 			case 'numbers_update':
 				$getdata = $this->getReq("data", array());
-
 				$id   = $getdata['id'];
 				$did  = $getdata['didNumber'];
-				$uid  = $getdata['uidNumber'];
+				$uids = $getdata['uidsNumber'];
 				$name = $getdata['providerNumber'];
 
+				$uids = explode(",", $uids);
 				try
 				{
 					if ($getdata['type'] == 'edit')
 					{
-						$this->updateNumber($uid, $did, $name);
+						$this->updateNumber($uids, $did, $name);
 						$data_return = array("status" => true, "message" => _("Number updated successfully"));
 					}
 					else
 					{
-						$this->addNumber($uid, $did, $name);
+						$this->addNumber($uids, $did, $name);
 						$data_return = array("status" => true, "message" => _("Number created successfully"));
 					}
 				}
@@ -325,11 +322,16 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function getList()
 	{
-		$sql = sprintf('SELECT r.id, rt.didid, r.providerid AS name, u.username, u.displayname, rt.did, rt.uid FROM %s AS rt ' .
-		'INNER JOIN %s as u on rt.uid = u.id ' .
+		$sql = sprintf('SELECT r.id, rt.didid, r.providerid AS name, GROUP_CONCAT(DISTINCT rt.uid) AS users, rt.did FROM %s AS rt ' .
 		'INNER JOIN %s as r ON rt.didid = r.didid ' .
-		'WHERE rt.adaptor = "%s"', $this->tablesSms['routing'], $this->tablesUserman['users'], $this->tables['relations'], self::adapterName);
+		'WHERE rt.adaptor = "%s" ' .
+		'GROUP BY r.id, rt.didid, r.providerid, rt.did', $this->tablesSms['routing'], $this->tables['relations'], self::adapterName);
+		
 		$data = $this->Database->query($sql)->fetchAll(\PDO::FETCH_NAMED);
+		foreach ($data as $key => &$value)
+		{
+			$value['users'] = $this->getInfoUserByID($value['users'], true);
+		}
 		return $data;
 	}
 
@@ -343,10 +345,10 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$data_return = null;
 		if ($this->isExistDIDByID($id))
 		{
-			$sql = sprintf('SELECT r.id, rt.didid, r.providerid as name, u.username, u.id as uid, u.displayname, rt.did from %s as rt ' .
-			'INNER JOIN %s as u ON rt.uid = u.id ' .
+			$sql = sprintf('SELECT r.id, rt.didid, r.providerid AS name, GROUP_CONCAT(DISTINCT rt.uid) AS users, rt.did FROM %s as rt ' .
 			'INNER JOIN %s as r ON rt.didid = r.didid ' .
-			'WHERE rt.adaptor = "%s" AND rt.didid = :id', $this->tablesSms['routing'], $this->tablesUserman['users'], $this->tables['relations'], self::adapterName);
+			'WHERE rt.adaptor = "%s" AND rt.didid = :id ' .
+			'GROUP BY r.id, rt.didid, r.providerid, rt.did', $this->tablesSms['routing'], $this->tables['relations'], self::adapterName);
 			$stmt = $this->Database->prepare($sql);
 			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
 			$stmt->execute();
@@ -355,11 +357,47 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				'id' 		  => $row->id,
 				'didid' 	  => $row->didid,
 				'name'		  => $row->name,
-				'username' 	  => $row->username,
-				'displayname' => $row->displayname,
+				'users' 	  => $this->getInfoUserByID($row->users, true),
 				'did' 		  => $row->did,
-				'uid' 		  => $row->uid,
 			];
+		}
+		return $data_return;
+	}
+
+	/**
+	 * getInfoUserByID We obtain the information of the users with the userman module.
+	 * @param mixed $uid			UID or array of UIDs of the users that we want to obtain information.
+	 * @param bool $needExplode		True if we need to exploit the uids, False (default) if nothing needs to be done.
+	 * @param string $explodeChar	The character the used for the explode (default ',').
+	 * @param array $info_return	The array of the information that we wish to obtain (default userman and displayname).
+	 * @return array				Array of the information the users.
+	 */
+	private function getInfoUserByID($uid, $needExplode = false, $explodeChar = ",", $info_return = null)
+	{
+		if ($needExplode && ! is_array($needExplode))
+		{
+			$uid = explode($explodeChar, $uid);
+		}
+		if (! is_array($uid))
+		{
+			$uid = array($uid);
+		}
+
+		$data_return = array();
+		if (is_null($info_return))
+		{
+			$info_return = array('username', 'displayname');
+		}
+		foreach ($uid as $userid)
+		{
+			$user_info = $this->Userman->getUserByID($userid);
+			$data_user = array('uid' => $userid);
+
+			foreach ($info_return as $option)
+			{
+				$data_user[$option] = $user_info[$option];
+			}
+			$data_return[$userid] = $data_user;
 		}
 		return $data_return;
 	}
@@ -372,7 +410,12 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function addNumber($uid, $did, $name, $checkExists = true)
 	{
-		if ( ($name == "") || ($did == "") || ($uid == ""))
+		if (! is_array($uid))
+		{
+			$uid = array($uid);
+		}
+
+		if ( ($name == "") || ($did == "") || (empty($uid)))
 		{
 			throw new \Exception(_('Necessary data is missing!'));
 		}
@@ -381,7 +424,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			throw new \Exception(_('The DID already exists!'));
 		}
 
-		$this->FreePBX->Sms->addDIDRouting($did, array($uid), self::adapterName);
+		$this->FreePBX->Sms->addDIDRouting($did, $uid, self::adapterName);
 
 		$sql = sprintf("SELECT id FROM %s WHERE did = :did", $this->tablesSms['dids']);
 		$sth = $this->Database->prepare($sql);

@@ -2,13 +2,20 @@
 function linkFormat(value, row, idx){
 	var html = '<a href="#" data-toggle="modal" data-target="#numberForm" data-id="' + row['didid'] + '" data-did="' + row['did'] + '" data-uid="' + row['uid'] + '" data-provider="' + row['name'] + '" ><i class="fa fa-pencil"></i></a>';
 	html += '&nbsp;';
-	html += '<a href="#" data-id="' + row['didid'] + '" id="del" data-idx="' + idx + '" ><i class="fa fa-trash"></i></a>';
+	html += '<a href="#" data-id="' + row['didid'] + '" data-did="' + row['did'] + '" id="del" data-idx="' + idx + '" ><i class="fa fa-trash"></i></a>';
 	return html;
 }
 
 function userFormat(value, row, idx)
 {
-	return (row['displayname'] == "") ? value : sprintf("%s (%s)", value, row['displayname']);
+	var html = '';
+	$.each(value, function(uid, user_info)
+	{
+		html += '<span class="label label-default label-username">'
+		html += (user_info['displayname'] == "") ? user_info['username'] : sprintf("%s (%s)", user_info['username'], user_info['displayname']);
+		html += '</span>';
+	});
+	return html;
 }
 
 $(document).ready(function() {
@@ -26,7 +33,10 @@ function updateInputSelects()
 {
 	var status_return = true;
 
-	$('#uidNumber').empty();
+	$('#uidsNumber').empty();
+	$('#available_users').empty();
+	$('#selected_users').empty();
+
 	$('#providerNumber').empty();
 
 	$.ajax({
@@ -42,10 +52,7 @@ function updateInputSelects()
 			if (response.status)
 			{
 				$.each(response.data.users, function(user_id, user_display) {
-					$('#uidNumber').append($('<option>', {
-						value: user_id,
-						text: user_display
-					}));
+					$("#available_users").append(sprintf('<li class="list-group-item" data-uid="%s">%s</li>',user_id, user_display));
 				});
 				$.each(response.data.providers, function(provider_id, provider_display) {
 					$('#providerNumber').append($('<option>', {
@@ -69,15 +76,23 @@ function updateInputSelects()
 	return status_return;
 }
 
-//initailise data when modal opens
+$('#numberForm').on('shown.bs.modal', function () {
+	$("#available_users").scrollTop(0);
+	$("#selected_users").scrollTop(0);
+});
+
 $('#numberForm').on('show.bs.modal', function (e) {
 	var id = $(e.relatedTarget).data('id');
 	var showModal = true;
 	
-
 	$('.element-container').removeClass('has-error');
 
 	$(".input-warn").remove();
+
+	var number	 = "";
+	var provider = "";
+	var users	 = "";
+	var uids 	 = "";
 
 	if (id == null || id == undefined || id == "")
 	{
@@ -85,10 +100,6 @@ $('#numberForm').on('show.bs.modal', function (e) {
 		var btn_send = _("Create New");
 
 		var didNumber_readonly = false;
-
-		var number	 = "";
-		var user	 = "";
-		var provider = "";
 	}
 	else
 	{
@@ -111,8 +122,9 @@ $('#numberForm').on('show.bs.modal', function (e) {
 				if (response.status)
 				{
 					number 	 = response.data.did;
-					user 	 = response.data.uid;
 					provider = response.data.name;
+					users 	 = response.data.users;
+					uids 	 = Object.keys(users);
 				}
 				else
 				{
@@ -130,8 +142,19 @@ $('#numberForm').on('show.bs.modal', function (e) {
 
 	if (showModal && updateInputSelects())
 	{
-		$this = this;	
-		
+		$this = this;
+
+		if (uids !== "")
+		{
+			$('#available_users > li').each(function()
+			{
+				if (uids.includes($(this).data('uid').toString())) {
+					$(this).appendTo('#selected_users');
+				}
+			});
+			$("#uidsNumber").val(uids);
+		}
+
 		$("#submitForm").text(btn_send);
 		$("#submitForm").prop("disabled", false);
 
@@ -142,7 +165,6 @@ $('#numberForm').on('show.bs.modal', function (e) {
 		$('#didNumber').prop('readonly', didNumber_readonly);
 		$("#didNumber").val(number);
 
-		$("#uidNumber").val(user);
 		$("#providerNumber").val(provider);
 	}
 
@@ -158,7 +180,7 @@ $('#submitForm').on('click', function () {
 
  	var id 		 = $("#idNumber").val();
 	var did 	 = $("#didNumber").val();
-	var uid 	 = $("#uidNumber").val();
+	var uids 	 = $("#uidsNumber").val();
 	var provider = $("#providerNumber").val();
 
 	if (id === '' || id === null || id === undefined)
@@ -175,9 +197,9 @@ $('#submitForm').on('click', function () {
 		warnInvalid($('#didNumber'), _('DID cannot be blank'));
 		return;
 	}
-	if (uid === '' || uid === null || uid === undefined)
+	if (uids === '' || uids === null || uids === undefined)
 	{
-		warnInvalid($('#uidNumber'), _('User cannot be blank'));
+		warnInvalid($('#uidsNumber'), _('User list cannot be blank'));
 		return;
 	}
 	if (provider === '' || provider === null || provider === undefined)
@@ -196,7 +218,7 @@ $('#submitForm').on('click', function () {
 			type: typeUpdate,
 			id: id,
 			didNumber: did,
-			uidNumber: uid,
+			uidsNumber: uids,
 			providerNumber: provider,
 		}
 	};
@@ -229,15 +251,17 @@ $('#submitForm').on('click', function () {
 
 //Delete Number
 $(document).on('click', '[id="del"]', function () {
-	var id = $(this).data('id');
+	var id  = $(this).data('id');
+	var did = $(this).data('did');
 
 	if (id === "" || id === undefined || id === null)
 	{
 		fpbxToast(_("ID not detected!"), '', 'error');
+		return;
 	}
 
 	fpbxConfirm(
-		_("Are you sure you want to delete the Number?"),
+		sprintf(_("Are you sure you want to delete the DID (%s)?"), did),
 		_("Yes"), _("No"),
 		function () {
 			var post_data = {
@@ -261,3 +285,63 @@ $(document).on('click', '[id="del"]', function () {
 		}
 	);
 });
+
+$(document).ready(function()
+{
+	$(".UserList").on('click', 'li', function (e) {
+		if (e.ctrlKey || e.metaKey) {
+			$(this).toggleClass("selected");
+		} else {
+			$(this).addClass("selected").siblings().removeClass('selected');
+		}
+	}).sortable({
+		connectWith: ".UserList",
+		delay: 150, //Needed to prevent accidental drag when trying to select
+		revert: 0,
+		helper: function (e, item) {
+			//Basically, if you grab an unhighlighted item to drag, it will deselect (unhighlight) everything else
+			if (!item.hasClass('selected')) {
+				item.addClass('selected').siblings().removeClass('selected');
+			}
+			
+			//////////////////////////////////////////////////////////////////////
+			//HERE'S HOW TO PASS THE SELECTED ITEMS TO THE `stop()` FUNCTION:
+			
+			//Clone the selected items into an array
+			var elements = item.parent().children('.selected').clone();
+			
+			//Add a property to `item` called 'multidrag` that contains the 
+			//  selected items, then remove the selected items from the source list
+			item.data('multidrag', elements).siblings('.selected').remove();
+					
+			//Now the selected items exist in memory, attached to the `item`,
+			//  so we can access them later when we get to the `stop()` callback
+			
+			//Create the helper
+			var helper = $('<li/>');
+			return helper.append(elements);
+		},
+		stop: function (e, ui) {
+			//Now we access those items that we stored in `item`s data!
+			var elements = ui.item.data('multidrag');
+			
+			//`elements` now contains the originally selected items from the source list (the dragged items)!!
+			
+			//Finally we insert the selected items after the `item`, then remove the `item`, since 
+			//  item is a duplicate of one of the selected items.
+			ui.item.after(elements).remove();
+			elements.removeClass('selected');
+			updateUsers();
+		}
+	
+	});
+
+});
+
+function updateUsers(){
+    var optionTexts = [];
+	$("#selected_users li").each(function() {
+		optionTexts.push($(this).data("uid"))
+	});
+    $('#uidsNumber').val(optionTexts);
+}

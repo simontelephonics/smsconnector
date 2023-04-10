@@ -14,11 +14,11 @@
                 <div class="element-container" style="margin-top: 1rem;">
                     <div class="row">
                         <div class="form-group">
-                            <div class="col-md-4 col-lg-4 col-sm-12">
+                            <div class="col-md-3 col-lg-3 col-sm-12">
                                 <label class="control-label" for="didNumber"><?php echo _("DID") ?></label>
                                 <i class="fa fa-question-circle fpbx-help-icon" data-for="didNumber"></i>
                             </div>
-                            <div class="col-md-8 col-lg-8 col-sm-12">
+                            <div class="col-md-9 col-lg-9 col-sm-12">
                                 <input type="text" name="didNumber" class="form-control " id="didNumber" required>
                             </div>
                         </div>
@@ -29,34 +29,57 @@
                         </div>
                     </div>
                 </div>
-                <!--USER-->
+                 <!-- Block Users -->
                 <div class="element-container" style="margin-top: 1rem;">
                     <div class="row">
-                        <div class="form-group">
-                            <div class="col-md-4 col-lg-4 col-sm-12">
-                                <label for="uidNumber" class="control-label"><?php echo _("User") ?></label>
-                                <i class="fa fa-question-circle fpbx-help-icon" data-for="uidNumber"></i>
-                            </div>
-                            <div class="col-md-8 col-lg-8 col-sm-12">
-                                <select name="uidNumber" id="uidNumber" class="form-control" required></select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-12">
-                            <span id="uidNumber-help" class="help-block fpbx-help-block"><?php echo _("Select the user associated with the DID") ?></span>
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-3 col-lg-3 col-sm-12">
+                                        <label class="control-label" for="uidsNumber"><?php echo _('Users')?></label>
+                                        <i class="fa fa-question-circle fpbx-help-icon" data-for="uidsNumber"></i>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <span id="uidsNumber-help" class="help-block fpbx-help-block">
+                                                    <?php echo _('Select the users associated with the DID')?>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9 col-lg-9 col-sm-12">
+                                        <input type="hidden" class="form-control" name="uidsNumber" id="uidsNumber" value="" readonly>
+                                        <div class="BoxUsersList">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="alert alert-info" role="alert">
+                                                        <?php echo _("Available"); ?>
+                                                    </div>
+                                                    <ul class="UserList list-group" id="available_users"></ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="alert alert-info" role="alert">
+                                                        <?php echo _("Selected"); ?>
+                                                    </div>
+                                                    <ul class="UserList list-group" id="selected_users"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- Block Users -->
                 <!--PROVIDER-->
                 <div class="element-container" style="margin-top: 1rem;">
                     <div class="row">
                         <div class="form-group">
-                            <div class="col-md-4 col-lg-4 col-sm-12">
+                            <div class="col-md-3 col-lg-3 col-sm-12">
                                 <label class="control-label" for="providerNumber"><?php echo _("Provider") ?></label>
                                 <i class="fa fa-question-circle fpbx-help-icon" data-for="providerNumber"></i>
                             </div>
-                            <div class="col-md-8 col-lg-8 col-sm-12">
+                            <div class="col-md-9 col-lg-9 col-sm-12">
                                 <select name="providerNumber" id="providerNumber" class="form-control" required></select>
                             </div>
                         </div>

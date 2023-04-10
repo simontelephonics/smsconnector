@@ -19,10 +19,10 @@
 	class="table table-striped">
 	<thead>
 		<tr>
-			<th data-field="did" data-sortable="true" class="col-md-4"><?php echo _("DID")?></th>
-			<th data-field="username" data-sortable="true" data-formatter="userFormat" class="col-md-4"><?php echo _("User")?></th>
-			<th data-field="name" data-sortable="true" class="col-md-3"><?php echo _("Provider")?></th>
-			<th data-field="id" data-formatter="linkFormat" class="col-md-2 text-center"><?php echo _("Action")?></th>
+			<th data-field="did" data-sortable="true" class="col-md-2"><?php echo _("DID")?></th>
+			<th data-field="users" data-sortable="true" data-formatter="userFormat" data-class="col-users" class="col-md-7"><?php echo _("Users")?></th>
+			<th data-field="name" data-sortable="true" class="col-md-2"><?php echo _("Provider")?></th>
+			<th data-field="id" data-formatter="linkFormat" class="col-md-1 text-center"><?php echo _("Action")?></th>
 		</tr>
 	</thead>
 </table>
