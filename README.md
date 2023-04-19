@@ -13,10 +13,6 @@ a generic, expandable connector, with new providers added as contributed by the 
 * Send and receive SMS and MMS through UCP and Sangoma Connect 
 * Mix-and-match: if you have numbers on multiple providers you are not limited to just one
 
-### Limitations
-
-* One-to-one number/user association currently (no shared numbers or multiple numbers on the same user)
-
 ### Providers
 
 * Telnyx: Messaging API v2 (https://developers.telnyx.com/docs/api/v2/messaging)
@@ -26,7 +22,7 @@ a generic, expandable connector, with new providers added as contributed by the 
 
 ### Installation
 
-* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.6beta/smsconnector-16.0.6beta.tar.gz`
+* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.7beta/smsconnector-16.0.7beta.tar.gz`
 * `fwconsole r`
 
 ### Configuration
@@ -51,10 +47,9 @@ In the provider portal, set the webhook URL for inbound SMS/MMS in the format sh
 
 #### Adding Numbers
 
-Enter a number (DID), pick the user to which the DID should be assigned, and select the provider for that number.
+Enter a number (DID), pick the user(s) to which the DID should be assigned, and select the provider for that number.
 
 ### Possible Improvements
 
-* Multiple numbers per user or multiple users per number
 * Configuration within User Management (dummy screen right now)
 * Automatic addition of FreePBX Firewall rules when module is installed and removal when module is uninstalled
