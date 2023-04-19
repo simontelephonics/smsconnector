@@ -475,11 +475,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
 			$stmt->execute();
 
-			$sql = sprintf('DELETE FROM %s WHERE id = :id', $this->tablesSms['dids']);
-			$stmt = $this->Database->prepare($sql);
-			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-			$stmt->execute();
-
 			return true;
 		}
 		return false;
