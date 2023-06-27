@@ -26,9 +26,9 @@ class Voxtelesys extends providerBase
     public function sendMedia($id, $to, $from, $message=null)
     {
         $req = array(
-            'from'       => '+'.$from,
-            'to'         => '+'.$to,
-            'media_urls' => $this->media_urls($id)
+            'from'  => '+'.$from,
+            'to'    => '+'.$to,
+            'media' => $this->media_urls($id)
         );
         if ($message)
         {
