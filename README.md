@@ -19,6 +19,7 @@ a generic, expandable connector, with new providers added as contributed by the 
 * Flowroute: Messaging API v2.2, webhook v2.1 (https://developer.flowroute.com/api/messages/v2.2/)
 * Twilio: Messaging API version 2010-04-01 (https://www.twilio.com/docs/sms)
 * Commio/Thinq: (https://apidocs.thinq.com/#bac2ace6-7777-47d8-931e-495b62f01799)
+* Voxtelesys: Messaging API v1 (https://smsapi.voxtelesys.com)
 
 ### Installation
 
@@ -40,7 +41,7 @@ module or document.
 
 #### Provider Settings
 
-Once setup with your provider, generate an API key (Telnyx), an API key and secret (Flowroute), Account SID and 
+Once setup with your provider, generate an API key (Telnyx, Voxtelesys), an API key and secret (Flowroute), Account SID and 
 Auth Token (Twilio), or API token (Commio)  and enter these into the SMS Connector -> Provider Settings screen.
 
 In the provider portal, set the webhook URL for inbound SMS/MMS in the format shown on the Provider Settings screen ("Webhook Provider").
