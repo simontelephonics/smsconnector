@@ -1,0 +1,22 @@
+{
+    "rawname": "smsconnector",
+    "repo": "unsupported",
+    "name": "SMS Connector",
+    "version": "16.0.8",
+    "publisher": "Simon Telephonics LLC",
+    "license": "GPLv3+",
+    "licenselink": "http://www.gnu.org/licenses/gpl-3.0.txt",
+    "changelog": "GA release",
+    "category": "Connectivity",
+    "description": "Implements a generic SMS connector",
+    "depends": {
+        "version": "16",
+        "module": "sms",
+        "module": "userman",
+        "module": "sipsettings"
+    },
+    "supported": {
+        "version": "16.0"
+    },
+    "location": "https://github.com/simontelephonics/smsconnector/releases/download/v16.0.8/smsconnector-16.0.8.tar.gz"
+}
