@@ -2,12 +2,13 @@
 	<rawname>smsconnector</rawname>
 	<repo>unsupported</repo>
 	<name>SMS Connector</name>
-	<version>16.0.7beta</version>
+	<version>16.0.8</version>
 	<category>Connectivity</category>
 	<Publisher>Simon Telephonics LLC</Publisher>
 	<info>http://wiki.freepbx.org/</info>
 	<license>GPLv3+</license>
 	<licenselink>https://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
+	<updateurl>https://simontelephonics.github.io/smsconnector/module.json</updateurl>
 	<menuitems>
 		<smsconnector>SMS Connector</smsconnector>
 	</menuitems>
@@ -42,6 +43,7 @@
 		</table>
 	</database>
 	<changelog>
+		*16.0.8* GA release. Added contributed provider connector Voxtelesys
 		*16.0.7beta* Added multi-user selection in SMS Connector screen, improved UI
 		*16.0.6beta* Consolidate webhook endpoints to single php file, add i18n
 		*16.0.5beta* Add Commio/Thinq provider, small improvements

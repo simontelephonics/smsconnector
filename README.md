@@ -23,7 +23,7 @@ a generic, expandable connector, with new providers added as contributed by the 
 
 ### Installation
 
-* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.7beta/smsconnector-16.0.7beta.tar.gz`
+* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.8/smsconnector-16.0.8.tar.gz`
 * `fwconsole r`
 
 ### Configuration
