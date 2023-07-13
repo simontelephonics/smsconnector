@@ -6,17 +6,20 @@
     "publisher": "Simon Telephonics LLC",
     "license": "GPLv3+",
     "licenselink": "http://www.gnu.org/licenses/gpl-3.0.txt",
-    "changelog": "GA release of SMS Connector",
+    "changelog": "*16.0.8* GA release. Added contributed provider connector Voxtelesys\n\t\t*16.0.7beta* Added multi-user selection in SMS Connector screen, improved UI\n\t\t*16.0.6beta* Consolidate webhook endpoints to single php file, add i18n\n\t\t*16.0.5beta* Add Commio/Thinq provider, small improvements\n\t\t*16.0.4beta* Numerous improvements\n\t\t*16.0.2beta* Fix #3 and add some verbiage\n\t\t*16.0.1beta* Add Twilio and fix manifest\n\t\t*16.0.0beta* Initial Release",
     "category": "Connectivity",
     "description": "Implements a generic SMS connector",
     "depends": {
         "version": "16",
-        "module": "sms",
-        "module": "userman",
-        "module": "sipsettings"
+        "module": [
+            "sms",
+            "userman",
+            "sipsettings"
+        ]
     },
     "supported": {
         "version": "16.0"
     },
-    "location": "https://simon.tel/pbx-modules/smsconnector-16.0.8.tar.gz"
+    "location": "https://github.com/freepbx_smsconnector/releases/download/v16.0.8/freepbx_smsconnector.tar.gz",
+    "md5sum": "1e926f2fc04e0fddba68ca961fc7bfc2"
 }
