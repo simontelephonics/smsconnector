@@ -20,10 +20,11 @@ a generic, expandable connector, with new providers added as contributed by the 
 * Twilio: Messaging API version 2010-04-01 (https://www.twilio.com/docs/sms)
 * Commio/Thinq: (https://apidocs.thinq.com/#bac2ace6-7777-47d8-931e-495b62f01799)
 * Voxtelesys: Messaging API v1 (https://smsapi.voxtelesys.com)
+* Skyetel: SMS and MMS API (https://support.skyetel.com/hc/en-us/articles/360056299914-SMS-MMS-API)
 
 ### Installation
 
-* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.8/smsconnector-16.0.8.tar.gz`
+* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.9/smsconnector-16.0.9.tar.gz`
 * `fwconsole r`
 
 ### Configuration

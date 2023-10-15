@@ -124,20 +124,35 @@ class Twilio extends providerBase
                     
                     if (isset($postdata['NumMedia']) && ($postdata['NumMedia'] > 0)) 
                     {
-                        for ($x=0;$x<=$postdata['NumMedia'];$x++) 
+                        $config = $this->getConfig($this->nameRaw);
+                        $options = array(
+                            "auth" => array(
+                                $config['api_key'],
+                                $config['api_secret']
+                            )
+                        );
+                        for ($x=0;$x<$postdata['NumMedia'];$x++) 
                         {
-                            $img = file_get_contents($postdata["MediaUrl$x"]);
-                            foreach ($http_response_header as $header) 
+                            $session = \FreePBX::Curl()->requests($postdata["MediaUrl$x"]);
+
+                            try
                             {
-                                if (preg_match('/Content-Disposition.*filename="(.*)"/', $header, $matches)) 
-                                {
-                                    $name = $matches[1];
-                                }
+                                $img = $session->get('', array(), $options);
+                            }
+                            catch (\Exception $e)
+                            {
+                                throw new \Exception('Unable to get media file: ' .$e->getMessage());
+                            }
+
+                            $name = "media";
+                            if (preg_match('/filename="(.*)"/', $img->headers['content-disposition'], $matches))
+                            {
+                                $name = $matches[1];
                             }
 
                             try 
                             {
-                                $connector->addMedia($msgid, $name, $img);
+                                $connector->addMedia($msgid, $name, $img->body);
                             } 
                             catch (\Exception $e) 
                             {
