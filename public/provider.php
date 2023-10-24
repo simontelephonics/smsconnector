@@ -1,7 +1,14 @@
 <?php
-if (! empty($_GET['provider']))
+if (strstr($_SERVER['QUERY_STRING'], ';') !== FALSE) // using ; as separator
 {
-    $provider = $_GET['provider'];
+    $qs = str_replace(';', '&', $_SERVER['QUERY_STRING']);
+    parse_str($qs, $sms);
+} else {
+    $sms = $_GET;
+}
+if (! empty($sms['provider']))
+{
+    $provider = $sms['provider'];
 
     // load FreePBX
     $bootstrap_settings['freepbx_auth'] = false;
