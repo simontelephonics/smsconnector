@@ -21,10 +21,11 @@ a generic, expandable connector, with new providers added as contributed by the 
 * Commio/Thinq: (https://apidocs.thinq.com/#bac2ace6-7777-47d8-931e-495b62f01799)
 * Voxtelesys: Messaging API v1 (https://smsapi.voxtelesys.com)
 * Skyetel: SMS and MMS API (https://support.skyetel.com/hc/en-us/articles/360056299914-SMS-MMS-API)
+* Voip.ms: SMS and MMS API (https://voip.ms/m/apidocs.php)
 
 ### Installation
 
-* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.9/smsconnector-16.0.9.tar.gz`
+* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.10/smsconnector-16.0.10.tar.gz`
 * `fwconsole r`
 
 ### Configuration
@@ -42,8 +43,8 @@ module or document.
 
 #### Provider Settings
 
-Once setup with your provider, generate an API key (Telnyx, Voxtelesys), an API key and secret (Flowroute), Account SID and 
-Auth Token (Twilio), or API token (Commio)  and enter these into the SMS Connector -> Provider Settings screen.
+Once set up with your provider, generate or locate the required credentials, typically an API key and secret,
+and enter these into the SMS Connector -> Provider Settings screen.
 
 In the provider portal, set the webhook URL for inbound SMS/MMS in the format shown on the Provider Settings screen ("Webhook Provider").
 

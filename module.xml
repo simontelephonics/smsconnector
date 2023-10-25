@@ -2,7 +2,7 @@
 	<rawname>smsconnector</rawname>
 	<repo>unsupported</repo>
 	<name>SMS Connector</name>
-	<version>16.0.9</version>
+	<version>16.0.10</version>
 	<category>Connectivity</category>
 	<Publisher>Simon Telephonics LLC</Publisher>
 	<info>http://wiki.freepbx.org/</info>
@@ -43,6 +43,7 @@
 		</table>
 	</database>
 	<changelog>
+		*16.0.10* Added Voip.ms, improved media handling
 		*16.0.9* Added Skyetel, improved Twilio
 		*16.0.8* GA release. Added contributed provider connector Voxtelesys
 		*16.0.7beta* Added multi-user selection in SMS Connector screen, improved UI

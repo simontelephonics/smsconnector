@@ -415,6 +415,11 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			$uid = array($uid);
 		}
 
+		if (preg_match('/[2-9]\d{2}[2-9]\d{6}/', $did)) // ten digit NANP, make it 11-digit
+		{
+			$did = '1'.$did;
+		}
+
 		if ( ($name == "") || ($did == "") || (empty($uid)))
 		{
 			throw new \Exception(_('Necessary data is missing!'));
