@@ -2,11 +2,11 @@
     "rawname": "smsconnector",
     "repo": "unsupported",
     "name": "SMS Connector",
-    "version": "16.0.9",
+    "version": "16.0.10",
     "publisher": "Simon Telephonics LLC",
     "license": "GPLv3+",
     "licenselink": "http://www.gnu.org/licenses/gpl-3.0.txt",
-    "changelog": "Adds Skyetel and improves Twilio integration",
+    "changelog": "Adds Voip.ms and improves media handling",
     "category": "Connectivity",
     "description": "Implements a generic SMS connector",
     "depends": {
@@ -18,5 +18,5 @@
     "supported": {
         "version": "16.0"
     },
-    "location": "https://simon.tel/pbx-modules/smsconnector-16.0.9.tar.gz"
+    "location": "https://simon.tel/pbx-modules/smsconnector-16.0.10.tar.gz"
 }
