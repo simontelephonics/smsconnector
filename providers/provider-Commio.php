@@ -156,7 +156,7 @@ class Commio extends providerBase
                         // MMS with a URL in the message field: fetch the media
                         $img = file_get_contents($postdata['message']);
                         $purl = parse_url($postdata['message']);
-                        $name = basename($purl['path']);
+                        $name = $msgid . basename($purl['path']);
                         try 
                         {
                             $connector->addMedia($msgid, $name, $img);

@@ -137,7 +137,7 @@ class Flowroute extends providerBase
                                 if ($media->type == 'media') 
                                 {
                                     $img = file_get_contents($media->attributes->url);
-                                    $name = $media->attributes->file_name;
+                                    $name = $msgid . $media->attributes->file_name;
                                 
                                     try 
                                     {

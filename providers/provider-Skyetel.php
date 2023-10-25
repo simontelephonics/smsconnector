@@ -116,7 +116,7 @@ class Skyetel extends providerBase
                     {
                         $img  = file_get_contents($media);
                         $purl = parse_url($media);
-                        $name = basename($purl['path']);
+                        $name = $msgid . basename($purl['path']);
                         try 
                         {
                             $connector->addMedia($msgid, $name, $img);

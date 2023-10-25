@@ -14,17 +14,17 @@ if (! empty($sms['provider']))
     $bootstrap_settings['freepbx_auth'] = false;
     require '/etc/freepbx.conf';
 
-    $freepbx         = \FreePBX::Create();
-    $smsconnector    = $freepbx->Smsconnector();
-    $listProviders   = $smsconnector->listProviders();
-    $availabeProvers = $smsconnector->getAvailableProviders();
+    $freepbx            = \FreePBX::Create();
+    $smsconnector       = $freepbx->Smsconnector();
+    $listProviders      = $smsconnector->listProviders();
+    $availableProviders = $smsconnector->getAvailableProviders();
 
-    if (in_array($provider, array_keys($availabeProvers)))
+    if (in_array($provider, array_keys($availableProviders)))
     {
         $connector = $freepbx->Sms->loadAdaptor('Smsconnector');
         try 
         {
-            $code = $availabeProvers[$provider]['class']->callPublic($connector);
+            $code = $availableProviders[$provider]['class']->callPublic($connector);
             if ($code !== "")
             {
                 freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s): Return Code %s", $provider, $code));

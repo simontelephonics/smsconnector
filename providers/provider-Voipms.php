@@ -8,6 +8,8 @@ class Voipms extends providerBase
         parent::__construct();
         $this->name     = _('Voip.ms');
         $this->nameRaw  = 'voipms';
+        $this->APIUrlInfo = 'https://voip.ms/m/apidocs.php';
+        $this->APIVersion = 'v1';
 
         $this->configInfo = array(
             'api_key' => array(
@@ -15,7 +17,6 @@ class Voipms extends providerBase
                 'label'       => _('Username'),
                 'help'        => _("The e-mail address you use to log in to Voip.ms"),
                 'default'     => '',
-                'class'       => '',
                 'required'    => true, // True to set this property as required to make the provider available.
                 'placeholder' => _('Voip.ms e-mail address'),
             ),
@@ -33,7 +34,9 @@ class Voipms extends providerBase
     
     public function sendMedia($id, $to, $from, $message='')
     {
-        // we have to send media items as base64-encoded form fields
+        // We have to send media items as base64-encoded form fields
+        // However, Voip.ms does not require any metadata on the media such as 
+        // content type, so it is enough to just grab the raw and encode it
         $base64media = array();
         $sql = 'SELECT raw FROM sms_media WHERE mid = :mid';
         $stmt = $this->Database->prepare($sql);
@@ -77,7 +80,7 @@ class Voipms extends providerBase
             $payload['to'] = ltrim($payload['to'], '1');
         }
         $config = $this->getConfig($this->nameRaw);
-        $qs = array(
+        $fields = array(
             'api_username' => $config['api_key'],
             'api_password' => $config['api_secret'],
             'method'       => $payload['method'],
@@ -86,24 +89,24 @@ class Voipms extends providerBase
         );
         if (! empty($payload['text'])) 
         {
-            $qs['message'] = $payload['text'];
+            $fields['message'] = $payload['text'];
         }
         if (! empty($payload['media']))
         {
             $counter = 1;
             foreach ($payload['media'] as $media_item)
             {
-                $qs['media'.$counter] = $media_item;
+                $fields['media'.$counter] = $media_item;
                 $counter++;
             }
         }
 
         // build a multipart/form-data request
         $crlf = "\r\n";
-        $mimeBoundary = md5(time());
+        $mimeBoundary = '----' . md5(time());
         $reqbody = '';
         
-        foreach ($qs as $key => $value)
+        foreach ($fields as $key => $value)
         {
             $reqbody .= '--' . $mimeBoundary . $crlf;
             $reqbody .= 'Content-Disposition: form-data; name="' . $key . '"' . $crlf . $crlf;
@@ -129,21 +132,30 @@ class Voipms extends providerBase
 
     public function callPublic($connector)
     {
-        $return_code = 202;
+        $return_code = 405;
         if ($_SERVER['REQUEST_METHOD'] === "GET") 
         {
             if (strstr($_SERVER['QUERY_STRING'], ';') !== FALSE) // using ; as separator
             {
                 $qs = str_replace(';', '&', $_SERVER['QUERY_STRING']);
-                print_r($qs);
                 parse_str($qs, $sms);
-                print_r($sms);
-                print($sms['provider']);
             } else {
                 $sms = $_GET;
             }
-            $to ='1'.$sms['to'];
-            $from = '1'.$sms['from'];
+            freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($sms, true)));
+
+            $to = $sms['to'];
+            if (preg_match('/[2-9]\d{2}[2-9]\d{6}/', $to)) // ten digit NANP
+            {
+                $to = '1'.$to;
+            }
+            
+            $from = $sms['from'];
+            if (preg_match('/[2-9]\d{2}[2-9]\d{6}/', $from)) // ten digit NANP
+            {
+                $from = '1'.$from;
+            }
+
             $text = $sms['message'];
             $emid = $sms['id'];
             //$date = $sms['date'];
@@ -162,7 +174,7 @@ class Voipms extends providerBase
             {
                 $img = file_get_contents($media);
                 $purl = parse_url($media);
-                $name = basename($purl['path']);
+                $name = $msgid . basename($purl['path']);
                 try
                 {
                     $connector->addMedia($msgid, $name, $img);
@@ -173,6 +185,7 @@ class Voipms extends providerBase
                 }
             }
             $connector->emitSmsInboundUserEvt($msgid, $to, $from, '', $text, null, 'Smsconnector', $emid);
+            $return_code = 202;
         }
         return $return_code;
     }

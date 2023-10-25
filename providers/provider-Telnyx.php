@@ -113,7 +113,7 @@ class Telnyx extends providerBase
                             {
                                 $img  = file_get_contents($media->url);
                                 $purl = parse_url($media->url);
-                                $name = basename($purl['path']);
+                                $name = $msgid . basename($purl['path']);
                                 try 
                                 {
                                     $connector->addMedia($msgid, $name, $img);
