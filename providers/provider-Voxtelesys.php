@@ -64,7 +64,11 @@ class Voxtelesys extends providerBase
         try 
         {
             $voxtelesysResponse = $session->post('', $headers, $json, array());
-            freepbx_log(FPBX_LOG_INFO, $voxtelesysResponse->body, true);
+            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $voxtelesysResponse->status_code, $voxtelesysResponse->body), true);
+            if (! $voxtelesysResponse->success)
+            {
+                throw new \Exception("HTTP $voxtelesysResponse->status_code, $voxtelesysResponse->body");
+            }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)

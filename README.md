@@ -15,17 +15,18 @@ a generic, expandable connector, with new providers added as contributed by the 
 
 ### Providers
 
-* Telnyx: Messaging API v2 (https://developers.telnyx.com/docs/api/v2/messaging)
-* Flowroute: Messaging API v2.2, webhook v2.1 (https://developer.flowroute.com/api/messages/v2.2/)
-* Twilio: Messaging API version 2010-04-01 (https://www.twilio.com/docs/sms)
+* Bulk Solutions (Bulkvs): API v1 (https://portal.bulkvs.com/api/v1.0/documentation)
 * Commio/Thinq: (https://apidocs.thinq.com/#bac2ace6-7777-47d8-931e-495b62f01799)
-* Voxtelesys: Messaging API v1 (https://smsapi.voxtelesys.com)
+* Flowroute: Messaging API v2.2, webhook v2.1 (https://developer.flowroute.com/api/messages/v2.2/)
 * Skyetel: SMS and MMS API (https://support.skyetel.com/hc/en-us/articles/360056299914-SMS-MMS-API)
+* Telnyx: Messaging API v2 (https://developers.telnyx.com/docs/api/v2/messaging)
+* Twilio: Messaging API version 2010-04-01 (https://www.twilio.com/docs/sms)
 * Voip.ms: SMS and MMS API (https://voip.ms/m/apidocs.php)
+* Voxtelesys: Messaging API v1 (https://smsapi.voxtelesys.com)
 
 ### Installation
 
-* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.10/smsconnector-16.0.10.tar.gz`
+* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.11/smsconnector-16.0.11.tar.gz`
 * `fwconsole r`
 
 ### Configuration

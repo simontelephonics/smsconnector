@@ -87,7 +87,11 @@ class Flowroute extends providerBase
         try 
         {
             $flowrouteResponse = $session->post('', $headers, $json, $options);
-            freepbx_log(FPBX_LOG_INFO, $flowrouteResponse->body, true);
+            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $flowrouteResponse->status_code, $flowrouteResponse->body), true);
+            if (! $flowrouteResponse->success)
+            {
+                throw new \Exception("HTTP $flowrouteResponse->status_code, $flowrouteResponse->body");
+            }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)

@@ -79,7 +79,11 @@ class Twilio extends providerBase
         try
         {
             $twilioResponse = $session->post('', null, $payload, $options);
-            freepbx_log(FPBX_LOG_INFO, $twilioResponse->body, true);
+            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $twilioResponse->status_code, $twilioResponse->body), true);
+            if (! $twilioResponse->success)
+            {
+                throw new \Exception("HTTP $twilioResponse->status_code, $twilioResponse->body");
+            }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)

@@ -104,7 +104,11 @@ class Commio extends providerBase
         try 
         {
             $commioResponse = $session->post('', $headers, $reqBody, $options);
-            freepbx_log(FPBX_LOG_INFO, $commioResponse->body, true);
+            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $commioResponse->status_code, $commioResponse->body), true);
+            if (! $commioResponse->success)
+            {
+                throw new \Exception("HTTP $commioResponse->status_code, $commioResponse->body");
+            }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)

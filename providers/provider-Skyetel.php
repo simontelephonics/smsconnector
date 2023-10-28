@@ -72,7 +72,11 @@ class Skyetel extends providerBase
         try 
         {
             $skyetelResponse = $session->post('', $headers, $json, $options);
-            freepbx_log(FPBX_LOG_INFO, $skyetelResponse->body, true);
+            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $skyetelResponse->status_code, $skyetelResponse->body), true);
+            if (! $skyetelResponse->success)
+            {
+                throw new \Exception("HTTP $skyetelResponse->status_code, $skyetelResponse->body");
+            }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)

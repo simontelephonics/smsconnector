@@ -121,7 +121,11 @@ class Voipms extends providerBase
         try
         {
             $voipmsResponse = $session->post('', $headers, $reqbody, array());
-            freepbx_log(FPBX_LOG_INFO, $voipmsResponse->body, true);
+            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $voipmsResponse->status_code, $voipmsResponse->body), true);
+            if (! $voipmsResponse->success)
+            {
+                throw new \Exception("HTTP $voipmsResponse->status_code, $voipmsResponse->body");
+            }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
@@ -145,13 +149,13 @@ class Voipms extends providerBase
             freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($sms, true)));
 
             $to = $sms['to'];
-            if (preg_match('/[2-9]\d{2}[2-9]\d{6}/', $to)) // ten digit NANP
+            if (preg_match('/^[2-9]\d{2}[2-9]\d{6}$/', $to)) // ten digit NANP
             {
                 $to = '1'.$to;
             }
             
             $from = $sms['from'];
-            if (preg_match('/[2-9]\d{2}[2-9]\d{6}/', $from)) // ten digit NANP
+            if (preg_match('/^[2-9]\d{2}[2-9]\d{6}$/', $from)) // ten digit NANP
             {
                 $from = '1'.$from;
             }

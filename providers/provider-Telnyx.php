@@ -65,7 +65,11 @@ class Telnyx extends providerBase
         try 
         {
             $telnyxResponse = $session->post('', $headers, $json, array());
-            freepbx_log(FPBX_LOG_INFO, $telnyxResponse->body, true);
+            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $telnyxResponse->status_code, $telnyxResponse->body), true);
+            if (! $telnyxResponse->success)
+            {
+                throw new \Exception("HTTP $telnyxResponse->status_code, $telnyxResponse->body");
+            }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
