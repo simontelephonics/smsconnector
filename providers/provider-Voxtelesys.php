@@ -27,7 +27,7 @@ class Voxtelesys extends providerBase
     {
         $req = array(
             'from'  => '+'.$from,
-            'to'    => '+'.$to,
+            'to'    => ['+'.$to],
             'media' => $this->media_urls($id)
         );
         if ($message)
@@ -42,7 +42,7 @@ class Voxtelesys extends providerBase
     {
         $req = array(
             'from'  => '+'.$from,
-            'to'    => '+'.$to,
+            'to'    => ['+'.$to],
             'body'  => $message
         );
         $this->sendVoxtelesys($req, $id);
