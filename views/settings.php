@@ -5,9 +5,9 @@
 
 	$template_sec ='
 		<div class="section-title" data-for="%%__NAMERAW__%%">
-			<h2><i class="fa fa-minus"></i> %%__NAME__%%</h2>
+			<h2><i class="fa fa-plus"></i> %%__NAME__%%</h2>
 		</div>
-		<div class="section" data-id="%%__NAMERAW__%%">
+		<div class="section" data-id="%%__NAMERAW__%%" style="display: none">
 			%%__OPTIONS_LINES__%%
 		</div>
 		<br/>
