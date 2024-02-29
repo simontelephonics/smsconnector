@@ -60,7 +60,7 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
         {
             throw new \Exception('Unable to store message: '.$e->getMessage());
         }
-    
+
         // look up provider info containing name and api credentials
         $provider = $this->lookUpProvider($from);
 
@@ -104,4 +104,14 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
 
         return $row->providerid;
 	}
+
+    public function dialPlanHooks(&$ext, $engine, $priority)
+    {
+        if ($engine != "asterisk") { return; }
+        $section = 'smsconnector-messages';
+        $p = '_X.';
+        $ext->add($section, $p, '', new \ext_NoOp('Processing outbound SIP SMS'));
+        $ext->add($section, $p, '', new \ext_AGI('sipsmsconn.agi'));
+        $ext->add($section, $p, '', new \ext_Hangup);
+    }
 }

@@ -1,0 +1,51 @@
+#!/usr/bin/env php
+<?php
+
+$bootstrap_settings['include_compress'] = false;
+$restrict_mods = array('smsconnector' => true);
+require_once '/etc/freepbx.conf';
+
+$freepbx = \FreePBX::create();
+$smsconnector = $freepbx->Smsconnector();
+require_once 'phpagi.php';
+
+$AGI = new AGI();
+$messageTo = get_var($AGI, "MESSAGE(to)");
+$messageFrom = get_var($AGI, "MESSAGE(from)");
+$messageBody = get_var($AGI, "MESSAGE(body)");
+
+$matches = array();
+if (preg_match('/:(.*)@/', $messageFrom, $matches))
+{
+    $from = $matches[1];
+}
+else return;
+
+if (preg_match('/:(.*)@/', $messageTo, $matches))
+{
+    $to = $matches[1];
+}
+else return;
+
+$AGI->verbose("SMS SIP connector got message from $from to $to", 3);
+$success = $smsconnector->processOutboundSip($to, $from, $messageBody);
+if (!$success)
+{
+	$AGI->verbose("SMS SIP connector failed to send message. Check freepbx.log for details", 3);
+}
+
+exit;
+
+// helper functions
+function get_var($agi, $value)
+{
+	$r = $agi->get_variable($value);
+
+	if ($r['result'] == 1)
+	{
+		$result = $r['data'];
+		return $result;
+	}
+	else return '';
+}
+

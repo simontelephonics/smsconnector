@@ -3,6 +3,7 @@ namespace FreePBX\modules;
 use BMO;
 use FreePBX_Helpers;
 use PDO;
+use Symfony\Component\Console\Helper\ProgressBar;
 class Smsconnector extends FreePBX_Helpers implements BMO
 {
 	const adapterName = 'Smsconnector';
@@ -29,7 +30,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$this->Database = $freepbx->Database;
 		$this->Userman 	= $freepbx->Userman;
 
-		$this->loadProvieders();
+		$this->loadProviders();
 	}
 
 	/**
@@ -65,6 +66,11 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		{
 			out(_('Skip: the path already exists!'));
 		}
+		// restart daemon if this is an update, or start daemon if this is a new install
+		out(_("Stopping SMS Connector SIP messaging daemon..."));
+		$this->stopFreepbx();
+		out(_("Starting SMS Connector SIP messaging daemon..."));
+		$this->startFreepbx();
 	}
 
 	/**
@@ -402,6 +408,130 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		return $data_return;
 	}
 
+	/* Helper functions */
+	public function getUsersByDid($did)
+	{
+		return $this->FreePBX->Sms->getAssignedUsers($did);
+	}
+
+	public function getDidsByUser($uid)
+	{
+		return $this->FreePBX->Sms->getDIDs($uid);
+	}
+
+	public function getUidByDefaultExtension($extension)
+	{
+		return $this->Userman->getUserByDefaultExtension($extension)['id'];
+	}
+
+	public function getSipDefaultDidByUid($uid)
+	{
+		return $this->Userman->getModuleSettingByID($uid,'smsconnector','sipsmsdefaultdid',true);
+	}
+
+	/**
+	 * getSIPMessageDeviceByUserID
+	 * @param int $uid			    UID of the users that we want to obtain information.
+	 * @return mixed				extension number or NULL
+	 */
+	public function getSIPMessageDeviceByUserID($uid)
+	{
+		if ($this->userman->getModuleSettingByID($uid,'smsconnector','sipsmsenabled'))
+		{
+			$user = $this->Userman->getUserByID($uid);
+			$extension = $user['default_extension'];
+			$device = $this->FreePBX->Core->getDevice($extension);
+
+			// only select PJSIP devices that have been set with the appropriate message_context
+			if ($device['tech'] == 'pjsip' && $device['message_context'] == 'smsconnector-messages')
+			{
+				return $extension;
+			}
+		}
+		return NULL;
+	}
+
+	/**
+	 * notifyOfflineUser			Email user about SMS event
+	 * @param int $uid				User ID
+	 * @param array $smsEventData	smsEventData object
+	 */
+	public function notifyOfflineUser($uid, $smsEventData)
+	{
+		if ($this->userman->getModuleSettingByID($uid,'smsconnector','sipsmsemailoffline')) {
+			// if no email address defined for user, does nothing
+			$body = sprintf("While offline, you received an SMS from %s to %s:\n\n", $smsEventData['from'], $smsEventData['to']);
+			$body.= trim($smsEventData['message'], '"');
+			$subject = 'SMS received while offline';
+			$this->Userman->sendEmail($uid, $subject, $body);
+		}
+	}
+
+	/**
+	 * processOutboundSip			Used by AGI script to send SMS via connector
+	 * @param string $to			To (destination)
+	 * @param string $from			Extension that is sending the SMS
+	 * @param string $messageBody	SMS body
+	 * @return bool
+	 */
+	public function processOutboundSip($to, $from, $messageBody)
+	{
+		freepbx_log(FPBX_LOG_INFO, "Processing SIP SMS from $from to $to", true);
+		$did = $actualTo = NULL;
+		$allowedToSend = false;
+		$retval = true;
+		if (preg_match('/\+?(\d+)\+\+?(\d+)/', $to, $matches))
+		{
+			$did = $matches[1];
+			$actualTo = $matches[2];
+		}
+		elseif (preg_match('/\+?(\d+)/', $to, $matches))
+		{
+			$actualTo = $matches[1];
+		}
+
+		$uid = $this->getUidByDefaultExtension($from);
+		if ($this->userman->getModuleSettingByID($uid,'smsconnector','sipsmsenabled'))
+		{
+			if ($did)
+			{
+				if (in_array($did, $this->getDidsByUser($uid))) { $allowedToSend = true; }
+			}
+			else
+			{
+				if ($defaultDid = $this->getSipDefaultDidByUid($uid))
+				{
+					$did = $defaultDid;
+					$allowedToSend = true;
+				}
+			}
+		}
+
+		if ($allowedToSend)
+		{
+			$formattedTo = (strlen($actualTo)==10) ? '1'.$actualTo : $actualTo; // this is too simple but it's what Sangoma does
+
+			$adaptor = $this->FreePBX->Sms->getAdaptor($did);
+			if(is_object($adaptor)) {
+				$o = $adaptor->sendMessage($formattedTo, $did, '', $messageBody);
+				if(! $o['status']) {
+					freepbx_log(FPBX_LOG_INFO, "Outbound message failed: ".$o['message'], true);
+					$retval = false;
+				}
+			} else {
+				freepbx_log(FPBX_LOG_INFO, sprintf("No adaptor found for DID %s", $did), true);
+				$retval = false;
+			}
+		}
+		else
+		{
+			freepbx_log(FPBX_LOG_INFO, sprintf("%s tried to send SMS from %s but is not allowed!", $from, $did), true);
+			$retval = false;
+		}
+
+		return $retval;
+	}
+
 	/**
 	 * addNumber Add a number
 	 * @param int $uid userman user id
@@ -549,7 +679,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function getUsersWithDids() 
 	{
-		$sql = sprintf('SELECT uid FROM %s', $this->tablesSms['routing']);
+		$sql = sprintf('SELECT DISTINCT uid FROM %s', $this->tablesSms['routing']);
 		return $this->Database->query($sql)->fetchAll(\PDO::FETCH_COLUMN, 0);
 	}
 
@@ -609,11 +739,28 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			{
 				case 'adduser':
 				case 'showuser':
+					$sipSmsEnabled 	  = null;
+					$defaultDid       = null;
+
+					if(isset($request['user']))
+					{
+						$user 		   = $this->userman->getUserByID($request['user']);
+						$sipSmsEnabled = $this->userman->getModuleSettingByID($user['id'],'smsconnector','sipsmsenabled',true);
+						$defaultDid    = $this->userman->getModuleSettingByID($user['id'],'smsconnector','sipsmsdefaultdid',true);
+						$emailOffline  = $this->userman->getModuleSettingById($user['id'],'smsconnector','sipsmsemailoffline',true);
+					}
+
 					return array(
 						array(
 							'title' => _('SMS Connector'),
 							'rawname' => 'smsconnector',
-							'content' => $this->showPage('userman'),
+							'content' => $this->showPage('userman', array(
+								'error' => $error,
+								'sipsmsenabled' => $sipSmsEnabled,
+								'sipsmsdefaultdid' => $defaultDid,
+								'sipsmsemailoffline' => $emailOffline,
+								'dids' => $this->getDidsByUser($request['user'])
+							)),
 						)
 					);
 					break;
@@ -621,13 +768,51 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		}
 	}
 
-	public function usermanAddUser($id, $display, $data) {}
+	public function usermanAddUser($id, $display, $data)
+	{
+		$this->usermanUpdateUser($id, $display, $data);
+	}
 
-	public function usermanUpdateUser($id, $display, $data) {}
+	public function usermanUpdateUser($id, $display, $data)
+	{
+		$post = $_POST;
+		if($display == 'userman' && isset($post['type']) && $post['type'] == 'user')
+		{
+			if(isset($post['sipsmsenabled']))
+			{
+				if($post['sipsmsenabled'] == "true")
+				{
+					$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsenabled', true);
+					$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsdefaultdid', !empty($post['sipsmsdefaultdid']) ? $post['sipsmsdefaultdid'] : null);
+					if (!empty($post['sipsmsemailoffline']))
+					{
+						$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsemailoffline', ($post['sipsmsemailoffline'] == "true") ? true : false);
+					}
+					else
+					{
+						$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsemailoffline', null);
+					}
+				}
+				elseif($post['sipsmsenabled'] == "false")
+				{
+					$this->userman->setModuleSettingByID($id,'smsconnector','sipsmsenabled',false);
+				}
+				else
+				{
+					$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsenabled', null);
+					$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsdefaultdid', null);
+					$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsemailoffline', null);
+				}
+			}
+		}
+	}
 
-	public function usermanDelUser($id, $display, $data) {}
+	public function usermanDelUser($id, $display, $data) {
+		freepbx_log(FPBX_LOG_INFO, "SMS Connector received delete request for user id $id ; removing all DID assignments");
+		$this->FreePBX->Sms->addUserRouting($id,array(),'Smsconnector'); // "add" with empty array is delete
+	}
 
-	private function loadProvieders()
+	private function loadProviders()
     {
 		include_once dirname(__FILE__) . "/providers/providerBase.php";
         $this->providers = array();
@@ -708,5 +893,179 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	public function setProviderConfig($name, $config)
 	{
 		$this->setConfig($name, $config, 'provider');
+	}
+
+	public function myDialplanHooks()
+	{
+		return true;
+	}
+
+	public function doDialplanHook(&$ext, $engine, $priority)
+	{
+		foreach ($this->getUsersWithDids() as $uid)
+		{
+			if ($this->userman->getModuleSettingByID($uid,'smsconnector','sipsmsenabled'))
+			{
+				$user = $this->Userman->getUserByID($uid);
+				$extension = $user['default_extension'];
+				$device = $this->FreePBX->Core->getDevice($extension);
+				if ($device['tech'] == 'pjsip')
+				{
+					$de = $this->kvArrayifyDeviceValues($device);
+					$de['message_context']['value'] = 'smsconnector-messages';
+					$this->FreePBX->Core->delDevice($extension, true);
+					$this->FreePBX->Core->addDevice($extension, 'pjsip', $de, true);
+				}
+			}
+		}
+	}
+
+	private function kvArrayifyDeviceValues($values) { // stolen verbatim from Core module
+		$response = array();
+		$flag = 2;
+		$ignoreTheseKeys = array('id', 'tech');
+		foreach($values as $key => $value) {
+			if (in_array($key, $ignoreTheseKeys)) {
+				continue;
+			}
+
+			$response[$key] = array(
+					'value' => $value,
+					'flag' => $flag++
+			);
+		}
+		return $response;
+	}
+
+	public function startFreepbx($output = null)
+	{
+		$status = $this->FreePBX->Pm2->getStatus("smsconnector-sipsms");
+		switch($status['pm2_env']['status'])
+		{
+			case 'online':
+				if(is_object($output))
+				{
+					$output->writeln(sprintf(_("SMS Connector SIP messaging daemon has already been running on PID %s for %s"),$status['pid'],$status['pm2_env']['created_at_human_diff']));
+				}
+				return $status['pid'];
+				break;
+			default:
+				if(is_object($output))
+				{
+					$output->writeln(_("Starting SMS Connector SIP messaging daemon..."));
+				}
+				$this->FreePBX->Pm2->start("smsconnector-sipsms",__DIR__."/sipsmsdaemon.php");
+				if(is_object($output))
+				{
+					$progress = new ProgressBar($output, 0);
+					$progress->setFormat('[%bar%] %elapsed%');
+					$progress->start();
+				}
+				$i = 0;
+				while($i < 100)
+				{
+					$data = $this->FreePBX->Pm2->getStatus("smsconnector-sipsms");
+					if(!empty($data) && $data['pm2_env']['status'] == 'online')
+					{
+						if(is_object($output))
+						{
+							$progress->finish();
+						}
+						break;
+					}
+					if(is_object($output))
+					{
+						$progress->setProgress($i);
+					}
+					$i++;
+					usleep(100000);
+				}
+				if(is_object($output))
+				{
+					$output->writeln("");
+				}
+				if(!empty($data))
+				{
+					$this->FreePBX->Pm2->reset("smsconnector-sipsms");
+					if(is_object($output))
+					{
+						$output->writeln(sprintf(_("Started SMS Connector SIP messaging daemon. PID is %s"),$data['pid']));
+					}
+					return $data['pid'];
+				}
+				if(is_object($output))
+				{
+					$output->write("<error>".sprintf(_("Failed to run: '%s'")."</error>",$command));
+				}
+				break;
+		}
+		return false;
+	}
+
+	public function stopFreepbx($output = null)
+	{
+		$status = $this->FreePBX->Pm2->getStatus("smsconnector-sipsms");
+		if (empty($status) || $status['pm2_env']['status'] != 'online')
+		{
+			if (is_object($output))
+			{
+				$output->writeln("<error>"._("SMS Connector SIP messaging daemon is not running")."</error>");
+			}
+			return false;
+		}
+
+		if (is_object($output))
+		{
+			$output->writeln(_("Stopping SMS Connector SIP messaging daemon"));
+		}
+
+		$this->FreePBX->Pm2->stop("smsconnector-sipsms");
+		if (is_object($output))
+		{
+			$progress = new ProgressBar($output, 0);
+			$progress->setFormat('[%bar%] %elapsed%');
+			$progress->start();
+		}
+		$i = 0;
+		while($i < 100)
+		{
+			$status = $this->FreePBX->Pm2->getStatus("smsconnector-sipsms");
+			if(!empty($status) && $status['pm2_env']['status'] != 'online')
+			{
+				if(is_object($output))
+				{
+					$progress->finish();
+				}
+				break;
+			}
+			if(is_object($output))
+			{
+				$progress->setProgress($i);
+			}
+			$i++;
+			usleep(100000);
+		}
+		if(is_object($output))
+		{
+			$output->writeln("");
+		}
+
+		$status = $this->FreePBX->Pm2->getStatus("smsconnector-sipsms");
+        if (empty($status) || $status['pm2_env']['status'] != 'online')
+		{
+            if(is_object($output))
+			{
+                $output->writeln(_("Stopped SMS Connector SIP messaging daemon"));
+            }
+        }
+		else
+		{
+			if(is_object($output))
+			{
+				$output->writeln("<error>".sprintf(_("SMS Connector SIP messaging daemon Failed: %s")."</error>",$process->getErrorOutput()));
+			}
+			return false;
+		}
+		return true;
 	}
 }
