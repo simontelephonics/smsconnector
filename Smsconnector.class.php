@@ -426,7 +426,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 	public function getSipDefaultDidByUid($uid)
 	{
-		return $this->Userman->getModuleSettingByID($uid,'smsconnector','sipsmsdefaultdid',true);
+		return $this->Userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsdefaultdid', true, false);
 	}
 
 	/**
@@ -436,7 +436,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function getSIPMessageDeviceByUserID($uid)
 	{
-		if ($this->userman->getModuleSettingByID($uid,'smsconnector','sipsmsenabled'))
+		if ($this->userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsenabled', false, false))
 		{
 			$user = $this->Userman->getUserByID($uid);
 			$extension = $user['default_extension'];
@@ -458,7 +458,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function notifyOfflineUser($uid, $smsEventData)
 	{
-		if ($this->userman->getModuleSettingByID($uid,'smsconnector','sipsmsemailoffline')) {
+		if ($this->userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsemailoffline', false, false)) {
 			// if no email address defined for user, does nothing
 			$body = sprintf("While offline, you received an SMS from %s to %s:\n\n", $smsEventData['from'], $smsEventData['to']);
 			$body.= trim($smsEventData['message'], '"');
@@ -491,7 +491,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		}
 
 		$uid = $this->getUidByDefaultExtension($from);
-		if ($this->userman->getModuleSettingByID($uid,'smsconnector','sipsmsenabled'))
+		if ($this->userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsenabled', false, false))
 		{
 			if ($did)
 			{
@@ -904,7 +904,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	{
 		foreach ($this->getUsersWithDids() as $uid)
 		{
-			if ($this->userman->getModuleSettingByID($uid,'smsconnector','sipsmsenabled'))
+			if ($this->userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsenabled', false, false))
 			{
 				$user = $this->Userman->getUserByID($uid);
 				$extension = $user['default_extension'];
