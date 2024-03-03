@@ -3,7 +3,6 @@ namespace FreePBX\modules;
 use BMO;
 use FreePBX_Helpers;
 use PDO;
-use Symfony\Component\Console\Helper\ProgressBar;
 class Smsconnector extends FreePBX_Helpers implements BMO
 {
 	const adapterName = 'Smsconnector';
