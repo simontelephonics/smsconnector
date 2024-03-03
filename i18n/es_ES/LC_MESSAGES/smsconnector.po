@@ -2,97 +2,141 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-10 15:56+0200\n"
-"PO-Revision-Date: 2023-04-10 15:59+0200\n"
-"Last-Translator: Javier Pastor <jpastor@cerebelum.net>\n"
+"POT-Creation-Date: 2024-03-03 11:42+0100\n"
+"PO-Revision-Date: 2024-03-03 11:57+0100\n"
+"Last-Translator: Javier Pastor <jpastor[at]cerebelum.net>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: .git\n"
 "X-Poedit-SearchPathExcluded-1: i18n\n"
 
-#: Smsconnector.class.php:56
+#: Smsconnector.class.php:57
 msgid "Creating link to public folder..."
 msgstr "Crear enlace a carpeta pública..."
 
-#: Smsconnector.class.php:62 Smsconnector.class.php:86
+#: Smsconnector.class.php:63 Smsconnector.class.php:92
 msgid "Done"
 msgstr "Hecho"
 
-#: Smsconnector.class.php:66
+#: Smsconnector.class.php:67
 msgid "Skip: the path already exists!"
 msgstr "Saltar: ¡La ruta aún existe!"
 
-#: Smsconnector.class.php:77
+#: Smsconnector.class.php:70
+msgid "Stopping SMS Connector SIP messaging daemon..."
+msgstr "Deteniendo el demonio de mensajería SIP de SMS Connector..."
+
+#: Smsconnector.class.php:72 Smsconnector.class.php:955
+msgid "Starting SMS Connector SIP messaging daemon..."
+msgstr "Iniciando el demonio de mensajería SMS Connector SIP..."
+
+#: Smsconnector.class.php:83
 msgid "Removing public folder link..."
 msgstr "Eliminar el enlace de la carpeta pública..."
 
-#: Smsconnector.class.php:90
+#: Smsconnector.class.php:96
 msgid "Error: the path still exists!"
 msgstr "Error: ¡La ruta aún existe!"
 
-#: Smsconnector.class.php:95
+#: Smsconnector.class.php:101
 msgid "Skip: the path is not a symbolic link!"
 msgstr "Saltar: ¡La ruta no es un enlace simbólico!"
 
-#: Smsconnector.class.php:150
+#: Smsconnector.class.php:156
 msgid "Reset"
 msgstr "Restablecer"
 
-#: Smsconnector.class.php:155
+#: Smsconnector.class.php:161
 msgid "Submit"
 msgstr "Enviar"
 
-#: Smsconnector.class.php:225 Smsconnector.class.php:270
+#: Smsconnector.class.php:231 Smsconnector.class.php:276
 msgid "ID is missing!"
 msgstr "Falta el ID!"
 
-#: Smsconnector.class.php:229 Smsconnector.class.php:274
+#: Smsconnector.class.php:235 Smsconnector.class.php:280
 msgid "ID does not exist!"
 msgstr "El ID no existe!"
 
-#: Smsconnector.class.php:251
+#: Smsconnector.class.php:257
 msgid "Number updated successfully"
 msgstr "Número actualizado correctamente"
 
-#: Smsconnector.class.php:256
+#: Smsconnector.class.php:262
 msgid "Number created successfully"
 msgstr "Número creado con éxito"
 
-#: Smsconnector.class.php:278
+#: Smsconnector.class.php:284
 msgid "Number delete successfully"
 msgstr "Número eliminado correctamente"
 
-#: Smsconnector.class.php:282
+#: Smsconnector.class.php:288
 msgid "Number delete failed!"
 msgstr "Error en la eliminación del número!"
 
-#: Smsconnector.class.php:287
+#: Smsconnector.class.php:293
 msgid "Command not found!"
 msgstr "¡Comando no encontrado!"
 
-#: Smsconnector.class.php:420
+#: Smsconnector.class.php:555
 msgid "Necessary data is missing!"
 msgstr "Faltan datos necesarios!"
 
-#: Smsconnector.class.php:424
+#: Smsconnector.class.php:559
 msgid "The DID already exists!"
 msgstr "El DID ya existe!"
 
-#: Smsconnector.class.php:598
+#: Smsconnector.class.php:728
 #, php-format
 msgid "Page Not Found (%s)!!!!"
 msgstr "¡¡¡¡Página no encontrada (%s)!!!!"
 
-#: Smsconnector.class.php:614 views/page.main.php:20
+#: Smsconnector.class.php:755 views/page.main.php:20
 msgid "SMS Connector"
 msgstr "Conector SMS"
+
+#: Smsconnector.class.php:948
+#, php-format
+msgid ""
+"SMS Connector SIP messaging daemon has already been running on PID %s for %s"
+msgstr ""
+"El demonio de mensajería SIP del Conector SMS ya se ha estado ejecutando en "
+"el PID %s de %s"
+
+#: Smsconnector.class.php:992
+#, php-format
+msgid "Started SMS Connector SIP messaging daemon. PID is %s"
+msgstr ""
+"Se ha iniciado el demonio de mensajería SIP SMS Connector. El PID es %s"
+
+#: Smsconnector.class.php:998
+#, php-format
+msgid "Failed to run: '%s'"
+msgstr "Fallo en la ejecución: '%s'"
+
+#: Smsconnector.class.php:1012
+msgid "SMS Connector SIP messaging daemon is not running"
+msgstr "El demonio de mensajería SIP de SMS Connector no se está ejecutando"
+
+#: Smsconnector.class.php:1019
+msgid "Stopping SMS Connector SIP messaging daemon"
+msgstr "Deteniendo el demonio de mensajería SIP de SMS Connector"
+
+#: Smsconnector.class.php:1058
+msgid "Stopped SMS Connector SIP messaging daemon"
+msgstr "Detenido el demonio de mensajería SIP SMS Connector"
+
+#: Smsconnector.class.php:1065
+#, php-format
+msgid "SMS Connector SIP messaging daemon Failed: %s"
+msgstr "Error en el demonio de mensajería SIP del conector SMS: %s"
 
 #: assets/js/smsconnector.js:27
 msgid "URL copied to clipboard"
@@ -150,11 +194,13 @@ msgstr "¡ID no detectado!"
 msgid "Are you sure you want to delete the DID (%s)?"
 msgstr "¿Estás seguro de que quieres borrar el DID (%s)?"
 
-#: assets/js/smsconnector.js:265
+#: assets/js/smsconnector.js:265 views/view.userman.user.php:28
+#: views/view.userman.user.php:80
 msgid "Yes"
 msgstr "Sí"
 
-#: assets/js/smsconnector.js:265
+#: assets/js/smsconnector.js:265 views/view.userman.user.php:29
+#: views/view.userman.user.php:81
 msgid "No"
 msgstr "No"
 
@@ -174,11 +220,37 @@ msgstr "Texto de ayuda para la opción."
 msgid "Text to display in the input when it is empty."
 msgstr "Texto a mostrar en el input cuando está vacío."
 
+#: providers/provider-Bulkvs.php:9
+msgid "Bulk Solutions"
+msgstr "Bulk Solutions"
+
+#: providers/provider-Bulkvs.php:17
+msgid "API Username"
+msgstr "API Nombre de Usuario"
+
+#: providers/provider-Bulkvs.php:18
+msgid "Enter the Bulkvs API Username"
+msgstr "Introduzca el nombre de usuario API de Bulkvs"
+
+#: providers/provider-Bulkvs.php:21 providers/provider-Bulkvs.php:30
+#: providers/provider-Flowroute.php:21 providers/provider-Skyetel.php:21
+#: providers/provider-Telnyx.php:22 providers/provider-Voxtelesys.php:21
+msgid "Enter Key"
+msgstr "Introduzca Clave"
+
+#: providers/provider-Bulkvs.php:25
+msgid "API Password/Token"
+msgstr "API Contraseña/Token"
+
+#: providers/provider-Bulkvs.php:26
+msgid "Enter the Bulkvs API Password/Token"
+msgstr "Introduzca la Contraseña/Token de la API de Bulkvs"
+
 #: providers/provider-Commio.php:9
 msgid "Commio"
 msgstr "Commio"
 
-#: providers/provider-Commio.php:17
+#: providers/provider-Commio.php:17 providers/provider-Voipms.php:17
 msgid "Username"
 msgstr "Nombre de Usuario"
 
@@ -218,7 +290,8 @@ msgstr "Introduce ID de cuenta"
 msgid "Flowroute"
 msgstr "Flowroute"
 
-#: providers/provider-Flowroute.php:17 providers/provider-Telnyx.php:17
+#: providers/provider-Flowroute.php:17 providers/provider-Skyetel.php:17
+#: providers/provider-Telnyx.php:17 providers/provider-Voxtelesys.php:17
 msgid "API Key"
 msgstr "Clave API"
 
@@ -226,11 +299,8 @@ msgstr "Clave API"
 msgid "Enter the Flowroute API key"
 msgstr "Introduce la Clave de la API de Flowroute"
 
-#: providers/provider-Flowroute.php:21 providers/provider-Telnyx.php:22
-msgid "Enter Key"
-msgstr "Introduzca Clave"
-
-#: providers/provider-Flowroute.php:25
+#: providers/provider-Flowroute.php:25 providers/provider-Skyetel.php:25
+#: providers/provider-Voipms.php:25
 msgid "API Secret"
 msgstr "Secreto de la API"
 
@@ -238,9 +308,21 @@ msgstr "Secreto de la API"
 msgid "Enter the Flowroute API secret"
 msgstr "Introduzca el secreto de la API de Flowroute"
 
-#: providers/provider-Flowroute.php:30
+#: providers/provider-Flowroute.php:30 providers/provider-Skyetel.php:30
 msgid "Enter Secret"
 msgstr "Introduzca secreto"
+
+#: providers/provider-Skyetel.php:9
+msgid "Skyetel"
+msgstr "Skyetel"
+
+#: providers/provider-Skyetel.php:18
+msgid "Enter the Skyetel API key"
+msgstr "Introduzca la clave API de Skyetel"
+
+#: providers/provider-Skyetel.php:26
+msgid "Enter the Skyetel API secret"
+msgstr "Introduzca el secreto de la API de Skyetel"
 
 #: providers/provider-Telnyx.php:9
 msgid "Telnyx"
@@ -273,6 +355,35 @@ msgstr "Token de Autenticación"
 #: providers/provider-Twilio.php:26
 msgid "Enter the Twilio Auth Token"
 msgstr "Introduzca el Token de Autenticación de Twilio"
+
+#: providers/provider-Voipms.php:9
+msgid "Voip.ms"
+msgstr "Voip.ms"
+
+#: providers/provider-Voipms.php:18
+msgid "The e-mail address you use to log in to Voip.ms"
+msgstr ""
+"La dirección de correo electrónico que utiliza para iniciar sesión en Voip.ms"
+
+#: providers/provider-Voipms.php:21
+msgid "Voip.ms e-mail address"
+msgstr "Voip.ms dirección de correo electrónico"
+
+#: providers/provider-Voipms.php:26
+msgid "Enter the Voip.ms API password"
+msgstr "Introduzca la contraseña de la API Voip.ms"
+
+#: providers/provider-Voipms.php:30
+msgid "Enter Password"
+msgstr "Introducir la contraseña"
+
+#: providers/provider-Voxtelesys.php:9
+msgid "Voxtelesys"
+msgstr "Voxtelesys"
+
+#: providers/provider-Voxtelesys.php:18
+msgid "Enter the Voxtelesys v1 API key"
+msgstr "Introduzca la Clave API de Voxtelesys v1"
 
 #: views/page.main.php:7 views/rnav.php:5 views/view.number.grid.php:5
 msgid "Provider Settings"
@@ -384,13 +495,48 @@ msgstr "Añadir Número"
 msgid "Action"
 msgstr "Acción"
 
-#: views/view.userman.user.php:2
-msgid "Not yet implemented."
-msgstr "Aún no se ha implementado."
+#: views/view.userman.user.php:23
+msgid "SIP SMS enabled"
+msgstr "SIP SMS habilitado"
 
-#: views/view.userman.user.php:2
-msgid "Go to SMS Connector."
-msgstr "Ve a Conector SMS."
+#: views/view.userman.user.php:38
+msgid ""
+"Enable this user to send and receive SMS on capable SIP devices, in addition "
+"to Sangoma softphones and UCP."
+msgstr ""
+"Permite a este usuario enviar y recibir SMS en dispositivos SIP compatibles, "
+"además de los softphones Sangoma y UCP."
+
+#: views/view.userman.user.php:48
+msgid "Default DID for sending SIP SMS"
+msgstr "DID por defecto para el envío de SMS SIP"
+
+#: views/view.userman.user.php:65
+msgid ""
+"This is the DID from which SMS will be sent by default on this user's SIP "
+"device."
+msgstr ""
+"Este es el DID desde el que se enviarán SMS por defecto en el dispositivo "
+"SIP de este usuario."
+
+#: views/view.userman.user.php:75
+msgid "Send email notification for messages received while offline"
+msgstr ""
+"Notificación por correo electrónico de los mensajes recibidos sin conexión"
+
+#: views/view.userman.user.php:90
+msgid ""
+"Send email notifications to the user if an SMS is received while the SIP "
+"device is unregistered or unable to receive it"
+msgstr ""
+"Enviar notificaciones por correo electrónico al usuario si se recibe un SMS "
+"mientras el dispositivo SIP no está registrado o no puede recibirlo"
+
+#~ msgid "Not yet implemented."
+#~ msgstr "Aún no se ha implementado."
+
+#~ msgid "Go to SMS Connector."
+#~ msgstr "Ve a Conector SMS."
 
 #~ msgid "Delete"
 #~ msgstr "Eliminar"
