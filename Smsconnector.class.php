@@ -66,11 +66,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		{
 			out(_('Skip: the path already exists!'));
 		}
-		// restart daemon if this is an update, or start daemon if this is a new install
-		out(_("Stopping SMS Connector SIP messaging daemon..."));
-		$this->stopFreepbx();
-		out(_("Starting SMS Connector SIP messaging daemon..."));
-		$this->startFreepbx();
 	}
 
 	/**
@@ -452,22 +447,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	}
 
 	/**
-	 * notifyOfflineUser			Email user about SMS event
-	 * @param int $uid				User ID
-	 * @param array $smsEventData	smsEventData object
-	 */
-	public function notifyOfflineUser($uid, $smsEventData)
-	{
-		if ($this->userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsemailoffline', false, false)) {
-			// if no email address defined for user, does nothing
-			$body = sprintf("While offline, you received an SMS from %s to %s:\n\n", $smsEventData['from'], $smsEventData['to']);
-			$body.= trim($smsEventData['message'], '"');
-			$subject = 'SMS received while offline';
-			$this->Userman->sendEmail($uid, $subject, $body);
-		}
-	}
-
-	/**
 	 * processOutboundSip			Used by AGI script to send SMS via connector
 	 * @param string $to			To (destination)
 	 * @param string $from			Extension that is sending the SMS
@@ -530,6 +509,68 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		}
 
 		return $retval;
+	}
+
+	/**
+	 * inboundHookForSip			Hooked by AdaptorBase getMessage on inbound SMS. Relays SMS to SIP devices if enabled.
+	 * @param string $to			To (destination)
+	 * @param string $from			caller ID
+	 * @param string $message		SMS body
+	 */
+	public function inboundHookForSip($id, $to, $from, $cnam, $message, $time, $adaptor, $emid, $threadid, $didid)
+	{
+		// lookup users for DID
+		$uids = $this->getUsersByDid($to);
+
+		foreach ($uids as $uid)
+		{
+			// get device that can receive SMS
+			$device = $this->getSIPMessageDeviceByUserID($uid);
+
+			if ($device)
+			{
+				if ($to != $this->getSipDefaultDidByUid($uid))
+				{
+					// format the caller ID to include the DID, which will allow replying via non-default DID
+					$sipFrom = sprintf("%s+%s", $to, $from);
+				}
+				else
+				{
+					$sipFrom = $from;
+				}
+
+				// get contacts
+				$result = $this->FreePBX->astman->send_request('Getvar', array('Variable' => "PJSIP_DIAL_CONTACTS($device)"));
+				$contacts = array();
+				if (!empty($result['Value']))
+				{
+					$contacts = explode('&', $result['Value']);
+				}
+
+				if (!empty($contacts))
+				{
+					foreach ($contacts as $contact) // message all registered
+					{
+						$to = sprintf("pjsip:%s", strstr($contact, 'sip'));
+						$result = $this->FreePBX->astman->MessageSend($to, $sipFrom, $message);
+						if ($result['Response'] == 'Error')
+						{
+							freepbx_log(FPBX_LOG_INFO, sprintf("Error sending message to %s: %s", $contact, $result['Message']));
+						}
+					}
+				}
+				else // no contacts registered - send email if enabled
+				{
+					if ($this->userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsemailoffline', false, false)) {
+						// if no email address defined for user, does nothing
+						$body = sprintf("While offline, you received an SMS from %s to %s:\n\n", $from, $to);
+						$body.= $message;
+						$subject = 'SMS received while offline';
+						$this->userman->sendEmail($uid, $subject, $body);
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -935,137 +976,5 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			);
 		}
 		return $response;
-	}
-
-	public function startFreepbx($output = null)
-	{
-		$status = $this->FreePBX->Pm2->getStatus("smsconnector-sipsms");
-		switch($status['pm2_env']['status'])
-		{
-			case 'online':
-				if(is_object($output))
-				{
-					$output->writeln(sprintf(_("SMS Connector SIP messaging daemon has already been running on PID %s for %s"),$status['pid'],$status['pm2_env']['created_at_human_diff']));
-				}
-				return $status['pid'];
-				break;
-			default:
-				if(is_object($output))
-				{
-					$output->writeln(_("Starting SMS Connector SIP messaging daemon..."));
-				}
-				$this->FreePBX->Pm2->start("smsconnector-sipsms",__DIR__."/sipsmsdaemon.php");
-				if(is_object($output))
-				{
-					$progress = new ProgressBar($output, 0);
-					$progress->setFormat('[%bar%] %elapsed%');
-					$progress->start();
-				}
-				$i = 0;
-				while($i < 100)
-				{
-					$data = $this->FreePBX->Pm2->getStatus("smsconnector-sipsms");
-					if(!empty($data) && $data['pm2_env']['status'] == 'online')
-					{
-						if(is_object($output))
-						{
-							$progress->finish();
-						}
-						break;
-					}
-					if(is_object($output))
-					{
-						$progress->setProgress($i);
-					}
-					$i++;
-					usleep(100000);
-				}
-				if(is_object($output))
-				{
-					$output->writeln("");
-				}
-				if(!empty($data))
-				{
-					$this->FreePBX->Pm2->reset("smsconnector-sipsms");
-					if(is_object($output))
-					{
-						$output->writeln(sprintf(_("Started SMS Connector SIP messaging daemon. PID is %s"),$data['pid']));
-					}
-					return $data['pid'];
-				}
-				if(is_object($output))
-				{
-					$output->write("<error>".sprintf(_("Failed to run: '%s'")."</error>",$command));
-				}
-				break;
-		}
-		return false;
-	}
-
-	public function stopFreepbx($output = null)
-	{
-		$status = $this->FreePBX->Pm2->getStatus("smsconnector-sipsms");
-		if (empty($status) || $status['pm2_env']['status'] != 'online')
-		{
-			if (is_object($output))
-			{
-				$output->writeln("<error>"._("SMS Connector SIP messaging daemon is not running")."</error>");
-			}
-			return false;
-		}
-
-		if (is_object($output))
-		{
-			$output->writeln(_("Stopping SMS Connector SIP messaging daemon"));
-		}
-
-		$this->FreePBX->Pm2->stop("smsconnector-sipsms");
-		if (is_object($output))
-		{
-			$progress = new ProgressBar($output, 0);
-			$progress->setFormat('[%bar%] %elapsed%');
-			$progress->start();
-		}
-		$i = 0;
-		while($i < 100)
-		{
-			$status = $this->FreePBX->Pm2->getStatus("smsconnector-sipsms");
-			if(!empty($status) && $status['pm2_env']['status'] != 'online')
-			{
-				if(is_object($output))
-				{
-					$progress->finish();
-				}
-				break;
-			}
-			if(is_object($output))
-			{
-				$progress->setProgress($i);
-			}
-			$i++;
-			usleep(100000);
-		}
-		if(is_object($output))
-		{
-			$output->writeln("");
-		}
-
-		$status = $this->FreePBX->Pm2->getStatus("smsconnector-sipsms");
-        if (empty($status) || $status['pm2_env']['status'] != 'online')
-		{
-            if(is_object($output))
-			{
-                $output->writeln(_("Stopped SMS Connector SIP messaging daemon"));
-            }
-        }
-		else
-		{
-			if(is_object($output))
-			{
-				$output->writeln("<error>".sprintf(_("SMS Connector SIP messaging daemon Failed: %s")."</error>",$process->getErrorOutput()));
-			}
-			return false;
-		}
-		return true;
 	}
 }
