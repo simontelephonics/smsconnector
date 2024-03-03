@@ -66,6 +66,11 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		{
 			out(_('Skip: the path already exists!'));
 		}
+		// if daemon got installed in 16.0.13, remove it
+		if (class_exists('FreePBX\modules\Pm2') && $this->FreePBX->Pm2->getStatus("smsconnector-sipsms"))
+		{
+			$this->FreePBX->Pm2->delete("smsconnector-sipsms");
+		}
 	}
 
 	/**

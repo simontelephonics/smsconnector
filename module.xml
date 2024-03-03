@@ -33,12 +33,6 @@
 			<method callingMethod="addUser" class="Smsconnector" namespace="FreePBX\modules">usermanAddUser</method>
 			<method callingMethod="updateUser" class="Smsconnector" namespace="FreePBX\modules">usermanUpdateUser</method>
 		</userman>
-		<framework class="Start" namespace="FreePBX\Console\Command">
-			<method callingMethod="postAsteriskHooks" class="Smsconnector" namespace="FreePBX\modules">startFreepbx</method>
-		</framework>
-		<framework class="Stop" namespace="FreePBX\Console\Command">
-			<method callingMethod="preAsteriskHooks" class="Smsconnector" namespace="FreePBX\modules">stopFreepbx</method>
-		</framework>
 	</hooks>
 	<database>
 		<table name="smsconnector_relations">
