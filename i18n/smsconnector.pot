@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-10 15:56+0200\n"
+"POT-Creation-Date: 2024-03-04 22:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: .git\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Creating link to public folder..."
 msgstr ""
 
-#: Smsconnector.class.php:62 Smsconnector.class.php:86
+#: Smsconnector.class.php:62 Smsconnector.class.php:91
 msgid "Done"
 msgstr ""
 
@@ -28,69 +28,113 @@ msgstr ""
 msgid "Skip: the path already exists!"
 msgstr ""
 
-#: Smsconnector.class.php:77
+#: Smsconnector.class.php:82
 msgid "Removing public folder link..."
 msgstr ""
 
-#: Smsconnector.class.php:90
+#: Smsconnector.class.php:95
 msgid "Error: the path still exists!"
 msgstr ""
 
-#: Smsconnector.class.php:95
+#: Smsconnector.class.php:100
 msgid "Skip: the path is not a symbolic link!"
 msgstr ""
 
-#: Smsconnector.class.php:150
+#: Smsconnector.class.php:155
 msgid "Reset"
 msgstr ""
 
-#: Smsconnector.class.php:155
+#: Smsconnector.class.php:160
 msgid "Submit"
 msgstr ""
 
-#: Smsconnector.class.php:225 Smsconnector.class.php:270
+#: Smsconnector.class.php:230 Smsconnector.class.php:275
 msgid "ID is missing!"
 msgstr ""
 
-#: Smsconnector.class.php:229 Smsconnector.class.php:274
+#: Smsconnector.class.php:234 Smsconnector.class.php:279
 msgid "ID does not exist!"
 msgstr ""
 
-#: Smsconnector.class.php:251
+#: Smsconnector.class.php:256
 msgid "Number updated successfully"
 msgstr ""
 
-#: Smsconnector.class.php:256
+#: Smsconnector.class.php:261
 msgid "Number created successfully"
 msgstr ""
 
-#: Smsconnector.class.php:278
+#: Smsconnector.class.php:283
 msgid "Number delete successfully"
 msgstr ""
 
-#: Smsconnector.class.php:282
+#: Smsconnector.class.php:287
 msgid "Number delete failed!"
 msgstr ""
 
-#: Smsconnector.class.php:287
+#: Smsconnector.class.php:292
 msgid "Command not found!"
 msgstr ""
 
-#: Smsconnector.class.php:420
+#: Smsconnector.class.php:462
+#, php-format
+msgid "Processing SIP SMS from %s to %s"
+msgstr ""
+
+#: Smsconnector.class.php:501
+#, php-format
+msgid "Outbound message failed: %s"
+msgstr ""
+
+#: Smsconnector.class.php:505
+#, php-format
+msgid "No adaptor found for DID %s"
+msgstr ""
+
+#: Smsconnector.class.php:511
+#, php-format
+msgid "%s tried to send SMS from %s but is not allowed!"
+msgstr ""
+
+#: Smsconnector.class.php:562
+#, php-format
+msgid "Error sending message to %s: %s"
+msgstr ""
+
+#: Smsconnector.class.php:571
+#, php-format
+msgid ""
+"While offline, you received an SMS from %s to %s:\n"
+"\n"
+"%s"
+msgstr ""
+
+#: Smsconnector.class.php:573
+msgid "SMS received while offline"
+msgstr ""
+
+#: Smsconnector.class.php:601
 msgid "Necessary data is missing!"
 msgstr ""
 
-#: Smsconnector.class.php:424
+#: Smsconnector.class.php:605
 msgid "The DID already exists!"
 msgstr ""
 
-#: Smsconnector.class.php:598
+#: Smsconnector.class.php:774
 #, php-format
 msgid "Page Not Found (%s)!!!!"
 msgstr ""
 
-#: Smsconnector.class.php:614 views/page.main.php:20
+#: Smsconnector.class.php:801 views/page.main.php:20
 msgid "SMS Connector"
+msgstr ""
+
+#: Smsconnector.class.php:857
+#, php-format
+msgid ""
+"SMS Connector received delete request for user id %s ; removing all DID "
+"assignments"
 msgstr ""
 
 #: assets/js/smsconnector.js:27
@@ -149,11 +193,13 @@ msgstr ""
 msgid "Are you sure you want to delete the DID (%s)?"
 msgstr ""
 
-#: assets/js/smsconnector.js:265
+#: assets/js/smsconnector.js:265 views/view.userman.user.php:28
+#: views/view.userman.user.php:80
 msgid "Yes"
 msgstr ""
 
-#: assets/js/smsconnector.js:265
+#: assets/js/smsconnector.js:265 views/view.userman.user.php:29
+#: views/view.userman.user.php:81
 msgid "No"
 msgstr ""
 
@@ -173,11 +219,37 @@ msgstr ""
 msgid "Text to display in the input when it is empty."
 msgstr ""
 
+#: providers/provider-Bulkvs.php:9
+msgid "Bulk Solutions"
+msgstr ""
+
+#: providers/provider-Bulkvs.php:17
+msgid "API Username"
+msgstr ""
+
+#: providers/provider-Bulkvs.php:18
+msgid "Enter the Bulkvs API Username"
+msgstr ""
+
+#: providers/provider-Bulkvs.php:21 providers/provider-Bulkvs.php:30
+#: providers/provider-Flowroute.php:21 providers/provider-Skyetel.php:21
+#: providers/provider-Telnyx.php:22 providers/provider-Voxtelesys.php:21
+msgid "Enter Key"
+msgstr ""
+
+#: providers/provider-Bulkvs.php:25
+msgid "API Password/Token"
+msgstr ""
+
+#: providers/provider-Bulkvs.php:26
+msgid "Enter the Bulkvs API Password/Token"
+msgstr ""
+
 #: providers/provider-Commio.php:9
 msgid "Commio"
 msgstr ""
 
-#: providers/provider-Commio.php:17
+#: providers/provider-Commio.php:17 providers/provider-Voipms.php:17
 msgid "Username"
 msgstr ""
 
@@ -217,7 +289,8 @@ msgstr ""
 msgid "Flowroute"
 msgstr ""
 
-#: providers/provider-Flowroute.php:17 providers/provider-Telnyx.php:17
+#: providers/provider-Flowroute.php:17 providers/provider-Skyetel.php:17
+#: providers/provider-Telnyx.php:17 providers/provider-Voxtelesys.php:17
 msgid "API Key"
 msgstr ""
 
@@ -225,11 +298,8 @@ msgstr ""
 msgid "Enter the Flowroute API key"
 msgstr ""
 
-#: providers/provider-Flowroute.php:21 providers/provider-Telnyx.php:22
-msgid "Enter Key"
-msgstr ""
-
-#: providers/provider-Flowroute.php:25
+#: providers/provider-Flowroute.php:25 providers/provider-Skyetel.php:25
+#: providers/provider-Voipms.php:25
 msgid "API Secret"
 msgstr ""
 
@@ -237,8 +307,20 @@ msgstr ""
 msgid "Enter the Flowroute API secret"
 msgstr ""
 
-#: providers/provider-Flowroute.php:30
+#: providers/provider-Flowroute.php:30 providers/provider-Skyetel.php:30
 msgid "Enter Secret"
+msgstr ""
+
+#: providers/provider-Skyetel.php:9
+msgid "Skyetel"
+msgstr ""
+
+#: providers/provider-Skyetel.php:18
+msgid "Enter the Skyetel API key"
+msgstr ""
+
+#: providers/provider-Skyetel.php:26
+msgid "Enter the Skyetel API secret"
 msgstr ""
 
 #: providers/provider-Telnyx.php:9
@@ -271,6 +353,34 @@ msgstr ""
 
 #: providers/provider-Twilio.php:26
 msgid "Enter the Twilio Auth Token"
+msgstr ""
+
+#: providers/provider-Voipms.php:9
+msgid "Voip.ms"
+msgstr ""
+
+#: providers/provider-Voipms.php:18
+msgid "The e-mail address you use to log in to Voip.ms"
+msgstr ""
+
+#: providers/provider-Voipms.php:21
+msgid "Voip.ms e-mail address"
+msgstr ""
+
+#: providers/provider-Voipms.php:26
+msgid "Enter the Voip.ms API password"
+msgstr ""
+
+#: providers/provider-Voipms.php:30
+msgid "Enter Password"
+msgstr ""
+
+#: providers/provider-Voxtelesys.php:9
+msgid "Voxtelesys"
+msgstr ""
+
+#: providers/provider-Voxtelesys.php:18
+msgid "Enter the Voxtelesys v1 API key"
 msgstr ""
 
 #: views/page.main.php:7 views/rnav.php:5 views/view.number.grid.php:5
@@ -370,10 +480,32 @@ msgstr ""
 msgid "Action"
 msgstr ""
 
-#: views/view.userman.user.php:2
-msgid "Not yet implemented."
+#: views/view.userman.user.php:23
+msgid "SIP SMS enabled"
 msgstr ""
 
-#: views/view.userman.user.php:2
-msgid "Go to SMS Connector."
+#: views/view.userman.user.php:38
+msgid ""
+"Enable this user to send and receive SMS on capable SIP devices, in addition "
+"to Sangoma softphones and UCP."
+msgstr ""
+
+#: views/view.userman.user.php:48
+msgid "Default DID for sending SIP SMS"
+msgstr ""
+
+#: views/view.userman.user.php:65
+msgid ""
+"This is the DID from which SMS will be sent by default on this user's SIP "
+"device."
+msgstr ""
+
+#: views/view.userman.user.php:75
+msgid "Send email notification for messages received while offline"
+msgstr ""
+
+#: views/view.userman.user.php:90
+msgid ""
+"Send email notifications to the user if an SMS is received while the SIP "
+"device is unregistered or unable to receive it"
 msgstr ""
