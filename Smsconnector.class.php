@@ -555,7 +555,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				{
 					foreach ($contacts as $contact) // message all registered
 					{
-						$siptTo = sprintf("pjsip:%s", strstr($contact, 'sip'));
+						$sipTo = sprintf("pjsip:%s", strstr($contact, 'sip'));
 						$result = $this->FreePBX->astman->MessageSend($sipTo, $sipFrom, $message);
 						if ($result['Response'] == 'Error')
 						{
