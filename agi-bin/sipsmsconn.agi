@@ -30,7 +30,7 @@ $AGI->verbose("SMS SIP connector got message from $from to $to", 3);
 $success = $smsconnector->processOutboundSip($to, $from, $messageBody);
 if (!$success)
 {
-	$AGI->verbose("SMS SIP connector failed to send message. Check freepbx.log for details", 3);
+	$AGI->verbose(_("SMS SIP connector failed to send message. Check freepbx.log for details"), 3);
 }
 
 exit;

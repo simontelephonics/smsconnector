@@ -435,7 +435,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function getSIPMessageDeviceByUserID($uid)
 	{
-		if ($this->userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsenabled', false, false))
+		if ($this->Userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsenabled', false, false))
 		{
 			$user = $this->Userman->getUserByID($uid);
 			$extension = $user['default_extension'];
@@ -459,7 +459,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	 */
 	public function processOutboundSip($to, $from, $messageBody)
 	{
-		freepbx_log(FPBX_LOG_INFO, "Processing SIP SMS from $from to $to", true);
+		freepbx_log(FPBX_LOG_INFO, sprintf(_("Processing SIP SMS from %s to %s"), $from, $to), true);
 		$did = $actualTo = NULL;
 		$allowedToSend = false;
 		$retval = true;
@@ -474,7 +474,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		}
 
 		$uid = $this->getUidByDefaultExtension($from);
-		if ($this->userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsenabled', false, false))
+		if ($this->Userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsenabled', false, false))
 		{
 			if ($did)
 			{
@@ -498,17 +498,17 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			if(is_object($adaptor)) {
 				$o = $adaptor->sendMessage($formattedTo, $did, '', $messageBody);
 				if(! $o['status']) {
-					freepbx_log(FPBX_LOG_INFO, "Outbound message failed: ".$o['message'], true);
+					freepbx_log(FPBX_LOG_INFO, sprintf(_("Outbound message failed: %s"), $o['message']), true);
 					$retval = false;
 				}
 			} else {
-				freepbx_log(FPBX_LOG_INFO, sprintf("No adaptor found for DID %s", $did), true);
+				freepbx_log(FPBX_LOG_INFO, sprintf(_("No adaptor found for DID %s"), $did), true);
 				$retval = false;
 			}
 		}
 		else
 		{
-			freepbx_log(FPBX_LOG_INFO, sprintf("%s tried to send SMS from %s but is not allowed!", $from, $did), true);
+			freepbx_log(FPBX_LOG_INFO, sprintf(_("%s tried to send SMS from %s but is not allowed!"), $from, $did), true);
 			$retval = false;
 		}
 
@@ -559,18 +559,19 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 						$result = $this->FreePBX->astman->MessageSend($sipTo, $sipFrom, $message);
 						if ($result['Response'] == 'Error')
 						{
-							freepbx_log(FPBX_LOG_INFO, sprintf("Error sending message to %s: %s", $contact, $result['Message']));
+							freepbx_log(FPBX_LOG_INFO, sprintf(_("Error sending message to %s: %s"), $contact, $result['Message']));
 						}
 					}
 				}
 				else // no contacts registered - send email if enabled
 				{
-					if ($this->userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsemailoffline', false, false)) {
+					if ($this->Userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsemailoffline', false, false)) {
 						// if no email address defined for user, does nothing
-						$body = sprintf("While offline, you received an SMS from %s to %s:\n\n", $from, $to);
-						$body.= $message;
-						$subject = 'SMS received while offline';
-						$this->userman->sendEmail($uid, $subject, $body);
+						//TODO: Generate body from template.
+						$body = sprintf(_("While offline, you received an SMS from %s to %s:\n\n%s"), $from, $to, $message);
+						//TODO: Allow setting the subject message
+						$subject = _('SMS received while offline');
+						$this->Userman->sendEmail($uid, $subject, $body);
 					}
 				}
 			}
@@ -789,10 +790,10 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 
 					if(isset($request['user']))
 					{
-						$user 		   = $this->userman->getUserByID($request['user']);
-						$sipSmsEnabled = $this->userman->getModuleSettingByID($user['id'],'smsconnector','sipsmsenabled',true);
-						$defaultDid    = $this->userman->getModuleSettingByID($user['id'],'smsconnector','sipsmsdefaultdid',true);
-						$emailOffline  = $this->userman->getModuleSettingById($user['id'],'smsconnector','sipsmsemailoffline',true);
+						$user 		   = $this->Userman->getUserByID($request['user']);
+						$sipSmsEnabled = $this->Userman->getModuleSettingByID($user['id'],'smsconnector','sipsmsenabled',true);
+						$defaultDid    = $this->Userman->getModuleSettingByID($user['id'],'smsconnector','sipsmsdefaultdid',true);
+						$emailOffline  = $this->Userman->getModuleSettingById($user['id'],'smsconnector','sipsmsemailoffline',true);
 					}
 
 					return array(
@@ -827,33 +828,33 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			{
 				if($post['sipsmsenabled'] == "true")
 				{
-					$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsenabled', true);
-					$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsdefaultdid', !empty($post['sipsmsdefaultdid']) ? $post['sipsmsdefaultdid'] : null);
+					$this->Userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsenabled', true);
+					$this->Userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsdefaultdid', !empty($post['sipsmsdefaultdid']) ? $post['sipsmsdefaultdid'] : null);
 					if (!empty($post['sipsmsemailoffline']))
 					{
-						$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsemailoffline', ($post['sipsmsemailoffline'] == "true") ? true : false);
+						$this->Userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsemailoffline', ($post['sipsmsemailoffline'] == "true") ? true : false);
 					}
 					else
 					{
-						$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsemailoffline', null);
+						$this->Userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsemailoffline', null);
 					}
 				}
 				elseif($post['sipsmsenabled'] == "false")
 				{
-					$this->userman->setModuleSettingByID($id,'smsconnector','sipsmsenabled',false);
+					$this->Userman->setModuleSettingByID($id,'smsconnector','sipsmsenabled',false);
 				}
 				else
 				{
-					$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsenabled', null);
-					$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsdefaultdid', null);
-					$this->userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsemailoffline', null);
+					$this->Userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsenabled', null);
+					$this->Userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsdefaultdid', null);
+					$this->Userman->setModuleSettingByID($id, 'smsconnector', 'sipsmsemailoffline', null);
 				}
 			}
 		}
 	}
 
 	public function usermanDelUser($id, $display, $data) {
-		freepbx_log(FPBX_LOG_INFO, "SMS Connector received delete request for user id $id ; removing all DID assignments");
+		freepbx_log(FPBX_LOG_INFO, sprintf(_("SMS Connector received delete request for user id %s ; removing all DID assignments"), $id));
 		$this->FreePBX->Sms->addUserRouting($id,array(),'Smsconnector'); // "add" with empty array is delete
 	}
 
@@ -949,7 +950,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 	{
 		foreach ($this->getUsersWithDids() as $uid)
 		{
-			if ($this->userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsenabled', false, false))
+			if ($this->Userman->getModuleSettingByID($uid, 'smsconnector', 'sipsmsenabled', false, false))
 			{
 				$user = $this->Userman->getUserByID($uid);
 				$extension = $user['default_extension'];
