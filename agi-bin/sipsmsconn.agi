@@ -5,8 +5,7 @@ $bootstrap_settings['include_compress'] = false;
 $restrict_mods = array('smsconnector' => true);
 require_once '/etc/freepbx.conf';
 
-$freepbx = \FreePBX::create();
-$smsconnector = $freepbx->Smsconnector();
+$smsconnector = \FreePBX::create()->Smsconnector();
 require_once 'phpagi.php';
 
 $AGI = new AGI();
