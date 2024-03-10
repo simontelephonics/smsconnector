@@ -38,6 +38,7 @@ class Siptrunk extends providerBase
             "to"         => '+'.$to,
             "from"       => '+'.$from,
             "body"       => '',
+            "is_mms"     => 'true',
             "media_urls" => $this->media_urls($id)
         );
         if ($message)
