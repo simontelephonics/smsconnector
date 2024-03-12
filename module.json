@@ -2,11 +2,11 @@
     "rawname": "smsconnector",
     "repo": "unsupported",
     "name": "SMS Connector",
-    "version": "16.0.15",
+    "version": "16.0.15.1",
     "publisher": "Simon Telephonics LLC",
     "license": "GPLv3+",
     "licenselink": "http://www.gnu.org/licenses/gpl-3.0.txt",
-    "changelog": "This release adds a new provider, Siptrunk.com",
+    "changelog": "Fixes a bug with long SMSes on Voip.ms",
     "category": "Connectivity",
     "description": "Implements a generic SMS connector",
     "depends": {
@@ -18,5 +18,5 @@
     "supported": {
         "version": "16.0"
     },
-    "location": "https://simon.tel/pbx-modules/smsconnector-16.0.15.tar.gz"
+    "location": "https://simon.tel/pbx-modules/smsconnector-16.0.15.1.tar.gz"
 }
