@@ -63,8 +63,15 @@ class Voipms extends providerBase
         $req = array(
             'to'     => $to,
             'text'   => $message,
-            'method' => 'sendSMS'
         );
+        if (strlen($message) <= 160)
+        {
+            $req['method'] = 'sendSMS';
+        }
+        else
+        {
+            $req['method'] = 'sendMMS';
+        }
         $this->sendVoipms($req, $from, $id);
         return true;
     }
