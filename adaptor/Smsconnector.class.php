@@ -2,27 +2,17 @@
 namespace FreePBX\modules\Sms\Adaptor;
 use PDO;
 class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
-    /**
-	* Create the Adaptor\Smsconnector Class statically while checking to make sure the class hasn't already been loaded
-	*
-	* @param object Database Object
-	* @return object Adaptor\Smsconnector object
-	*/
-	static function &create() 
-    {
-		static $obj;
-		if (!isset($obj)) 
-        {
-			$obj = new Smsconnector();
-		}
-		return $obj;
-	}
+    // Properties to be set by parent constructor - fix for PHP8
+    public $db;
+    public $FreePBX;
+    public $emoji;
 
     /**
      * Extend AdaptorBase send/receive methods with our specific cases
      */
 
-    public function sendMedia($to,$from,$cnam,$message=null,$files=array(),$time=null,$adaptor=null,$emid=null,$chatId='') {
+    public function sendMedia($to,$from,$cnam,$message=null,$files=array(),$time=null,$adaptor=null,$emid=null,$chatId='')
+    {
         // Store in database
         $retval = array();
         try 
@@ -48,7 +38,8 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
         return $retval;
     }
 
-    public function sendMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null,$chatId='') {
+    public function sendMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null,$chatId='')
+    {
         // Store in database
         $retval = array();
         try 
@@ -72,6 +63,7 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
                 $providerInfo['class']->sendMessage($retval['id'], $to, $from, $message);
             }
         }
+        $retval['emid'] = $emid; // TODO: set this from API call result
         return $retval;
     }
 

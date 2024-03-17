@@ -801,7 +801,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 							'title' => _('SMS Connector'),
 							'rawname' => 'smsconnector',
 							'content' => $this->showPage('userman', array(
-								'error' => $error,
+								'error' => empty($error)?'':$error,
 								'sipsmsenabled' => $sipSmsEnabled,
 								'sipsmsdefaultdid' => $defaultDid,
 								'sipsmsemailoffline' => $emailOffline,

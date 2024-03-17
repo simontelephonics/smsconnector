@@ -1,7 +1,7 @@
 <?php
 	if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
 	
-	switch($request['view'])
+	switch(empty($request['view'])?'':$request['view'])
 	{
 		case 'settings':
 			$subhead = _('Provider Settings');
