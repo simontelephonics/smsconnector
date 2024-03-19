@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === "GET")
     $stmt->execute();
     $row = $stmt->fetchObject();
 
-    $finfo = new \finfo(FILEINFO_MIME);
+    $finfo = new \finfo(FILEINFO_MIME_TYPE);
     header('Content-Type: ' . $finfo->buffer($row->raw));
     echo $row->raw;
 } 
