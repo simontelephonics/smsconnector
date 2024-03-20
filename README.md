@@ -1,5 +1,5 @@
 ## SMS Connector
-A third-party SMS connector module for FreePBX 16
+A third-party SMS connector module for FreePBX 16 and 17
 
 ### Overview
 
@@ -27,7 +27,7 @@ a generic, expandable connector, with new providers added as contributed by the 
 
 ### Installation
 
-* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.15.1/smsconnector-16.0.15.1.tar.gz`
+* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.15.2/smsconnector-16.0.15.2.tar.gz`
 * `fwconsole r`
 
 ### Configuration

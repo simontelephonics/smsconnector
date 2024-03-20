@@ -2,7 +2,7 @@
 	<rawname>smsconnector</rawname>
 	<repo>unsupported</repo>
 	<name>SMS Connector</name>
-	<version>16.0.15.1</version>
+	<version>16.0.15.2</version>
 	<category>Connectivity</category>
 	<Publisher>Simon Telephonics LLC</Publisher>
 	<info>http://wiki.freepbx.org/</info>
@@ -45,6 +45,7 @@
 		</table>
 	</database>
 	<changelog>
+		*16.0.15.2* Minor code clean-up for PHP8/FreePBX17
 		*16.0.15.1* Fixes bug with long SMS on Voip.ms
 		*16.0.15* Adds support for the provider Siptrunk.com
 		*16.0.14* Use function hook instead of long-running process for inbound processing to SIP
