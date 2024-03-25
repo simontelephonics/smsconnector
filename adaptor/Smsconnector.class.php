@@ -34,7 +34,8 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
             {
                 $providerInfo['class']->sendMedia($retval['id'], $to, $from, $message);
             }
-        }  
+        }
+        $retval['emid'] = $emid; // TODO: set this from API call result
         return $retval;
     }
 
