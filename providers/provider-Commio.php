@@ -104,16 +104,16 @@ class Commio extends providerBase
         try 
         {
             $commioResponse = $session->post('', $headers, $reqBody, $options);
-            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $commioResponse->status_code, $commioResponse->body), true);
+            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $commioResponse->status_code, $commioResponse->body));
             if (! $commioResponse->success)
             {
-                throw new \Exception("HTTP $commioResponse->status_code, $commioResponse->body");
+                throw new \Exception(sprintf(_("HTTP %s, %s"), $commioResponse->status_code, $commioResponse->body));
             }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
         {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
+            throw new \Exception(sprintf(_('Unable to send message: %s'), $e->getMessage()));
         }
     }
 
@@ -125,7 +125,7 @@ class Commio extends providerBase
         {
             $postdata = $_POST;
 
-            freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($postdata)) 
             { 
                 $return_code = 403;
@@ -152,7 +152,7 @@ class Commio extends providerBase
                     } 
                     catch (\Exception $e) 
                     {
-                        throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                        throw new \Exception(sprintf(_('Unable to get message: %s'), $e->getMessage()));
                     }
 
                     if ($postdata['type'] == 'mms' && (stripos($postdata['message'], 'http') === 0))
@@ -167,7 +167,7 @@ class Commio extends providerBase
                         } 
                         catch (\Exception $e) 
                         {
-                            throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                            throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
                         }
                     }
                     

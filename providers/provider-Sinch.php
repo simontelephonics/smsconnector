@@ -68,23 +68,24 @@ class Sinch extends providerBase
             "Authorization" => sprintf("Bearer %s", $config['api_secret']),
             "Content-Type" => "application/json"
         );
-        $url = sprintf('https://sms.api.sinch.com/xms/v1/%s/batches', $config['api_key']);
+        $url = sprintf('https://sms.api.sinch.com/xms/%s/%s/batches', $this->APIVersion, $config['api_key']);
         $json = json_encode($payload);
 
         $session = \FreePBX::Curl()->requests($url);
         try
         {
             $sinchResponse = $session->post('', $headers, $json, array());
-            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $sinchResponse->status_code, $sinchResponse->body), true);
+            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $sinchResponse->status_code, $sinchResponse->body));
+
             if (! $sinchResponse->success)
             {
-                throw new \Exception("HTTP $sinchResponse->status_code, $sinchResponse->body");
+                throw new \Exception(sprintf(_("HTTP %s, %s"), $sinchResponse->status_code, $sinchResponse->body));
             }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
         {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
+            throw new \Exception(sprintf(_('Unable to send message: %s'), $e->getMessage()));
         }
     }
 
@@ -96,7 +97,7 @@ class Sinch extends providerBase
             $postdata = file_get_contents("php://input");
             $sms      = json_decode($postdata);
 
-            freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($sms))
             {
                 $return_code = 403;
@@ -116,7 +117,7 @@ class Sinch extends providerBase
                     }
                     catch (\Exception $e)
                     {
-                        throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                        throw new \Exception(sprintf(_('Unable to get message: %s'), $e->getMessage()));
                     }
 
                     if (isset($sms->body->url))
@@ -130,7 +131,7 @@ class Sinch extends providerBase
                         }
                         catch (\Exception $e)
                         {
-                            throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                            throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
                         }
                     }
                     $connector->emitSmsInboundUserEvt($msgid, $to, $from, '', $text, null, 'Smsconnector', $emid);
@@ -138,7 +139,7 @@ class Sinch extends providerBase
                 else if (isset($sms->type))
                 {
                     // don't know what to do yet; log it
-                    freepbx_log(FPBX_LOG_INFO, print_r($sms, true));
+                    $this->LogInfo(print_r($sms, true));
                 }
                 $return_code = 202;
             }

@@ -65,23 +65,23 @@ class Skyetel extends providerBase
         );
 
         $headers = array("Content-Type" => "application/json");
-        $url = 'https://sms.skyetel.com/v1/out?from=' . $from; // "from" comes from FreePBX as 11 digit number, the correct format
-        $json = json_encode($payload);
+        $url     = sprintf('https://sms.skyetel.com/%s/out?from=%s', $this->APIVersion, $from); // "from" comes from FreePBX as 11 digit number, the correct format
+        $json    = json_encode($payload);
 
         $session = \FreePBX::Curl()->requests($url);
         try 
         {
             $skyetelResponse = $session->post('', $headers, $json, $options);
-            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $skyetelResponse->status_code, $skyetelResponse->body), true);
+            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $skyetelResponse->status_code, $skyetelResponse->body));
             if (! $skyetelResponse->success)
             {
-                throw new \Exception("HTTP $skyetelResponse->status_code, $skyetelResponse->body");
+                throw new \Exception(sprintf(_("HTTP %s, %s"), $skyetelResponse->status_code, $skyetelResponse->body));
             }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
         {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
+            throw new \Exception(sprintf(_('Unable to send message: %s'), $e->getMessage()));
         }
     }
 
@@ -93,7 +93,7 @@ class Skyetel extends providerBase
             $postdata = file_get_contents("php://input");
             $sms      = json_decode($postdata);
 
-            freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($sms)) 
             { 
                 $return_code = 403;
@@ -111,7 +111,7 @@ class Skyetel extends providerBase
                 } 
                 catch (\Exception $e) 
                 {
-                    throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                    throw new \Exception(sprintf(_('Unable to get message: %s'), $e->getMessage()));
                 }
                 
                 if (isset($sms->media[0])) 
@@ -127,7 +127,7 @@ class Skyetel extends providerBase
                         } 
                         catch (\Exception $e) 
                         {
-                            throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                            throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
                         }
                     }
                 }

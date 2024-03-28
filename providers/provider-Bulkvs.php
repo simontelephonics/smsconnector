@@ -69,23 +69,23 @@ class Bulkvs extends providerBase
             )
         );
         $headers = array("Content-Type" => "application/json");
-        $url = 'https://portal.bulkvs.com/api/v1.0/messageSend';
-        $json = json_encode($payload);
+        $url     = sprintf('https://portal.bulkvs.com/api/%s/messageSend', $this->APIVersion);
+        $json    = json_encode($payload);
 
         $session = \FreePBX::Curl()->requests($url);
         try 
         {
             $bulkvsResponse = $session->post('', $headers, $json, $options);
-            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $bulkvsResponse->status_code, $bulkvsResponse->body), true);
+            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $bulkvsResponse->status_code, $bulkvsResponse->body));
             if (! $bulkvsResponse->success)
             {
-                throw new \Exception("HTTP $bulkvsResponse->status_code, $bulkvsResponse->body");
+                throw new \Exception(sprintf(_("HTTP %s, %s"), $bulkvsResponse->status_code, $bulkvsResponse->body));
             }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
         {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
+            throw new \Exception(sprintf(_('Unable to send message: %s'), $e->getMessage()));
         }
     }
 
@@ -97,15 +97,15 @@ class Bulkvs extends providerBase
             $postdata = file_get_contents("php://input");
             $sms      = json_decode($postdata);
 
-            freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($sms)) 
             { 
                 $return_code = 403;
             }
             elseif (! empty($sms->DeliveryReceipt)) 
             {
-                    // not handling DLR for now
-                    $return_code = 200;
+                // not handling DLR for now
+                $return_code = 200;
             }
             else
             {
@@ -145,7 +145,7 @@ class Bulkvs extends providerBase
                 } 
                 catch (\Exception $e) 
                 {
-                    throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                    throw new \Exception(sprintf(_('Unable to get message: %s'), $e->getMessage()));
                 }
         
                 if (! empty($images))
@@ -159,7 +159,7 @@ class Bulkvs extends providerBase
                         } 
                         catch (\Exception $e) 
                         {
-                            throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                            throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
                         }
                     }    
                 }

@@ -57,23 +57,23 @@ class Voxtelesys extends providerBase
             "Authorization" => sprintf("Bearer %s", $config['api_key']),
             "Content-Type" => "application/json"
         );
-        $url = 'https://smsapi.voxtelesys.net/api/v1/sms';
+        $url  = sprintf('https://smsapi.voxtelesys.net/api/%s/sms', $this->APIVersion);
         $json = json_encode($payload);
 
         $session = \FreePBX::Curl()->requests($url);
         try 
         {
             $voxtelesysResponse = $session->post('', $headers, $json, array());
-            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $voxtelesysResponse->status_code, $voxtelesysResponse->body), true);
+            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $voxtelesysResponse->status_code, $voxtelesysResponse->body));
             if (! $voxtelesysResponse->success)
             {
-                throw new \Exception("HTTP $voxtelesysResponse->status_code, $voxtelesysResponse->body");
+                throw new \Exception(sprintf(_("HTTP %s, %s"), $voxtelesysResponse->status_code, $voxtelesysResponse->body));
             }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
         {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
+            throw new \Exception(sprintf(_('Unable to send message: %s'), $e->getMessage()));
         }
     }
     
@@ -85,7 +85,7 @@ class Voxtelesys extends providerBase
             $postdata = file_get_contents("php://input");
             $sms      = json_decode($postdata);
 
-            freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($sms)) 
             { 
                 $return_code = 403;
@@ -105,7 +105,7 @@ class Voxtelesys extends providerBase
                     } 
                     catch (\Exception $e) 
                     {
-                        throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                        throw new \Exception(sprintf(_('Unable to get message: %s'), $e->getMessage()));
                     }
             
                     if (isset($sms->media[0])) 
@@ -121,7 +121,7 @@ class Voxtelesys extends providerBase
                             } 
                             catch (\Exception $e) 
                             {
-                                throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                                throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
                             }
                         }
                     }

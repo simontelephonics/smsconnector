@@ -26,7 +26,7 @@ if (preg_match('/:(.*)@/', $messageTo, $matches))
 }
 else return;
 
-$AGI->verbose("SMS SIP connector got message from $from to $to", 3);
+$AGI->verbose(sprintf(_("SMS SIP connector got message from %s to %s"), $from, $to), 3);
 $success = $smsconnector->processOutboundSip($to, $from, $messageBody);
 if (!$success)
 {

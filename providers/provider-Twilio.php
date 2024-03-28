@@ -74,21 +74,21 @@ class Twilio extends providerBase
                 $config['api_secret']
             )
         );
-        $url = sprintf('https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json', $config['api_key']);
+        $url = sprintf('https://api.twilio.com/%s/Accounts/%s/Messages.json', $this->APIVersion, $config['api_key']);
         $session = \FreePBX::Curl()->requests($url);
         try
         {
             $twilioResponse = $session->post('', null, $payload, $options);
-            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $twilioResponse->status_code, $twilioResponse->body), true);
+            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $twilioResponse->status_code, $twilioResponse->body));
             if (! $twilioResponse->success)
             {
-                throw new \Exception("HTTP $twilioResponse->status_code, $twilioResponse->body");
+                throw new \Exception(sprintf(_("HTTP %s, %s"), $twilioResponse->status_code, $twilioResponse->body));
             }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
         {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
+            throw new \Exception(sprintf(_('Unable to send message: %s'), $e->getMessage()));
         }
     }
     
@@ -105,7 +105,7 @@ class Twilio extends providerBase
             {
                 $postdata = $_POST;
 
-                freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+                $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
                 if (empty($postdata)) 
                 { 
                     $return_code = 403;
@@ -123,7 +123,7 @@ class Twilio extends providerBase
                     } 
                     catch (\Exception $e) 
                     {
-                        throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                        throw new \Exception(sprintf(_('Unable to get message: %s'), $e->getMessage()));
                     }
                     
                     if (isset($postdata['NumMedia']) && ($postdata['NumMedia'] > 0)) 
@@ -145,7 +145,7 @@ class Twilio extends providerBase
                             }
                             catch (\Exception $e)
                             {
-                                throw new \Exception('Unable to get media file: ' .$e->getMessage());
+                                throw new \Exception(sprintf(_('Unable to get media file: %s'), $e->getMessage()));
                             }
 
                             $name = "media";
@@ -153,7 +153,7 @@ class Twilio extends providerBase
                             {
                                 $name = $matches[1];
                             }
-                            $name = $mid . $name;
+                            $name = $emid . $name;
 
                             try 
                             {
@@ -161,7 +161,7 @@ class Twilio extends providerBase
                             } 
                             catch (\Exception $e) 
                             {
-                                throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                                throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
                             }
                         }
                     }

@@ -122,22 +122,22 @@ class Voipms extends providerBase
         $reqbody .= '--' . $mimeBoundary . '--' . $crlf . $crlf;
        
         $headers = array("Content-Type" => "multipart/form-data; boundary=$mimeBoundary");
-        $url = 'https://voip.ms/api/v1/rest.php';
+        $url = sprintf('https://voip.ms/api/%s/rest.php', $this->APIVersion);
 
         $session = \FreePBX::Curl()->requests($url);
         try
         {
             $voipmsResponse = $session->post('', $headers, $reqbody, array());
-            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $voipmsResponse->status_code, $voipmsResponse->body), true);
+            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $voipmsResponse->status_code, $voipmsResponse->body));
             if (! $voipmsResponse->success)
             {
-                throw new \Exception("HTTP $voipmsResponse->status_code, $voipmsResponse->body");
+                throw new \Exception(sprintf(_("HTTP %s, %s"), $voipmsResponse->status_code, $voipmsResponse->body));
             }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
         {
-            throw new \Exception('Unable to send message: ' . $e->getMessage());
+            throw new \Exception(sprintf(_('Unable to send message: %s'), $e->getMessage()));
         }
     }
 
@@ -153,7 +153,7 @@ class Voipms extends providerBase
             } else {
                 $sms = $_GET;
             }
-            freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($sms, true)));
+            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($sms, true)));
 
             $to = $sms['to'];
             if (preg_match('/^[2-9]\d{2}[2-9]\d{6}$/', $to)) // ten digit NANP
@@ -178,7 +178,7 @@ class Voipms extends providerBase
             }
             catch (\Exception $e)
             {
-                throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                throw new \Exception(sprintf(_('Unable to get message: %s'), $e->getMessage()));
             }
 
             if ($media)
@@ -192,7 +192,7 @@ class Voipms extends providerBase
                 }
                 catch (\Exception $e)
                 {
-                    throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                    throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
                 }
             }
             $connector->emitSmsInboundUserEvt($msgid, $to, $from, '', $text, null, 'Smsconnector', $emid);
@@ -203,7 +203,6 @@ class Voipms extends providerBase
 
     public function getWebHookUrl()
     {
-        $ampWebAddress = $this->getWebAddress();
-        return sprintf("https://%s/smsconn/provider.php?provider=%s;to={TO};from={FROM};message={MESSAGE};id={ID};date={TIMESTAMP};media={MEDIA}", $ampWebAddress, $this->nameRaw);
+        return sprintf("%s;to={TO};from={FROM};message={MESSAGE};id={ID};date={TIMESTAMP};media={MEDIA}", parent::getWebHookUrl());
     }
 }

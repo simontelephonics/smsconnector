@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-04 22:05+0100\n"
-"PO-Revision-Date: 2024-03-04 22:12+0100\n"
+"POT-Creation-Date: 2024-03-29 00:12+0100\n"
+"PO-Revision-Date: 2024-03-29 00:19+0100\n"
 "Last-Translator: Javier Pastor <jpastor@cerebelum.net>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -238,8 +238,9 @@ msgid "Enter the Bulkvs API Username"
 msgstr "Introduzca el nombre de usuario API de Bulkvs"
 
 #: providers/provider-Bulkvs.php:21 providers/provider-Bulkvs.php:30
-#: providers/provider-Flowroute.php:21 providers/provider-Skyetel.php:21
-#: providers/provider-Telnyx.php:22 providers/provider-Voxtelesys.php:21
+#: providers/provider-Flowroute.php:21 providers/provider-Siptrunk.php:21
+#: providers/provider-Skyetel.php:21 providers/provider-Telnyx.php:22
+#: providers/provider-Voxtelesys.php:21
 msgid "Enter Key"
 msgstr "Introduzca Clave"
 
@@ -250,6 +251,66 @@ msgstr "API Contraseña/Token"
 #: providers/provider-Bulkvs.php:26
 msgid "Enter the Bulkvs API Password/Token"
 msgstr "Introduzca la Contraseña/Token de la API de Bulkvs"
+
+#: providers/provider-Bulkvs.php:79 providers/provider-Commio.php:107
+#: providers/provider-Flowroute.php:90 providers/provider-Signalwire.php:90
+#: providers/provider-Sinch.php:78 providers/provider-Siptrunk.php:91
+#: providers/provider-Skyetel.php:75 providers/provider-Telnyx.php:68
+#: providers/provider-Twilio.php:82 providers/provider-Voipms.php:131
+#: providers/provider-Voxtelesys.php:67
+#, php-format
+msgid "%s responds: HTTP %s, %s"
+msgstr "%s responde: HTTP %s, %s"
+
+#: providers/provider-Bulkvs.php:82 providers/provider-Commio.php:110
+#: providers/provider-Flowroute.php:93 providers/provider-Signalwire.php:93
+#: providers/provider-Sinch.php:82 providers/provider-Siptrunk.php:94
+#: providers/provider-Skyetel.php:78 providers/provider-Telnyx.php:71
+#: providers/provider-Twilio.php:85 providers/provider-Voipms.php:134
+#: providers/provider-Voxtelesys.php:70
+#, php-format
+msgid "HTTP %s, %s"
+msgstr "HTTP %s, %s"
+
+#: providers/provider-Bulkvs.php:88 providers/provider-Commio.php:116
+#: providers/provider-Flowroute.php:99 providers/provider-Signalwire.php:99
+#: providers/provider-Sinch.php:88 providers/provider-Siptrunk.php:100
+#: providers/provider-Skyetel.php:84 providers/provider-Telnyx.php:77
+#: providers/provider-Twilio.php:91 providers/provider-Voipms.php:140
+#: providers/provider-Voxtelesys.php:76
+#, php-format
+msgid "Unable to send message: %s"
+msgstr "No se ha podido enviar el mensaje: %s"
+
+#: providers/provider-Bulkvs.php:100 providers/provider-Commio.php:128
+#: providers/provider-Flowroute.php:112 providers/provider-Signalwire.php:116
+#: providers/provider-Sinch.php:100 providers/provider-Siptrunk.php:113
+#: providers/provider-Skyetel.php:96 providers/provider-Telnyx.php:89
+#: providers/provider-Twilio.php:108 providers/provider-Voipms.php:156
+#: providers/provider-Voxtelesys.php:88
+#, php-format
+msgid "Webhook (%s) in: %s"
+msgstr "Webhook (%s) en: %s"
+
+#: providers/provider-Bulkvs.php:148 providers/provider-Commio.php:155
+#: providers/provider-Flowroute.php:134 providers/provider-Signalwire.php:134
+#: providers/provider-Sinch.php:120 providers/provider-Siptrunk.php:135
+#: providers/provider-Skyetel.php:114 providers/provider-Telnyx.php:111
+#: providers/provider-Twilio.php:126 providers/provider-Voipms.php:181
+#: providers/provider-Voxtelesys.php:108
+#, php-format
+msgid "Unable to get message: %s"
+msgstr "No se puede obtener el mensaje: %s"
+
+#: providers/provider-Bulkvs.php:162 providers/provider-Commio.php:170
+#: providers/provider-Flowroute.php:152 providers/provider-Signalwire.php:172
+#: providers/provider-Sinch.php:134 providers/provider-Siptrunk.php:153
+#: providers/provider-Skyetel.php:130 providers/provider-Telnyx.php:127
+#: providers/provider-Twilio.php:164 providers/provider-Voipms.php:195
+#: providers/provider-Voxtelesys.php:124
+#, php-format
+msgid "Unable to store MMS media: %s"
+msgstr "No se pueden almacenar medios MMS: %s"
 
 #: providers/provider-Commio.php:9
 msgid "Commio"
@@ -267,7 +328,7 @@ msgstr "Introduzca el nombre de usuario de la API de Comio"
 msgid "Enter Username"
 msgstr "Introduzca nombre de usuario"
 
-#: providers/provider-Commio.php:25
+#: providers/provider-Commio.php:25 providers/provider-Signalwire.php:33
 msgid "API Token"
 msgstr "Token de API"
 
@@ -275,7 +336,8 @@ msgstr "Token de API"
 msgid "Enter the Commio API token"
 msgstr "Introduzca el Token de la API de Comio"
 
-#: providers/provider-Commio.php:30 providers/provider-Twilio.php:30
+#: providers/provider-Commio.php:30 providers/provider-Signalwire.php:38
+#: providers/provider-Twilio.php:30
 msgid "Enter Token"
 msgstr "Introduzca Token"
 
@@ -295,8 +357,9 @@ msgstr "Introduce ID de cuenta"
 msgid "Flowroute"
 msgstr "Flowroute"
 
-#: providers/provider-Flowroute.php:17 providers/provider-Skyetel.php:17
-#: providers/provider-Telnyx.php:17 providers/provider-Voxtelesys.php:17
+#: providers/provider-Flowroute.php:17 providers/provider-Siptrunk.php:17
+#: providers/provider-Skyetel.php:17 providers/provider-Telnyx.php:17
+#: providers/provider-Voxtelesys.php:17
 msgid "API Key"
 msgstr "Clave API"
 
@@ -304,8 +367,8 @@ msgstr "Clave API"
 msgid "Enter the Flowroute API key"
 msgstr "Introduce la Clave de la API de Flowroute"
 
-#: providers/provider-Flowroute.php:25 providers/provider-Skyetel.php:25
-#: providers/provider-Voipms.php:25
+#: providers/provider-Flowroute.php:25 providers/provider-Siptrunk.php:25
+#: providers/provider-Skyetel.php:25 providers/provider-Voipms.php:25
 msgid "API Secret"
 msgstr "Secreto de la API"
 
@@ -313,9 +376,87 @@ msgstr "Secreto de la API"
 msgid "Enter the Flowroute API secret"
 msgstr "Introduzca el secreto de la API de Flowroute"
 
-#: providers/provider-Flowroute.php:30 providers/provider-Skyetel.php:30
+#: providers/provider-Flowroute.php:30 providers/provider-Siptrunk.php:30
+#: providers/provider-Skyetel.php:30
 msgid "Enter Secret"
 msgstr "Introduzca secreto"
+
+#: providers/provider-Signalwire.php:9
+msgid "SignalWire"
+msgstr "SignalWire"
+
+#: providers/provider-Signalwire.php:17
+msgid "SignalWire Subdomain"
+msgstr "Subdominio SignalWire"
+
+#: providers/provider-Signalwire.php:18
+msgid ""
+"Enter your unique SignalWire subdomain, the first part of subdomain."
+"signalwire.com"
+msgstr ""
+"Introduzca su subdominio SignalWire único, la primera parte de subdominio."
+"signalwire.com"
+
+#: providers/provider-Signalwire.php:21
+msgid "Enter SignalWire Subdomain"
+msgstr "Introduzca el subdominio de SignalWire"
+
+#: providers/provider-Signalwire.php:25
+msgid "Project ID"
+msgstr "Proyecto ID"
+
+#: providers/provider-Signalwire.php:26
+msgid "Enter the SignalWire project ID"
+msgstr "Introduzca el ID del proyecto SignalWire"
+
+#: providers/provider-Signalwire.php:29
+msgid "Enter Project ID"
+msgstr "Introduzca el ID del proyecto"
+
+#: providers/provider-Signalwire.php:34
+msgid "Enter the SignalWire API Token"
+msgstr "Introduzca el token de la API SignalWire"
+
+#: providers/provider-Signalwire.php:156 providers/provider-Twilio.php:148
+#, php-format
+msgid "Unable to get media file: %s"
+msgstr "No se puede obtener el archivo multimedia: %s"
+
+#: providers/provider-Sinch.php:9
+msgid "Sinch"
+msgstr "Sinch"
+
+#: providers/provider-Sinch.php:17
+msgid "Service Plan ID"
+msgstr "ID del plan de servicio"
+
+#: providers/provider-Sinch.php:18
+msgid "Enter the Sinch SMS Service Plan ID"
+msgstr "Introduzca el ID del plan de servicio Sinch SMS"
+
+#: providers/provider-Sinch.php:21
+msgid "Enter Service Plan ID"
+msgstr "Introduzca el ID del plan de servicio"
+
+#: providers/provider-Sinch.php:25 providers/provider-Sinch.php:29
+msgid "Enter API token"
+msgstr "Introducir token API"
+
+#: providers/provider-Sinch.php:26
+msgid "Enter the Sinch Service API token"
+msgstr "Introduzca el token de la API del servicio Sinch"
+
+#: providers/provider-Siptrunk.php:9
+msgid "Siptrunk"
+msgstr "Siptrunk"
+
+#: providers/provider-Siptrunk.php:18
+msgid "Enter the Siptrunk API access key"
+msgstr "Introduzca la clave API de Siptrunk"
+
+#: providers/provider-Siptrunk.php:26
+msgid "Enter the Siptrunk API secret key"
+msgstr "Introduzca el secreto de la API de Siptrunk"
 
 #: providers/provider-Skyetel.php:9
 msgid "Skyetel"
@@ -389,6 +530,26 @@ msgstr "Voxtelesys"
 #: providers/provider-Voxtelesys.php:18
 msgid "Enter the Voxtelesys v1 API key"
 msgstr "Introduzca la Clave API de Voxtelesys v1"
+
+#: public/provider.php:30
+#, php-format
+msgid "Webhook (%s): Return Code %s"
+msgstr "Webhook (%s): Código de retorno %s"
+
+#: public/provider.php:36
+#, php-format
+msgid "Exception Webhook (%s): %s"
+msgstr "Excepción Webhook (%s): %s"
+
+#: public/provider.php:42
+#, php-format
+msgid "Error Webhook (%s): The provider is not available!"
+msgstr "Error Webhook (%s): El proveedor no está disponible!"
+
+#: public/provider.php:47
+#, php-format
+msgid "Error Webhook (%s): The provider does not exist!"
+msgstr "Error Webhook (%s): ¡El proveedor no existe!"
 
 #: views/page.main.php:7 views/rnav.php:5 views/view.number.grid.php:5
 msgid "Provider Settings"

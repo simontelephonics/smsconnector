@@ -82,21 +82,21 @@ class Signalwire extends providerBase
                 $config['api_secret']
             )
         );
-        $url = sprintf('https://%s.signalwire.com/api/laml/2010-04-01/Accounts/%s/Messages', $config['subdomain'], $config['api_key']);
+        $url = sprintf('https://%s.signalwire.com/api/laml/%s/Accounts/%s/Messages', $config['subdomain'], $this->APIVersion, $config['api_key']);
         $session = \FreePBX::Curl()->requests($url);
         try
         {
             $signalwireResponse = $session->post('', null, $payload, $options);
-            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $signalwireResponse->status_code, $signalwireResponse->body), true);
+            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $signalwireResponse->status_code, $signalwireResponse->body));
             if (! $signalwireResponse->success)
             {
-                throw new \Exception("HTTP $signalwireResponse->status_code, $signalwireResponse->body");
+                throw new \Exception(sprintf(_("HTTP %s, %s"), $signalwireResponse->status_code, $signalwireResponse->body));
             }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
         {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
+            throw new \Exception(sprintf(_('Unable to send message: %s'), $e->getMessage()));
         }
     }
 
@@ -113,7 +113,7 @@ class Signalwire extends providerBase
             {
                 $postdata = $_POST;
 
-                freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+                $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
                 if (empty($postdata))
                 {
                     $return_code = 403;
@@ -131,7 +131,7 @@ class Signalwire extends providerBase
                     }
                     catch (\Exception $e)
                     {
-                        throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                        throw new \Exception(sprintf(_('Unable to get message: %s'), $e->getMessage()));
                     }
 
                     if (isset($postdata['NumMedia']) && ($postdata['NumMedia'] > 0))
@@ -153,7 +153,7 @@ class Signalwire extends providerBase
                             }
                             catch (\Exception $e)
                             {
-                                throw new \Exception('Unable to get media file: ' .$e->getMessage());
+                                throw new \Exception(sprintf(_('Unable to get media file: %s'), $e->getMessage()));
                             }
 
                             $name = "media";
@@ -169,7 +169,7 @@ class Signalwire extends providerBase
                             }
                             catch (\Exception $e)
                             {
-                                throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                                throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
                             }
                         }
                     }

@@ -45,11 +45,11 @@ class Flowroute extends providerBase
             $attr['body'] = $message;
         }
         $req = array(
-                "data" => array(
-                    "type"       => "message",
-                    "attributes" => $attr
-                    )
-                );
+            "data" => array(
+                "type"       => "message",
+                "attributes" => $attr
+            )
+        );
         $this->sendFlowroute($req, $id);
         return true;
     }
@@ -81,22 +81,22 @@ class Flowroute extends providerBase
             )
         );
         $headers = array("Content-Type" => "application/vnd.api+json");
-        $url = 'https://api.flowroute.com/v2.2/messages';
-        $json = json_encode($payload);
+        $url     = sprintf('https://api.flowroute.com/%s/messages', $this->APIVersion);
+        $json    = json_encode($payload);
         $session = \FreePBX::Curl()->requests($url);
         try 
         {
             $flowrouteResponse = $session->post('', $headers, $json, $options);
-            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $flowrouteResponse->status_code, $flowrouteResponse->body), true);
+            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $flowrouteResponse->status_code, $flowrouteResponse->body));
             if (! $flowrouteResponse->success)
             {
-                throw new \Exception("HTTP $flowrouteResponse->status_code, $flowrouteResponse->body");
+                throw new \Exception(sprintf(_("HTTP %s, %s"), $flowrouteResponse->status_code, $flowrouteResponse->body));
             }
             $this->setDelivered($mid);
         }
         catch (\Exception $e)
         {
-            throw new \Exception('Unable to send message: ' .$e->getMessage());
+            throw new \Exception(sprintf(_('Unable to send message: %s'), $e->getMessage()));
         }
     }
 
@@ -109,7 +109,7 @@ class Flowroute extends providerBase
             $postdata = file_get_contents("php://input");
             $sms      = json_decode($postdata);
 
-            freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($sms)) 
             { 
                 $return_code = 403;
@@ -131,7 +131,7 @@ class Flowroute extends providerBase
                         } 
                         catch (\Exception $e) 
                         {
-                            throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
+                            throw new \Exception(sprintf(_('Unable to get message: %s'), $e->getMessage()));
                         }
                 
                         if (isset($sms->included[0])) 
@@ -149,7 +149,7 @@ class Flowroute extends providerBase
                                     } 
                                     catch (\Exception $e) 
                                     {
-                                        throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                                        throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
                                     }
                                 }
                             }
