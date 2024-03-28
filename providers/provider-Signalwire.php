@@ -1,7 +1,7 @@
 <?php
 namespace FreePBX\modules\Smsconnector\Provider;
 
-class Signalwire extends providerBase 
+class Signalwire extends providerBase
 {
     public function __construct()
     {
@@ -99,7 +99,7 @@ class Signalwire extends providerBase
             throw new \Exception('Unable to send message: ' .$e->getMessage());
         }
     }
-    
+
     public function callPublic($connector)
     {
         $return_code = 202;
@@ -114,8 +114,8 @@ class Signalwire extends providerBase
                 $postdata = $_POST;
 
                 freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
-                if (empty($postdata)) 
-                { 
+                if (empty($postdata))
+                {
                     $return_code = 403;
                 }
                 else
@@ -124,17 +124,17 @@ class Signalwire extends providerBase
                     $from = ltrim($postdata['From'], '+');
                     $text = $postdata['Body'];
                     $emid = $postdata['SmsMessageSid'];
-                    
-                    try 
+
+                    try
                     {
                         $msgid = $connector->getMessage($to, $from, '', $text, null, null, $emid);
-                    } 
-                    catch (\Exception $e) 
+                    }
+                    catch (\Exception $e)
                     {
                         throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
                     }
-                    
-                    if (isset($postdata['NumMedia']) && ($postdata['NumMedia'] > 0)) 
+
+                    if (isset($postdata['NumMedia']) && ($postdata['NumMedia'] > 0))
                     {
                         $config = $this->getConfig($this->nameRaw);
                         $options = array(
@@ -143,7 +143,7 @@ class Signalwire extends providerBase
                                 $config['api_secret']
                             )
                         );
-                        for ($x=0;$x<$postdata['NumMedia'];$x++) 
+                        for ($x=0;$x<$postdata['NumMedia'];$x++)
                         {
                             $session = \FreePBX::Curl()->requests($postdata["MediaUrl$x"]);
 
@@ -163,11 +163,11 @@ class Signalwire extends providerBase
                                 $name = $msgid . basename($purl['path']);
                             }
 
-                            try 
+                            try
                             {
                                 $connector->addMedia($msgid, $name, $img->body);
-                            } 
-                            catch (\Exception $e) 
+                            }
+                            catch (\Exception $e)
                             {
                                 throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
                             }
@@ -180,8 +180,8 @@ class Signalwire extends providerBase
                     echo '<Response/>';
                     exit;
                 }
-            } 
-            else 
+            }
+            else
             {
                 $return_code = 405;
             }

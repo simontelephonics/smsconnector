@@ -1,7 +1,7 @@
 <?php
 namespace FreePBX\modules\Smsconnector\Provider;
 
-class Sinch extends providerBase 
+class Sinch extends providerBase
 {
     public function __construct()
     {
@@ -30,7 +30,7 @@ class Sinch extends providerBase
             )
         );
     }
-    
+
     public function sendMedia($id, $to, $from, $message=null)
     {
         $req = array(
@@ -48,7 +48,7 @@ class Sinch extends providerBase
         $this->sendSinch($req, $id);
         return true;
     }
-    
+
     public function sendMessage($id, $to, $from, $message=null)
     {
         $req = array(
@@ -72,7 +72,7 @@ class Sinch extends providerBase
         $json = json_encode($payload);
 
         $session = \FreePBX::Curl()->requests($url);
-        try 
+        try
         {
             $sinchResponse = $session->post('', $headers, $json, array());
             freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $sinchResponse->status_code, $sinchResponse->body), true);
@@ -91,44 +91,44 @@ class Sinch extends providerBase
     public function callPublic($connector)
     {
         $return_code = 202;
-        if ($_SERVER['REQUEST_METHOD'] === "POST") 
+        if ($_SERVER['REQUEST_METHOD'] === "POST")
         {
             $postdata = file_get_contents("php://input");
             $sms      = json_decode($postdata);
 
             freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
-            if (empty($sms)) 
-            { 
+            if (empty($sms))
+            {
                 $return_code = 403;
             }
             else
             {
-                if (isset($sms->type) && ($sms->type == 'mo_text')) 
+                if (isset($sms->type) && ($sms->type == 'mo_text'))
                 {
                     $from = $sms->from;
                     $to   = $sms->to;
                     $text = $sms->body;
                     $emid = $sms->id;
 
-                    try 
+                    try
                     {
                         $msgid = $connector->getMessage($to, $from, '', $text, null, null, $emid);
-                    } 
-                    catch (\Exception $e) 
+                    }
+                    catch (\Exception $e)
                     {
                         throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage()));
                     }
-            
-                    if (isset($sms->body->url)) 
+
+                    if (isset($sms->body->url))
                     {
                         $img  = file_get_contents($sms->body->url);
                         $purl = parse_url($sms->body->url);
                         $name = $msgid . basename($purl['path']);
-                        try 
+                        try
                         {
                             $connector->addMedia($msgid, $name, $img);
-                        } 
-                        catch (\Exception $e) 
+                        }
+                        catch (\Exception $e)
                         {
                             throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
                         }
