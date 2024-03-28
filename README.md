@@ -18,6 +18,8 @@ a generic, expandable connector, with new providers added as contributed by the 
 * Bulk Solutions (Bulkvs): API v1 (https://portal.bulkvs.com/api/v1.0/documentation)
 * Commio/Thinq: (https://apidocs.thinq.com/#bac2ace6-7777-47d8-931e-495b62f01799)
 * Flowroute: Messaging API v2.2, webhook v2.1 (https://developer.flowroute.com/api/messages/v2.2/)
+* Sinch: SMS API (https://developers.sinch.com/docs/sms)
+* SignalWire: Messaging API (https://developer.signalwire.com/guides/messaging-overview/)
 * Siptrunk: Messaging API
 * Skyetel: SMS and MMS API (https://support.skyetel.com/hc/en-us/articles/360056299914-SMS-MMS-API)
 * Telnyx: Messaging API v2 (https://developers.telnyx.com/docs/api/v2/messaging)
@@ -27,7 +29,7 @@ a generic, expandable connector, with new providers added as contributed by the 
 
 ### Installation
 
-* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.15.3/smsconnector-16.0.15.3.tar.gz`
+* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.16/smsconnector-16.0.16.tar.gz`
 * `fwconsole r`
 
 ### Configuration
