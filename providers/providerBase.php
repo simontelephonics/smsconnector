@@ -126,9 +126,4 @@ abstract class providerBase
             'VERSION' => $this->APIVersion,
         );
     }
-
-    public function LogInfo($msg)
-    {
-        freepbx_log(FPBX_LOG_INFO, $msg);
-    }
 }

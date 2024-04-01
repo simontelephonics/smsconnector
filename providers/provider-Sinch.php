@@ -75,7 +75,7 @@ class Sinch extends providerBase
         try
         {
             $sinchResponse = $session->post('', $headers, $json, array());
-            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $sinchResponse->status_code, $sinchResponse->body));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $sinchResponse->status_code, $sinchResponse->body));
 
             if (! $sinchResponse->success)
             {
@@ -97,7 +97,7 @@ class Sinch extends providerBase
             $postdata = file_get_contents("php://input");
             $sms      = json_decode($postdata);
 
-            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($sms))
             {
                 $return_code = 403;
@@ -139,7 +139,7 @@ class Sinch extends providerBase
                 else if (isset($sms->type))
                 {
                     // don't know what to do yet; log it
-                    $this->LogInfo(print_r($sms, true));
+                    freepbx_log(FPBX_LOG_INFO, print_r($sms, true));
                 }
                 $return_code = 202;
             }

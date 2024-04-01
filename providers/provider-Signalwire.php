@@ -87,7 +87,7 @@ class Signalwire extends providerBase
         try
         {
             $signalwireResponse = $session->post('', null, $payload, $options);
-            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $signalwireResponse->status_code, $signalwireResponse->body));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $signalwireResponse->status_code, $signalwireResponse->body));
             if (! $signalwireResponse->success)
             {
                 throw new \Exception(sprintf(_("HTTP %s, %s"), $signalwireResponse->status_code, $signalwireResponse->body));
@@ -113,7 +113,7 @@ class Signalwire extends providerBase
             {
                 $postdata = $_POST;
 
-                $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
+                freepbx_log(FPBX_LOG_INFO, sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
                 if (empty($postdata))
                 {
                     $return_code = 403;

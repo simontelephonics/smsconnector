@@ -104,7 +104,7 @@ class Commio extends providerBase
         try 
         {
             $commioResponse = $session->post('', $headers, $reqBody, $options);
-            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $commioResponse->status_code, $commioResponse->body));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $commioResponse->status_code, $commioResponse->body));
             if (! $commioResponse->success)
             {
                 throw new \Exception(sprintf(_("HTTP %s, %s"), $commioResponse->status_code, $commioResponse->body));
@@ -125,7 +125,7 @@ class Commio extends providerBase
         {
             $postdata = $_POST;
 
-            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($postdata)) 
             { 
                 $return_code = 403;

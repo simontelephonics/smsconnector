@@ -88,7 +88,7 @@ class Siptrunk extends providerBase
         try
         {
             $siptrunkResponse = $session->post('', $headers, $json, $options);
-            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $siptrunkResponse->status_code, $siptrunkResponse->body));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $siptrunkResponse->status_code, $siptrunkResponse->body));
             if (! $siptrunkResponse->success)
             {
                 throw new \Exception(sprintf(_("HTTP %s, %s"), $siptrunkResponse->status_code, $siptrunkResponse->body));
@@ -110,7 +110,7 @@ class Siptrunk extends providerBase
             $postdata = file_get_contents("php://input");
             $sms      = json_decode($postdata);
 
-            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($sms))
             {
                 $return_code = 403;

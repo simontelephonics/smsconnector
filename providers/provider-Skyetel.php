@@ -72,7 +72,7 @@ class Skyetel extends providerBase
         try 
         {
             $skyetelResponse = $session->post('', $headers, $json, $options);
-            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $skyetelResponse->status_code, $skyetelResponse->body));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $skyetelResponse->status_code, $skyetelResponse->body));
             if (! $skyetelResponse->success)
             {
                 throw new \Exception(sprintf(_("HTTP %s, %s"), $skyetelResponse->status_code, $skyetelResponse->body));
@@ -93,7 +93,7 @@ class Skyetel extends providerBase
             $postdata = file_get_contents("php://input");
             $sms      = json_decode($postdata);
 
-            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($sms)) 
             { 
                 $return_code = 403;

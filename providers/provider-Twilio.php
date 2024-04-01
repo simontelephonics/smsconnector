@@ -79,7 +79,7 @@ class Twilio extends providerBase
         try
         {
             $twilioResponse = $session->post('', null, $payload, $options);
-            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $twilioResponse->status_code, $twilioResponse->body));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $twilioResponse->status_code, $twilioResponse->body));
             if (! $twilioResponse->success)
             {
                 throw new \Exception(sprintf(_("HTTP %s, %s"), $twilioResponse->status_code, $twilioResponse->body));
@@ -105,7 +105,7 @@ class Twilio extends providerBase
             {
                 $postdata = $_POST;
 
-                $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
+                freepbx_log(FPBX_LOG_INFO, sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
                 if (empty($postdata)) 
                 { 
                     $return_code = 403;

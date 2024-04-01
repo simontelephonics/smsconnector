@@ -64,7 +64,7 @@ class Voxtelesys extends providerBase
         try 
         {
             $voxtelesysResponse = $session->post('', $headers, $json, array());
-            $this->LogInfo(sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $voxtelesysResponse->status_code, $voxtelesysResponse->body));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("%s responds: HTTP %s, %s"), $this->nameRaw, $voxtelesysResponse->status_code, $voxtelesysResponse->body));
             if (! $voxtelesysResponse->success)
             {
                 throw new \Exception(sprintf(_("HTTP %s, %s"), $voxtelesysResponse->status_code, $voxtelesysResponse->body));
@@ -85,7 +85,7 @@ class Voxtelesys extends providerBase
             $postdata = file_get_contents("php://input");
             $sms      = json_decode($postdata);
 
-            $this->LogInfo(sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
+            freepbx_log(FPBX_LOG_INFO, sprintf(_("Webhook (%s) in: %s"), $this->nameRaw, print_r($postdata, true)));
             if (empty($sms)) 
             { 
                 $return_code = 403;
