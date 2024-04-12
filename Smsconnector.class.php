@@ -463,12 +463,12 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		$did = $actualTo = NULL;
 		$allowedToSend = false;
 		$retval = true;
-		if (preg_match('/\+?(\d+)\+\+?(\d+)/', $to, $matches))
+		if (preg_match('/^\+?(\d+)\+\+?(\d+)$/', $to, $matches))
 		{
 			$did = $matches[1];
 			$actualTo = $matches[2];
 		}
-		elseif (preg_match('/\+?(\d+)/', $to, $matches))
+		elseif (preg_match('/^\+?(\d+)$/', $to, $matches))
 		{
 			$actualTo = $matches[1];
 		}
@@ -490,9 +490,9 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 			}
 		}
 
-		if ($allowedToSend)
+		if ($allowedToSend && $actualTo)
 		{
-			$formattedTo = (strlen($actualTo)==10) ? '1'.$actualTo : $actualTo; // this is too simple but it's what Sangoma does
+			$formattedTo = (preg_match('/^[2-9][0-9]{2}[2-9][0-9]{6}$/', $actualTo)) ? '1'.$actualTo : $actualTo; // format NANP
 
 			$adaptor = $this->FreePBX->Sms->getAdaptor($did);
 			if(is_object($adaptor)) {

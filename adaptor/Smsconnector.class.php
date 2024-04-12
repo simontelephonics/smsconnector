@@ -41,6 +41,15 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
 
     public function sendMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null,$chatId='')
     {
+        // Clean up 'to' number if we got one with a +. Only seems to apply to mobile app. UCP
+        // and desktop apps format number before invoking this module.
+        $to = ltrim($to, '+');
+
+        if (preg_match('/^[2-9][0-9]{2}[2-9][0-9]{6}$/', $to)) // rewrite NANP for mobile app
+        {
+            $to = sprintf('1%s', $to);
+        }
+
         // Store in database
         $retval = array();
         try 
