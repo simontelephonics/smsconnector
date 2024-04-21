@@ -117,8 +117,10 @@ abstract class providerBase
         {
             $ampWebAddress = $this->Sipsettings->getConfig('externip');
         }
-        if (empty($ampWebAddress))  // If we do not have any of the previous options configured we will obtain the server name from php
+        if (empty($ampWebAddress) & isset($_SERVER['SERVER_NAME']))  // If we do not have any of the previous options configured we will obtain the server name from php
         {
+            // WARNING: It is necessary to check if SERVER_NAME exists in $_SERVER since when "fwconsole reload" this variable it will 
+            //          not be generated and produces an error (Undefined array key "SERVER_NAME").
             $ampWebAddress = $_SERVER['SERVER_NAME'];
         }
         return $ampWebAddress;
