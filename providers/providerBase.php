@@ -117,6 +117,10 @@ abstract class providerBase
         {
             $ampWebAddress = $this->Sipsettings->getConfig('externip');
         }
+        if (empty($ampWebAddress))  // If we do not have any of the previous options configured we will obtain the server name from php
+        {
+            $ampWebAddress = $_SERVER['SERVER_NAME'];
+        }
         return $ampWebAddress;
     }
 
