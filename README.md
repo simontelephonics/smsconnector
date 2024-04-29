@@ -15,6 +15,7 @@ a generic, expandable connector, with new providers added as contributed by the 
 
 ### Providers
 
+* Bandwidth: Messaging API v2 (https://dev.bandwidth.com/apis/messaging/) (Doesn't currently support status callbacks)
 * Bulk Solutions (Bulkvs): API v1 (https://portal.bulkvs.com/api/v1.0/documentation)
 * Commio/Thinq: (https://apidocs.thinq.com/#bac2ace6-7777-47d8-931e-495b62f01799)
 * Flowroute: Messaging API v2.2, webhook v2.1 (https://developer.flowroute.com/api/messages/v2.2/)
