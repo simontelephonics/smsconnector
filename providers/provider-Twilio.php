@@ -64,7 +64,7 @@ class Twilio extends providerBase
         return true;
     }
 
-    private function sendTwilio($payload, $mid)
+    private function sendTwilio($payload, $mid): void
     {
         $config = $this->getConfig($this->nameRaw);
 

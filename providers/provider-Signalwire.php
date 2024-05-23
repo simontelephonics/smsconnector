@@ -72,7 +72,7 @@ class Signalwire extends providerBase
         return true;
     }
 
-    private function sendSignalwire($payload, $mid)
+    private function sendSignalwire($payload, $mid): void
     {
         $config = $this->getConfig($this->nameRaw);
 

@@ -49,7 +49,7 @@ class Voxtelesys extends providerBase
         return true;
     }
 
-    private function sendVoxtelesys($payload, $mid)
+    private function sendVoxtelesys($payload, $mid): void
     {
         $config = $this->getConfig($this->nameRaw);
 

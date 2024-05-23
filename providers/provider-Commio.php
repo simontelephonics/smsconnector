@@ -66,7 +66,7 @@ class Commio extends providerBase
         return true;
     }
 
-    private function sendCommio($payload, $mid, $msgType = 'sms')
+    private function sendCommio($payload, $mid, $msgType = 'sms'): void
     {
         $config = $this->getConfig($this->nameRaw);
 

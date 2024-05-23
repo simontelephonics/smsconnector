@@ -70,7 +70,7 @@ class Flowroute extends providerBase
         return true;
     }
 
-    private function sendFlowroute($payload, $mid)
+    private function sendFlowroute($payload, $mid): void
     {
         $config = $this->getConfig($this->nameRaw);
 

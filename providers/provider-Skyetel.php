@@ -53,7 +53,7 @@ class Skyetel extends providerBase
         return true;
     }
 
-    private function sendSkyetel($payload, $from, $mid)
+    private function sendSkyetel($payload, $from, $mid): void
     {
         $config = $this->getConfig($this->nameRaw);
 
