@@ -50,7 +50,7 @@ class Telnyx extends providerBase
         return true;
     }
 
-    private function sendTelnyx($payload, $mid)
+    private function sendTelnyx($payload, $mid): void
     {
         $config = $this->getConfig($this->nameRaw);
 

@@ -107,7 +107,7 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
         return $row->providerid;
 	}
 
-    public function dialPlanHooks(&$ext, $engine, $priority)
+    public function dialPlanHooks(&$ext, $engine, $priority): void
     {
         if ($engine != "asterisk") { return; }
         $section = 'smsconnector-messages';

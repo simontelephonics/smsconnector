@@ -71,7 +71,7 @@ class Siptrunk extends providerBase
         return true;
     }
 
-    private function sendSiptrunk($payload, $mid)
+    private function sendSiptrunk($payload, $mid): void
     {
         $config = $this->getConfig($this->nameRaw);
 

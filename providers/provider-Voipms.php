@@ -76,7 +76,7 @@ class Voipms extends providerBase
         return true;
     }
 
-    private function sendVoipms($payload, $from, $mid)
+    private function sendVoipms($payload, $from, $mid): void
     {
         if ((strlen($from) == 11) && (strpos($from, '1') === 0)) 
         {

@@ -58,7 +58,7 @@ class Bulkvs extends providerBase
         return true;
     }
 
-    private function sendBulkvs($payload, $mid)
+    private function sendBulkvs($payload, $mid): void
     {
         $config = $this->getConfig($this->nameRaw);
 

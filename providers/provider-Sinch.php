@@ -60,7 +60,7 @@ class Sinch extends providerBase
         return true;
     }
 
-    private function sendSinch($payload, $mid)
+    private function sendSinch($payload, $mid): void
     {
         $config = $this->getConfig($this->nameRaw);
 
