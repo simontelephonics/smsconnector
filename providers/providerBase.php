@@ -67,7 +67,7 @@ abstract class providerBase
     {
         // Generate media urls
         $media_urls    = array();
-        $ampWebAddress = $ampWebAddress = $this->getWebAddress();
+        $ampWebAddress = $this->getWebAddress();
         
         $sql = 'SELECT id, name FROM sms_media WHERE mid = :mid';
         $stmt = $this->Database->prepare($sql);
