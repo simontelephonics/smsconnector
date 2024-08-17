@@ -69,10 +69,10 @@ class Bandwidth extends providerBase
     public function sendMedia($id, $to, $from, $message = null)
     {
         $req = array(
-            "applicationId" => $this->getConfig($this->nameRaw)['application_id'],
-            "to"    => array($to),
-            "from"  => $from,
-            "media" => $this->media_urls($id)
+            'applicationId' => $this->getConfig($this->nameRaw)['application_id'],
+            'to'    => array($to),
+            'from'  => $from,
+            'media' => $this->media_urls($id)
         );
         if ($message) {
             $attr['text'] = $message;
@@ -85,10 +85,10 @@ class Bandwidth extends providerBase
     public function sendMessage($id, $to, $from, $message = null)
     {
         $req = array(
-            "applicationId" => $this->getConfig($this->nameRaw)['application_id'],
-            "to"    => array($to),
-            "from"  => $from,
-            "text"  => $message
+            'applicationId' => $this->getConfig($this->nameRaw)['application_id'],
+            'to'    => array($to),
+            'from'  => $from,
+            'text'  => $message
         );
         $this->SendBandwidth($req, $id);
         return true;
@@ -108,14 +108,14 @@ class Bandwidth extends providerBase
 
         try {
             $bandwidthResponse = $session->post('', $headers, $json, array());
-            freepbx_log(FPBX_LOG_INFO, sprintf("%s responds: HTTP %s, %s", $this->nameRaw, $bandwidthResponse->status_code, $bandwidthResponse->body), true);
+            freepbx_log(FPBX_LOG_INFO, sprintf(_('%s responds: HTTP %s, %s'), $this->nameRaw, $bandwidthResponse->status_code, $bandwidthResponse->body), true);
 
             if (!$bandwidthResponse->success) {
-                throw new \Exception("HTTP $bandwidthResponse->status_code, $bandwidthResponse->body");
+                throw new \Exception(sprintf(_('HTTP %s, %s'), $bandwidthResponse->status_code, $bandwidthResponse->body));
             }
             $this->setDelivered($mid);
         } catch (\Exception $e) {
-            throw new \Exception('Unable to send message: ' . $e->getMessage());
+            throw new \Exception(_('Unable to send message: ') . $e->getMessage());
         }
     }
 
@@ -125,15 +125,14 @@ class Bandwidth extends providerBase
 
         // Check if callback authentication is enabled/expected
         // If it is, check that the user and password match the values coming from bandwidth
-        if ($config['callback_user_id'] && $config['callback_password']) {
+        if (!empty($config['callback_user_id']) && !empty($config['callback_password'])) {
             
-            $user = $_SERVER['PHP_AUTH_USER'];
-            $password = $_SERVER['PHP_AUTH_PW'];
+            $user = (empty($_SERVER['PHP_AUTH_USER'])) ? '' : $_SERVER['PHP_AUTH_USER'];
+            $password = (empty($_SERVER['PHP_AUTH_PW'])) ? '' : $_SERVER['PHP_AUTH_PW'];
             
             if (!$user || !$password || $user !== $config['callback_user_id'] || $password !== $config['callback_password']) {
-                freepbx_log(FPBX_LOG_INFO, sprintf("Callback authentication failed for %s", $this->nameRaw));
-                freepbx_log(FPBX_LOG_INFO, sprintf("From Bandwidth. Pass: %s, User: %s", $password, $user));
-                freepbx_log(FPBX_LOG_INFO, sprintf("Expected pass: %s, Expected user: %s", $config['callback_password'], $config['callback_user_id']));
+                freepbx_log(FPBX_LOG_INFO, sprintf(_('Callback authentication failed for %s'), $this->nameRaw));
+                freepbx_log(FPBX_LOG_INFO, sprintf(_('From Bandwidth. Pass: %s, User: %s'), $password, $user));
                 return 401;
             }
         }
@@ -145,7 +144,7 @@ class Bandwidth extends providerBase
         $postdata = file_get_contents("php://input");
         $sms      = json_decode($postdata)[0];
 
-        freepbx_log(FPBX_LOG_INFO, sprintf("Webhook (%s) in: %s", $this->nameRaw, print_r($postdata, true)));
+        freepbx_log(FPBX_LOG_INFO, sprintf(_('Webhook (%s) in: %s'), $this->nameRaw, print_r($postdata, true)));
 
         if (empty($sms)) {
             return 403;
@@ -162,7 +161,7 @@ class Bandwidth extends providerBase
                 try {
                     $msgid = $connector->getMessage($to, $from, '', $text, null, null, $emid);
                 } catch (\Exception $e) {
-                    throw new \Exception(sprintf('Unable to get message: %s', $e->getMessage())); 
+                    throw new \Exception(sprintf(_('Unable to get message: %s'), $e->getMessage())); 
                 }
 
                 if (isset($sms->message->media[0])) {
@@ -181,7 +180,7 @@ class Bandwidth extends providerBase
                         try {
                             $connector->addMedia($msgid, $name, $img);
                         } catch (\Exception $e) {
-                            throw new \Exception(sprintf('Unable to store MMS media: %s', $e->getMessage()));
+                            throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
                         }
                     }
                 }
@@ -193,7 +192,7 @@ class Bandwidth extends providerBase
                 // These can be disabled when setting up the application within Bandwidth
                 // It would be good to support these in the future
                 // We still reply with a 202 to appease Bandwidth
-                freepbx_log(FPBX_LOG_INFO, sprintf("Incoming message of unknown type %s. Contents: %s", $sms->type, print_r($sms, true)));
+                freepbx_log(FPBX_LOG_INFO, sprintf(_('Incoming message of unknown type %s. Contents: %s'), $sms->type, print_r($sms, true)));
             }
         }
 
