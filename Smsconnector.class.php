@@ -787,6 +787,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 				case 'showuser':
 					$sipSmsEnabled 	  = null;
 					$defaultDid       = null;
+					$emailOffline	  = null;
 
 					if(isset($request['user']))
 					{
@@ -795,7 +796,6 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 						$defaultDid    = $this->Userman->getModuleSettingByID($user['id'],'smsconnector','sipsmsdefaultdid',true);
 						$emailOffline  = $this->Userman->getModuleSettingById($user['id'],'smsconnector','sipsmsemailoffline',true);
 					}
-
 					return array(
 						array(
 							'title' => _('SMS Connector'),
@@ -805,7 +805,7 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 								'sipsmsenabled' => $sipSmsEnabled,
 								'sipsmsdefaultdid' => $defaultDid,
 								'sipsmsemailoffline' => $emailOffline,
-								'dids' => $this->getDidsByUser($request['user'])
+								'dids' => !empty($request['user']) ? $this->getDidsByUser($request['user']) : array()
 							)),
 						)
 					);
