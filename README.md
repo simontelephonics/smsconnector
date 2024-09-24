@@ -30,7 +30,7 @@ a generic, expandable connector, with new providers added as contributed by the 
 
 ### Installation
 
-* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.17/smsconnector-16.0.17.tar.gz`
+* `fwconsole ma downloadinstall https://github.com/simontelephonics/smsconnector/releases/download/v16.0.17.1/smsconnector-16.0.17.1.tar.gz`
 * `fwconsole r`
 
 ### Configuration
