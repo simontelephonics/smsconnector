@@ -102,7 +102,7 @@ class Skyetel extends providerBase
             {
                 $from = ltrim($sms->from, '+'); // strip + if exists
                 $to   = ltrim($sms->to, '+'); // strip + if exists
-                $text = $sms->text;
+                $text = $sms->text ?? '';
                 $emid = null;
 
                 try 

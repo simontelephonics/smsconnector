@@ -96,7 +96,7 @@ class Voxtelesys extends providerBase
                 {
                     $from = ltrim($sms->from, '+'); // strip +
                     $to   = ltrim($sms->to, '+'); // strip +
-                    $body = $sms->body;
+                    $body = $sms->body ?? '';
                     $emid = $sms->id;
 
                     try 

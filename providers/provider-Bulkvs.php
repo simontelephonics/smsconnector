@@ -111,7 +111,7 @@ class Bulkvs extends providerBase
             {
                 $from = ltrim($sms->From, '+'); // strip +
                 $to   = ltrim($sms->To[0], '+'); // strip +
-                $text = urldecode($sms->Message);
+                $text = urldecode($sms->Message) ?? '';
                 $emid = null;
                 $images = array();
 
