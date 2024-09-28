@@ -67,7 +67,7 @@ abstract class providerBase
     {
         // Generate media urls
         $media_urls    = array();
-        $ampWebAddress = $ampWebAddress = $this->getWebAddress();
+        $ampWebAddress = $this->getWebAddress();
         
         $sql = 'SELECT id, name FROM sms_media WHERE mid = :mid';
         $stmt = $this->Database->prepare($sql);
@@ -116,6 +116,12 @@ abstract class providerBase
         if (empty($ampWebAddress))  // We're going to make an educated guess and make an HTTPS URL from the external IP
         {
             $ampWebAddress = $this->Sipsettings->getConfig('externip');
+        }
+        if (empty($ampWebAddress) & isset($_SERVER['SERVER_NAME']))  // If we do not have any of the previous options configured we will obtain the server name from php
+        {
+            // WARNING: It is necessary to check if SERVER_NAME exists in $_SERVER since when "fwconsole reload" this variable it will 
+            //          not be generated and produces an error (Undefined array key "SERVER_NAME").
+            $ampWebAddress = $_SERVER['SERVER_NAME'];
         }
         return $ampWebAddress;
     }
