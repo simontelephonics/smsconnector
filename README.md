@@ -45,6 +45,18 @@ For inbound SMS/MMS and outbound MMS to work, you will need an HTTPS path inboun
 
 Sending of SMS/MMS requires verification and registration performed through your provider and is outside of the scope of this 
 module or document. 
+<detials>
+<summary>Detailed instructions for Telnyx</summary>
+  * Set the FreePBX Web Address (Advanced Settings > FreePBX Web Address) to your.pbx.domain.com (no https://)
+  * Go to Connectivity > SMS Connector
+  * Go to Provider Settings, click Telnyx
+  * Go to Telnyx website > Account Settings > Keys & Credentials > Copy API key
+  * Go back to FreePBX page, paste in API key in the box for Telnyx (without KEY at the beginning, erase that)
+  * Copy the webhook from the provider box on the SMS connector module page
+  * Paste it into Telnyx’s webhook URL box on the messaging tab (Telnyx > Messaging > [profile name] > edit > paste URL into the webhook box)
+  * Go back to SMS connector page > Add Number > Type Telnyx number and select extension/user and provider (Telnyx)
+  * Done! Can now send and receive messages from the UCP.
+</details>
 
 #### Provider Settings
 
