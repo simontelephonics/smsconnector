@@ -47,15 +47,15 @@ Sending of SMS/MMS requires verification and registration performed through your
 module or document. 
 <details>
  <summary>More detailed info for Telnyx</summary>
- * Set the FreePBX Web Address (Advanced Settings > FreePBX Web Address) to your.pbx.domain.com (no https://)
- * Go to Connectivity > SMS Connector
- * Go to Provider Settings, click Telnyx
- * Go to Telnyx website > Account Settings > Keys & Credentials > Copy API key
- * Go back to FreePBX page, paste in API key in the box for Telnyx (without KEY at the beginning, erase that)
- * Copy the webhook from the provider box on the SMS connector module page
- * Paste it into Telnyx’s webhook URL box on the messaging tab (Telnyx > Messaging > [profile name] > edit > paste URL into the webhook box)
- * Go back to SMS connector page > Add Number > Type Telnyx number and select extension/user and provider (Telnyx)
- * Done! Can now send and receive messages from the UCP.
+ 1. Set the FreePBX Web Address (Advanced Settings > FreePBX Web Address) to your.pbx.domain.com (no https://) <br>
+ 2. Go to Connectivity > SMS Connector <br>
+ 3. Go to Provider Settings, click Telnyx <br>
+ 4. Go to Telnyx website > Account Settings > Keys & Credentials > Copy API key <br>
+ 5. Go back to FreePBX page, paste in API key in the box for Telnyx (without KEY at the beginning, erase that) <br>
+ 6. Copy the webhook from the provider box on the SMS connector module page <br>
+ 7. Paste it into Telnyx’s webhook URL box on the messaging tab (Telnyx > Messaging > [profile name] > edit > paste URL into the webhook box) <br>
+ 8. Go back to SMS connector page > Add Number > Type Telnyx number and select extension/user and provider (Telnyx) <br>
+ 9. Done! Can now send and receive messages from the UCP.
 </details>
 
 #### Provider Settings
