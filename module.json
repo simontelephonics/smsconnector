@@ -2,11 +2,11 @@
     "rawname": "smsconnector",
     "repo": "unsupported",
     "name": "SMS Connector",
-    "version": "16.0.17.1",
+    "version": "16.0.17.2",
     "publisher": "Simon Telephonics LLC",
     "license": "GPLv3+",
     "licenselink": "http://www.gnu.org/licenses/gpl-3.0.txt",
-    "changelog": "Bug fix - On incoming messages, replace unset or null text body with empty string",
+    "changelog": "Bug fix - issue 62, send empty string if given null by mobile app",
     "category": "Connectivity",
     "description": "Implements a generic SMS connector",
     "depends": {
@@ -18,5 +18,5 @@
     "supported": {
         "version": "16.0"
     },
-    "location": "https://simon.tel/pbx-modules/smsconnector-16.0.17.1.tar.gz"
+    "location": "https://simon.tel/pbx-modules/smsconnector-16.0.17.2.tar.gz"
 }
