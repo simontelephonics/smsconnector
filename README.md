@@ -53,9 +53,10 @@ module or document.
  4. Go to Telnyx website > Account Settings > Keys & Credentials > Copy API key <br>
  5. Go back to FreePBX page, paste in API key in the box for Telnyx <br>
  6. Copy the webhook from the provider box on the SMS connector module page <br>
- 7. Paste it into Telnyx’s webhook URL box on the messaging tab (Telnyx > Messaging > [profile name] > edit > paste URL into the webhook box) <br>
+ 7. Paste it into Telnyx’s webhook URL box on the messaging tab (Telnyx > Messaging > [profile name] > edit > Inbound > paste URL into the webhook box) <br>
  8. Go back to SMS connector page > Add Number > Type Telnyx number and select extension/user and provider (Telnyx) <br>
- 9. Done! Can now send and receive messages from the UCP.
+ 9. Go to FreePBX > User Management > user > SMSConnector > SIP SMS Enabled > Yes <br>
+ 10. Done! Can now send and receive messages from the UCP/softphones
 </details>
 
 #### Provider Settings
