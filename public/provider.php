@@ -1,4 +1,6 @@
 <?php
+if (isset($_GET['zd_echo'])) exit($_GET['zd_echo']); //verification request from Zadarma with the value
+
 if (strstr($_SERVER['QUERY_STRING'], ';') !== FALSE) // using ; as separator
 {
     $qs = str_replace(';', '&', $_SERVER['QUERY_STRING']);
