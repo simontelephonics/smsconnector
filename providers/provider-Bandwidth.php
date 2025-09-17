@@ -176,11 +176,19 @@ class Bandwidth extends providerBase
                         $img = file_get_contents($media, false, $context);
                         $purl = parse_url($media);
                         $name = $msgid . basename($purl['path']);
+                        $path_parts = pathinfo($purl['path']);
+                        $ext = $path_parts['extension'];
 
-                        try {
-                            $connector->addMedia($msgid, $name, $img);
-                        } catch (\Exception $e) {
-                            throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
+                        switch ($ext) {
+                            case 'smil':
+                                break;
+                            default:
+                                try {
+                                    $connector->addMedia($msgid, $name, $img);
+                                } catch (\Exception $e) {
+                                    throw new \Exception(sprintf(_('Unable to store MMS media: %s'), $e->getMessage()));
+                                }
+                                break;
                         }
                     }
                 }
