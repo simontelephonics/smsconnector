@@ -108,7 +108,7 @@ class Sinch extends providerBase
                 {
                     $from = $sms->from;
                     $to   = $sms->to;
-                    $text = $sms->body;
+                    $text = $sms->body ?? '';
                     $emid = $sms->id;
 
                     try

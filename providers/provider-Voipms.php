@@ -167,7 +167,7 @@ class Voipms extends providerBase
                 $from = '1'.$from;
             }
 
-            $text = $sms['message'];
+            $text = $sms['message'] ?? '';
             $emid = $sms['id'];
             //$date = $sms['date'];
             $media = $sms['media'];

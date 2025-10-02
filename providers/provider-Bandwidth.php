@@ -155,7 +155,7 @@ class Bandwidth extends providerBase
 
                 $from = ltrim($sms->message->from, '+'); // strip + if exists
                 $to   = ltrim($sms->to, '+'); // The sms->to will always just be one number, but if we wanted to support group messaging we'd need to look at sms->message->to which holds an array of all numbers in the convo
-                $text = $sms->message->text;
+                $text = $sms->message->text ?? '';
                 $emid = $sms->message->id;
 
                 try {

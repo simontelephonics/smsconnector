@@ -114,7 +114,7 @@ class Twilio extends providerBase
                 {
                     $to   = ltrim($postdata['To'], '+');
                     $from = ltrim($postdata['From'], '+');
-                    $text = $postdata['Body'];
+                    $text = $postdata['Body'] ?? '';
                     $emid = $postdata['SmsMessageSid'];
                     
                     try 

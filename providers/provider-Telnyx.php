@@ -99,7 +99,7 @@ class Telnyx extends providerBase
                     {
                         $from = ltrim($sms->data->payload->from->phone_number, '+'); // strip +
                         $to   = ltrim($sms->data->payload->to[0]->phone_number, '+'); // strip +
-                        $text = $sms->data->payload->text;
+                        $text = $sms->data->payload->text ?? '';
                         $emid = $sms->data->id;
 
                         try 

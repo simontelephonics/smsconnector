@@ -2,7 +2,7 @@
 	<rawname>smsconnector</rawname>
 	<repo>unsupported</repo>
 	<name>SMS Connector</name>
-	<version>16.0.16.1</version>
+	<version>16.0.17.2</version>
 	<category>Connectivity</category>
 	<Publisher>Simon Telephonics LLC</Publisher>
 	<info>http://wiki.freepbx.org/</info>
@@ -45,6 +45,9 @@
 		</table>
 	</database>
 	<changelog>
+		*16.0.17.2* Bug fix: #62 set message to empty string if null
+		*16.0.17.1* Bug fix: replace any incoming null/unset message bodies with empty string
+		*16.0.17* Adds provider Bandwidth.com
 		*16.0.16.1* Update i18n, code clean-up, number formatting enhancements
 		*16.0.16* Adds providers SignalWire and Sinch
 		*16.0.15.3* Bug fix for #41, PHP8 fix

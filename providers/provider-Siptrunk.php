@@ -123,7 +123,7 @@ class Siptrunk extends providerBase
                     {
                         $from = ltrim($sms->data->attributes->from, '+'); // strip + if exists
                         $to   = ltrim($sms->data->attributes->to, '+'); // strip + if exists
-                        $text = $sms->data->attributes->body;
+                        $text = $sms->data->attributes->body ?? '';
                         $emid = $sms->data->message_id;
 
                         try

@@ -13,6 +13,8 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
 
     public function sendMedia($to,$from,$cnam,$message=null,$files=array(),$time=null,$adaptor=null,$emid=null,$chatId='')
     {
+        $message ??= ''; // string is expected, so don't allow a null
+
         // Store in database
         $retval = array();
         try 
@@ -41,6 +43,8 @@ class Smsconnector extends \FreePBX\modules\Sms\AdaptorBase {
 
     public function sendMessage($to,$from,$cnam,$message,$time=null,$adaptor=null,$emid=null,$chatId='')
     {
+        $message ??= ''; // string is expected, so don't allow a null
+
         // Clean up 'to' number if we got one with a +. Only seems to apply to mobile app. UCP
         // and desktop apps format number before invoking this module.
         $to = ltrim($to, '+');
