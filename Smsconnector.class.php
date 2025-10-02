@@ -602,7 +602,9 @@ class Smsconnector extends FreePBX_Helpers implements BMO
 		}
 		else if (($checkExists == true) && ($this->isExistDID($did)))
 		{
-			throw new \Exception(_('The DID already exists!'));
+			if (! empty($this->getUsersByDid($did))) // DID exists with users assigned.
+				throw new \Exception(_('The DID already exists!'));
+				// but if no users assigned, the DID is abandoned. We can proceed to add it again.
 		}
 
 		$this->FreePBX->Sms->addDIDRouting($did, $uid, self::adapterName);
