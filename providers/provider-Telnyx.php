@@ -28,7 +28,7 @@ class Telnyx extends providerBase
     {
         $req = array(
             'from'       => '+'.$from,
-            'to'         => '+'.$to,
+            'to'         => (strlen($to) >= 5 && strlen($to) <= 6) ? $to : '+'.$to, // allows short codes, otherwise E.164
             'media_urls' => $this->media_urls($id)
         );
         if ($message)
@@ -43,7 +43,7 @@ class Telnyx extends providerBase
     {
         $req = array(
             'from'  => '+'.$from,
-            'to'    => '+'.$to,
+            'to'    => (strlen($to) >= 5 && strlen($to) <= 6) ? $to : '+'.$to, // allows short codes, otherwise E.164
             'text'  => $message
         );
         $this->sendTelnyx($req, $id);
