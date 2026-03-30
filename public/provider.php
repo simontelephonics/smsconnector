@@ -27,7 +27,7 @@ if (! empty($sms['provider']))
             $code = $availableProviders[$provider]['class']->callPublic($connector);
             if ($code !== "")
             {
-                freepbx_log(FPBX_LOG_INFO, sprintf(_("Webhook (%s): Return Code %s"), $provider, $code));
+                freepbx_log(FPBX_LOG_INFO, sprintf(_("Webhook (%s): Return Code %s from %s"), $provider, $code, $_SERVER['REMOTE_ADDR'] ?? 'unknown'));
                 http_response_code($code);
             }
         } 
