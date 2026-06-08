@@ -11,9 +11,11 @@
     "description": "Implements a generic SMS connector",
     "depends": {
         "version": "16",
-        "module": "sms",
-        "module": "userman",
-        "module": "sipsettings"
+        "module": [
+            "sms",
+            "userman",
+            "sipsettings"
+        ]
     },
     "supported": {
         "version": "16.0"
