@@ -27,7 +27,7 @@ class Telnyx extends providerBase
     public function sendMedia($id, $to, $from, $message=null)
     {
         $req = array(
-            'from'       => '+'.$from,
+            'from'       => '+' . ltrim((string) $from, '+'),
             'to'         => (strlen($to) >= 5 && strlen($to) <= 6) ? $to : '+'.$to, // allows short codes, otherwise E.164
             'media_urls' => $this->media_urls($id)
         );
@@ -42,7 +42,7 @@ class Telnyx extends providerBase
     public function sendMessage($id, $to, $from, $message=null)
     {
         $req = array(
-            'from'  => '+'.$from,
+            'from'  => '+' . ltrim((string) $from, '+'),
             'to'    => (strlen($to) >= 5 && strlen($to) <= 6) ? $to : '+'.$to, // allows short codes, otherwise E.164
             'text'  => $message
         );
