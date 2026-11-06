@@ -2,6 +2,9 @@
 // Run with: php tests/TelnyxSourceFormattingTest.php
 // Executes the real provider methods against a fake HTTP client.
 // No native PBX classes, database, credentials or network client are loaded.
+namespace {
+    if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
+}
 namespace FreePBX\modules\Smsconnector\Provider {
     class providerBase {
         protected $name, $nameRaw, $APIUrlInfo, $APIVersion, $configInfo;
